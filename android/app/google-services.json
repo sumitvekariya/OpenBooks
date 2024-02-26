@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "56322492879",
+    "project_id": "openbook-68460",
+    "storage_bucket": "openbook-68460.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56322492879:android:0df48ec2f3777666a56aba",
+        "android_client_info": {
+          "package_name": "com.example.openbook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUnucbDf8rY1C1PDUrBnKrJI74vcVmmQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
