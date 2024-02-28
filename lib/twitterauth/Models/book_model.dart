@@ -10,19 +10,22 @@ class Book {
   final double userLong;
   final String userimage;
   final bool isrented;
+  final String bookdesc;
 
-  Book(
-      {required this.bookId,
-      required this.bookName,
-      required this.authorName,
-      required this.imageCover,
-      required this.username,
-      required this.userUid,
-      required this.userLocation,
-      required this.userLat,
-      required this.userLong,
-      required this.userimage,
-      required this.isrented});
+  Book({
+    required this.bookId,
+    required this.bookName,
+    required this.authorName,
+    required this.imageCover,
+    required this.username,
+    required this.userUid,
+    required this.userLocation,
+    required this.userLat,
+    required this.userLong,
+    required this.userimage,
+    required this.isrented,
+    required this.bookdesc,
+  });
 
   factory Book.fromMap(Map<String, dynamic> data, String documentId) {
     return Book(
@@ -37,6 +40,7 @@ class Book {
       userLong: (data['user_long'] ?? 0.0).toDouble(),
       userimage: data['userimage'],
       isrented: data['isrented'],
+      bookdesc: data['bookdesc'],
     );
   }
 }

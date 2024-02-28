@@ -100,7 +100,7 @@ class _BarcodeScreenState extends State<BarcodeScreen> {
                         Text('Author(s): ${bookDetails['authors'][0]}'),
                         Text('Description: ${bookDetails['description']}'),
                         Text(
-                            'Description: ${bookDetails['imageLinks']['thumbnail']}'),
+                            'Image: ${bookDetails['imageLinks']['thumbnail']}'),
 
                         // Add more fields as needed
                       ],

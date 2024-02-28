@@ -9,6 +9,7 @@ import 'package:openbook/onboardingscreen.dart';
 import 'package:openbook/bookaroundyou.dart.dart';
 import 'package:openbook/peoplearoundyou.dart';
 import 'package:openbook/setupaccount.dart';
+import 'package:openbook/snckbar.dart';
 import 'package:openbook/twitterauth/provider/internet_provider.dart';
 import 'package:openbook/twitterauth/provider/sign_in_provider.dart';
 import 'package:openbook/twitterauth/screens/flashscreen.dart';
@@ -74,8 +75,9 @@ class MyApp extends StatelessWidget {
                         width: 800,
                       ),
                     ),
-                    nextScreen: BarcodeScreen(),
-                    // nextScreen: FlashScreen(),
+                    // nextScreen: BarcodeScreen(),
+                    // nextScreen: SetupupAccount(),
+                    nextScreen: FlashScreen(),
                   );
                 })),
           );

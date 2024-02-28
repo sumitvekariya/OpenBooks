@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:openbook/homepage.dart';
 import 'package:openbook/onboardingscreen.dart';
 import 'package:openbook/setupaccount.dart';
+import 'package:openbook/widgets.dart';
 
 import 'package:provider/provider.dart';
 import 'package:openbook/twitterauth/Models/user_data_models.dart';
@@ -55,7 +56,7 @@ class _FlashScreenState extends State<FlashScreen> {
     final sp = context.read<SignInProvider>();
     super.initState();
     // create a timer of 2 seconds
-    Timer(const Duration(seconds: 3), () async {
+    Timer(const Duration(seconds: 1), () async {
       // if (sp.isSignedIn == true) {
       //   // String? currentUserUID = FirebaseAuth.instance.currentUser?.uid;
 
@@ -77,15 +78,15 @@ class _FlashScreenState extends State<FlashScreen> {
           await getUserData(userUid!);
 
           if (userglobalData!.fillDetails == true) {
-            nextScreen(context, HomePage());
+            nextScreenpushandremove(context, HomePage());
           } else {
-            nextScreen(context, SetupupAccount());
+            nextScreenpushandremove(context, SetupupAccount());
           }
 
           // nextScreen(context, HomeScreen());
         });
       } else {
-        nextScreen(context, OnBoradingScreen());
+        nextScreenpushandremove(context, OnBoradingScreen());
       }
 
       // sp.isSignedIn == false

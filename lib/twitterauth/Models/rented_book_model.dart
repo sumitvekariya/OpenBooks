@@ -15,6 +15,7 @@ class RentedBook {
   final String renteduserlocation;
   final double renteduserlat;
   final double renteduserlong;
+  final String bookdesc;
   RentedBook({
     required this.bookId,
     required this.bookName,
@@ -32,6 +33,7 @@ class RentedBook {
     required this.renteduserlocation,
     required this.renteduserlat,
     required this.renteduserlong,
+    required this.bookdesc,
   });
 
   factory RentedBook.fromMap(Map<String, dynamic> data, String documentId) {
@@ -52,6 +54,7 @@ class RentedBook {
       renteduserlocation: data['renteduserlocation'],
       renteduserlat: (data['renteduserlat'] ?? 0.0).toDouble(),
       renteduserlong: (data['renteduserlong'] ?? 0.0).toDouble(),
+      bookdesc: data['bookdesc'],
     );
   }
 }

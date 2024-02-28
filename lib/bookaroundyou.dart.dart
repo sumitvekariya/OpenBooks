@@ -12,6 +12,9 @@ import 'package:openbook/twitterauth/utils/global_data.dart';
 import 'package:openbook/twitterauth/utils/next_screen.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class BookAroundYouScreen extends StatefulWidget {
   const BookAroundYouScreen({super.key});
@@ -40,7 +43,7 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(Duration(microseconds: 1), () async {
       // markers.add(
       //   Marker(
       //     markerId: MarkerId("2"),
@@ -185,7 +188,7 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
                           height: 20.h,
                         ),
                         Container(
-                          height: 600.h,
+                          height: 650.h,
                           width: 342.w,
                           color: Color.fromRGBO(249, 249, 249, 1),
                           child: Padding(
@@ -514,7 +517,10 @@ class _BookwidgetState extends State<Bookwidget> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.asset("assets/images/cover.png"),
+                              Container(
+                                  height: 50.h,
+                                  width: 50.w,
+                                  child: Image.network(widget.book.imageCover)),
                               Padding(
                                 padding: EdgeInsets.only(left: 12.0.w),
                                 child: Column(
@@ -568,13 +574,16 @@ class _BookwidgetState extends State<Bookwidget> {
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                      "${widget.book.bookName}",
-                                      style: TextStyle(
-                                        fontFamily: globalfontfamily,
-                                        color: Color.fromRGBO(0, 0, 0, 1),
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w400,
+                                    Container(
+                                      width: 200.w,
+                                      child: Text(
+                                        "${widget.book.bookName}",
+                                        style: TextStyle(
+                                          fontFamily: globalfontfamily,
+                                          color: Color.fromRGBO(0, 0, 0, 1),
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                     Text(
@@ -601,49 +610,60 @@ class _BookwidgetState extends State<Bookwidget> {
                           SizedBox(
                             height: 12.h,
                           ),
-                          GestureDetector(
-                            onTap: () async {
-                              setState(() {
-                                isloading = true;
-                              });
-
-                              await saveDataToFirestore(
-                                bookid: widget.book.bookId,
-                                bookname: widget.book.bookName,
-                                authorname: widget.book.authorName,
-                                imgcover: widget.book.imageCover,
-                                username: widget.book.username,
-                                userimage: widget.book.userimage,
-                                useruid: widget.book.userUid,
-                                userlocation: widget.book.userLocation,
-                                userlat: widget.book.userLat,
-                                userlong: widget.book.userLong,
-                                requestusername: userglobalData!.username,
-                                requestuserimage: userglobalData!.imageurl,
-                                requestuseruid: userglobalData!.uid,
-                                requestuserlocation:
-                                    userglobalData!.locationname,
-                                requestuserlat: userglobalData!.userlat,
-                                requestuserlong: userglobalData!.userlong,
-                              );
-
-                              setState(() {
-                                isloading = false;
-                              });
-                              // warningNoTask(context);
-                            },
-                            child: isloading
-                                ? Container(
-                                    height: 19.h,
-                                    width: 19.w,
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : Container(
-                                    height: 24.h,
-                                    width: 24.w,
-                                    child: Image.asset(
-                                        "assets/images/nextarr.png"),
+                          TapBounceContainer(
+                            child: GestureDetector(
+                              onTap: () async {
+                                showTopSnackBar(
+                                  Overlay.of(context),
+                                  CustomSnackBar.success(
+                                    message:
+                                        'Good job, The ${widget.book.bookName} request send to @${widget.book.username}',
                                   ),
+                                );
+                                setState(() {
+                                  isloading = true;
+                                });
+
+                                await saveDataToFirestore(
+                                  bookid: widget.book.bookId,
+                                  bookname: widget.book.bookName,
+                                  authorname: widget.book.authorName,
+                                  imgcover: widget.book.imageCover,
+                                  username: widget.book.username,
+                                  userimage: widget.book.userimage,
+                                  useruid: widget.book.userUid,
+                                  userlocation: widget.book.userLocation,
+                                  userlat: widget.book.userLat,
+                                  userlong: widget.book.userLong,
+                                  requestusername: userglobalData!.username,
+                                  requestuserimage: userglobalData!.imageurl,
+                                  requestuseruid: userglobalData!.uid,
+                                  requestuserlocation:
+                                      userglobalData!.locationname,
+                                  requestuserlat: userglobalData!.userlat,
+                                  requestuserlong: userglobalData!.userlong,
+                                  bookdesc: widget.book.bookdesc,
+                                );
+
+                                setState(() {
+                                  isloading = false;
+                                });
+
+                                // warningNoTask(context);
+                              },
+                              child: isloading
+                                  ? Container(
+                                      height: 19.h,
+                                      width: 19.w,
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Container(
+                                      height: 24.h,
+                                      width: 24.w,
+                                      child: Image.asset(
+                                          "assets/images/nextarr.png"),
+                                    ),
+                            ),
                           )
                         ],
                       ),
@@ -694,6 +714,7 @@ class _BookwidgetState extends State<Bookwidget> {
       required String requestuserlocation,
       required double requestuserlat,
       required double requestuserlong,
+      required String bookdesc,
       re}) async {
     final DocumentSnapshot pr = await FirebaseFirestore.instance
         .collection("users")
@@ -739,6 +760,7 @@ class _BookwidgetState extends State<Bookwidget> {
         "requestuserlocation": requestuserlocation,
         "requestuserlat": requestuserlat,
         "requestuserlong": requestuserlong,
+        "bookdesc": bookdesc,
       });
     }
 

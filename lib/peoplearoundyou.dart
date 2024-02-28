@@ -37,7 +37,7 @@ class _PeopleAroundYouScreenState extends State<PeopleAroundYouScreen> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(Duration(microseconds: 1), () async {
       // markers.add(
       //   Marker(
       //     markerId: MarkerId("2"),

@@ -42,7 +42,7 @@ class _RecievedBookScreenState extends State<RecievedBookScreen> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(Duration(microseconds: 1), () async {
       // markers.add(
       //   Marker(
       //     markerId: MarkerId("2"),
@@ -514,7 +514,10 @@ class _BookwidgetState extends State<Bookwidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset("assets/images/cover.png"),
+                    Container(
+                        height: 50.h,
+                        width: 50.w,
+                        child: Image.network(widget.book.imageCover)),
                     Padding(
                       padding: EdgeInsets.only(left: 12.0.w),
                       child: Column(
@@ -567,13 +570,16 @@ class _BookwidgetState extends State<Bookwidget> {
                               ),
                             ],
                           ),
-                          Text(
-                            "${widget.book.bookName}",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Color.fromRGBO(0, 0, 0, 1),
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
+                          Container(
+                            width: 200.w,
+                            child: Text(
+                              "${widget.book.bookName}",
+                              style: TextStyle(
+                                fontFamily: globalfontfamily,
+                                color: Color.fromRGBO(0, 0, 0, 1),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                           Text(
@@ -623,6 +629,7 @@ class _BookwidgetState extends State<Bookwidget> {
                       requestuserlocation: userglobalData!.locationname,
                       requestuserlat: userglobalData!.userlat,
                       requestuserlong: userglobalData!.userlong,
+                      bookdesc: widget.book.bookdesc,
                     );
 
                     setState(() {
@@ -692,6 +699,7 @@ class _BookwidgetState extends State<Bookwidget> {
       required String requestuserlocation,
       required double requestuserlat,
       required double requestuserlong,
+      required String bookdesc,
       re}) async {
     final DocumentReference r = FirebaseFirestore.instance
         .collection("users")
@@ -716,6 +724,7 @@ class _BookwidgetState extends State<Bookwidget> {
       "requestuserlocation": requestuserlocation,
       "requestuserlat": requestuserlat,
       "requestuserlong": requestuserlong,
+      "bookdesc": bookdesc,
     });
 
     //  final DocumentReference br = FirebaseFirestore.instance

@@ -162,7 +162,7 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
       openSnackbar(context, "Check your Internet connection", Colors.red);
       googleController.reset();
     } else {
-      await sp.signInWithTwitter().then((value) {
+      await sp.firebasesignInWithTwitter().then((value) {
         if (sp.hasError == true) {
           openSnackbar(context, sp.errorCode.toString(), Colors.red);
           twitterController.reset();

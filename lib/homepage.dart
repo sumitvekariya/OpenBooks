@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(Duration(microseconds: 1), () async {
       await addCustomIcon();
 
       await FirebaseFirestore.instance
@@ -212,526 +212,530 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: isloading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              height: screenHeight,
-              width: screenWidth,
-              color: Colors.transparent,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Container(
-                    width: screenWidth,
-                    height: 270.h,
-                    child: GoogleMap(
-                      mapType: MapType.terrain,
-                      markers: Set<Marker>.of(markers),
-                      onMapCreated: (GoogleMapController controllers) {
-                        controller.complete(controllers);
-                        // addPolyline();
-                      },
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(28.644800, 77.216721),
-                        // zoom: 14.0,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: isloading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                height: screenHeight,
+                width: screenWidth,
+                color: Colors.transparent,
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Container(
+                      width: screenWidth,
+                      height: 270.h,
+                      child: GoogleMap(
+                        mapType: MapType.terrain,
+                        markers: Set<Marker>.of(markers),
+                        onMapCreated: (GoogleMapController controllers) {
+                          controller.complete(controllers);
+                          // addPolyline();
+                        },
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(28.644800, 77.216721),
+                          // zoom: 14.0,
+                        ),
+                        polylines: polylines,
                       ),
-                      polylines: polylines,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 250.0.h),
-                    child: Container(
-                      height: screenHeight! * 0.65,
-                      width: 390.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32.r),
-                            topRight: Radius.circular(32.r)),
-                      ),
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 24.0,
-                            right: 24,
-                            top: 24,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 53.h,
-                                width: 342.w,
-                                decoration: BoxDecoration(
-                                  color: Color.fromRGBO(249, 249, 249, 1),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12.r)),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 20.0.w, right: 20.0.w),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "@${userglobalData!.username}",
-                                        style: TextStyle(
-                                          fontFamily: globalfontfamily,
-                                          color: Color.fromRGBO(0, 0, 0, 1),
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w900,
+                    Padding(
+                      padding: EdgeInsets.only(top: 250.0.h),
+                      child: Container(
+                        height: screenHeight! * 0.65,
+                        width: 390.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(32.r),
+                              topRight: Radius.circular(32.r)),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 24.0,
+                              right: 24,
+                              top: 24,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 53.h,
+                                  width: 342.w,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(249, 249, 249, 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12.r)),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 20.0.w, right: 20.0.w),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "@${userglobalData!.username}",
+                                          style: TextStyle(
+                                            fontFamily: globalfontfamily,
+                                            color: Color.fromRGBO(0, 0, 0, 1),
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w900,
+                                          ),
                                         ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            nextScreen(
+                                                context, YourAccountScreen());
+                                          },
+                                          child: Container(
+                                            height: 24.h,
+                                            width: 24.w,
+                                            child: Image.asset(
+                                                "assets/images/nextarr.png"),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Browse people around you",
+                                      style: TextStyle(
+                                        fontFamily: globalfontfamily,
+                                        color: Color.fromRGBO(85, 163, 255, 1),
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          nextScreen(
-                                              context, YourAccountScreen());
-                                        },
-                                        child: Container(
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        nextScreen(
+                                            context, PeopleAroundYouScreen());
+                                      },
+                                      child: Container(
                                           height: 24.h,
                                           width: 24.w,
                                           child: Image.asset(
-                                              "assets/images/nextarr.png"),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.h,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Browse people around you",
-                                    style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Color.fromRGBO(85, 163, 255, 1),
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
+                                              "assets/images/frd.png")),
                                     ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      nextScreen(
-                                          context, PeopleAroundYouScreen());
-                                    },
-                                    child: Container(
-                                        height: 24.h,
-                                        width: 24.w,
-                                        child: Image.asset(
-                                            "assets/images/frd.png")),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20.h,
-                              ),
-                              Text(
-                                "Books around you",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
+                                  ],
                                 ),
-                              ),
-                              SizedBox(
-                                height: 20.h,
-                              ),
-                              Container(
-                                height: 180.h,
-                                width: 342.w,
-                                color: Color.fromRGBO(249, 249, 249, 1),
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 20.0.w,
-                                    right: 20.0.w,
-                                    // top: 16.h,
-                                  ),
-                                  child: StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('Books')
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasError) {
-                                          return Text(
-                                              'Error: ${snapshot.error}');
-                                        }
-
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        }
-                                        List<Book> books = snapshot.data!.docs
-                                            .map((DocumentSnapshot doc) {
-                                          Map<String, dynamic> data = doc.data()
-                                              as Map<String, dynamic>;
-                                          return Book.fromMap(data, doc.id);
-                                        }).toList();
-                                        return ListView.builder(
-                                            itemCount: books.length,
-                                            // itemCount: books.length == 1
-                                            //     ? 1
-                                            //     : books.length == 0
-                                            //         ? 0
-                                            //         : 2,
-                                            itemBuilder: (context, index) {
-                                              return Bookwidget(
-                                                book: books[index],
-                                              );
-                                            });
-                                      }),
+                                SizedBox(
+                                  height: 20.h,
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  nextScreen(context, BookAroundYouScreen());
-                                },
-                                child: Container(
+                                Text(
+                                  "Books around you",
+                                  style: TextStyle(
+                                    fontFamily: globalfontfamily,
+                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                                Container(
+                                  height: 180.h,
+                                  width: 342.w,
                                   color: Color.fromRGBO(249, 249, 249, 1),
-                                  width: screenWidth,
                                   child: Padding(
-                                    padding: EdgeInsets.only(bottom: 10.0.h),
-                                    child: Center(
-                                      child: Text(
-                                        "view all",
-                                        style: TextStyle(
-                                          fontFamily: globalfontfamily,
-                                          color:
-                                              Color.fromRGBO(67, 128, 199, 1),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
+                                    padding: EdgeInsets.only(
+                                      left: 20.0.w,
+                                      right: 20.0.w,
+                                      // top: 16.h,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.h,
-                              ),
-                              Text(
-                                "Your Requests",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 12.h,
-                              ),
-                              Container(
-                                height: 200.h,
-                                width: 342.w,
-                                color: Color.fromRGBO(249, 249, 249, 1),
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 20.0.w,
-                                    right: 20.0.w,
-                                    // top: 16.h,
-                                  ),
-                                  child: StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(userglobalData!.uid)
-                                          .collection('RequestedBooks')
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasError) {
-                                          return Text(
-                                              'Error: ${snapshot.error}');
-                                        }
+                                    child: StreamBuilder<QuerySnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('Books')
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}');
+                                          }
 
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        }
-                                        List<RequestedBook> books = snapshot
-                                            .data!.docs
-                                            .map((DocumentSnapshot doc) {
-                                          Map<String, dynamic> data = doc.data()
-                                              as Map<String, dynamic>;
-                                          return RequestedBook.fromMap(
-                                              data, doc.id);
-                                        }).toList();
-                                        return ListView.builder(
-                                            itemCount: books.length == 1
-                                                ? 1
-                                                : books.length == 0
-                                                    ? 0
-                                                    : 2,
-                                            itemBuilder: (context, index) {
-                                              return RequestBookwidget(
-                                                book: books[index],
-                                              );
-                                            });
-                                      }),
-                                ),
-                              ),
-                              Container(
-                                // height: 143.h,
-                                width: 342.w,
-                                color: Color.fromRGBO(249, 249, 249, 1),
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 20.0.w,
-                                    right: 20.0.w,
-                                    top: 1.h,
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          }
+                                          List<Book> books = snapshot.data!.docs
+                                              .map((DocumentSnapshot doc) {
+                                            Map<String, dynamic> data = doc
+                                                .data() as Map<String, dynamic>;
+                                            return Book.fromMap(data, doc.id);
+                                          }).toList();
+                                          return ListView.builder(
+                                              itemCount: books.length,
+                                              // itemCount: books.length == 1
+                                              //     ? 1
+                                              //     : books.length == 0
+                                              //         ? 0
+                                              //         : 2,
+                                              itemBuilder: (context, index) {
+                                                return Bookwidget(
+                                                  book: books[index],
+                                                );
+                                              });
+                                        }),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Container(
-                                      //   // color: Colors.red,
-                                      //   child: Row(
-                                      //     mainAxisAlignment:
-                                      //         MainAxisAlignment.spaceBetween,
-                                      //     children: [
-                                      //       Row(
-                                      //         mainAxisAlignment:
-                                      //             MainAxisAlignment.start,
-                                      //         crossAxisAlignment:
-                                      //             CrossAxisAlignment.start,
-                                      //         children: [
-                                      //           Padding(
-                                      //             padding:
-                                      //                 EdgeInsets.only(left: 12.0.w),
-                                      //             child: Column(
-                                      //               mainAxisAlignment:
-                                      //                   MainAxisAlignment.start,
-                                      //               crossAxisAlignment:
-                                      //                   CrossAxisAlignment.start,
-                                      //               children: [
-                                      //                 Row(
-                                      //                   children: [
-                                      //                     Text(
-                                      //                       "By: ",
-                                      //                       style: TextStyle(
-                                      //                         fontFamily:
-                                      //                             globalfontfamily,
-                                      //                         color: Color.fromRGBO(
-                                      //                             0, 0, 0, 1),
-                                      //                         fontSize: 8.sp,
-                                      //                         fontWeight:
-                                      //                             FontWeight.w200,
-                                      //                       ),
-                                      //                     ),
-                                      //                     Image.asset(
-                                      //                         "assets/images/playr1.png"),
-                                      //                     Text(
-                                      //                       "praj.eth, 350mts away",
-                                      //                       style: TextStyle(
-                                      //                         fontFamily:
-                                      //                             globalfontfamily,
-                                      //                         color: Color.fromRGBO(
-                                      //                             0, 0, 0, 1),
-                                      //                         fontSize: 8.sp,
-                                      //                         fontWeight:
-                                      //                             FontWeight.w200,
-                                      //                       ),
-                                      //                     ),
-                                      //                   ],
-                                      //                 ),
-                                      //                 Text(
-                                      //                   "The Book of Mirad",
-                                      //                   style: TextStyle(
-                                      //                     fontFamily: globalfontfamily,
-                                      //                     color: Color.fromRGBO(
-                                      //                         0, 0, 0, 1),
-                                      //                     fontSize: 16.sp,
-                                      //                     fontWeight: FontWeight.w400,
-                                      //                   ),
-                                      //                 ),
-                                      //                 // Text(
-                                      //                 //   "Author: Mikhail Naimy",
-                                      //                 //   style: TextStyle(
-                                      //                 //     fontFamily: globalfontfamily,
-                                      //                 //     color:
-                                      //                 //         Color.fromRGBO(0, 0, 0, 1),
-                                      //                 //     fontSize: 16.sp,
-                                      //                 //     fontWeight: FontWeight.w200,
-                                      //                 //   ),
-                                      //                 // ),
-                                      //                 // SizedBox(
-                                      //                 //   height: 12.h,
-                                      //                 // ),
-                                      //               ],
-                                      //             ),
-                                      //           ),
-                                      //         ],
-                                      //       ),
-                                      //       Container(
-                                      //         height: 1,
-                                      //         color: Color.fromRGBO(198, 198, 200, 1),
-                                      //       ),
-                                      //       SizedBox(
-                                      //         height: 12.h,
-                                      //       ),
-                                      //       Image.asset("assets/images/nextarr.png")
-                                      //     ],
-                                      //   ),
-                                      // ),
-                                      // SizedBox(
-                                      //   height: 12.h,
-                                      // ),
-                                      // Container(
-                                      //   height: 1,
-                                      //   color: Color.fromRGBO(198, 198, 200, 1),
-                                      // ),
-                                      // SizedBox(
-                                      //   height: 12.h,
-                                      // ),
-                                      // Container(
-                                      //   // color: Colors.red,
-                                      //   child: Row(
-                                      //     mainAxisAlignment:
-                                      //         MainAxisAlignment.spaceBetween,
-                                      //     children: [
-                                      //       Row(
-                                      //         mainAxisAlignment:
-                                      //             MainAxisAlignment.start,
-                                      //         crossAxisAlignment:
-                                      //             CrossAxisAlignment.start,
-                                      //         children: [
-                                      //           Padding(
-                                      //             padding:
-                                      //                 EdgeInsets.only(left: 12.0.w),
-                                      //             child: Column(
-                                      //               mainAxisAlignment:
-                                      //                   MainAxisAlignment.start,
-                                      //               crossAxisAlignment:
-                                      //                   CrossAxisAlignment.start,
-                                      //               children: [
-                                      //                 Row(
-                                      //                   children: [
-                                      //                     Text(
-                                      //                       "By: ",
-                                      //                       style: TextStyle(
-                                      //                         fontFamily:
-                                      //                             globalfontfamily,
-                                      //                         color: Color.fromRGBO(
-                                      //                             0, 0, 0, 1),
-                                      //                         fontSize: 8.sp,
-                                      //                         fontWeight:
-                                      //                             FontWeight.w200,
-                                      //                       ),
-                                      //                     ),
-                                      //                     Image.asset(
-                                      //                         "assets/images/playr1.png"),
-                                      //                     Text(
-                                      //                       "praj.eth, 350mts away",
-                                      //                       style: TextStyle(
-                                      //                         fontFamily:
-                                      //                             globalfontfamily,
-                                      //                         color: Color.fromRGBO(
-                                      //                             0, 0, 0, 1),
-                                      //                         fontSize: 8.sp,
-                                      //                         fontWeight:
-                                      //                             FontWeight.w200,
-                                      //                       ),
-                                      //                     ),
-                                      //                   ],
-                                      //                 ),
-                                      //                 Text(
-                                      //                   "The fault in our stars",
-                                      //                   style: TextStyle(
-                                      //                     fontFamily: globalfontfamily,
-                                      //                     color: Color.fromRGBO(
-                                      //                         0, 0, 0, 1),
-                                      //                     fontSize: 16.sp,
-                                      //                     fontWeight: FontWeight.w400,
-                                      //                   ),
-                                      //                 ),
-                                      //                 // Text(
-                                      //                 //   "Author: Mikhail Naimy",
-                                      //                 //   style: TextStyle(
-                                      //                 //     fontFamily: globalfontfamily,
-                                      //                 //     color:
-                                      //                 //         Color.fromRGBO(0, 0, 0, 1),
-                                      //                 //     fontSize: 16.sp,
-                                      //                 //     fontWeight: FontWeight.w200,
-                                      //                 //   ),
-                                      //                 // ),
-                                      //                 // SizedBox(
-                                      //                 //   height: 12.h,
-                                      //                 // ),
-                                      //               ],
-                                      //             ),
-                                      //           ),
-                                      //         ],
-                                      //       ),
-                                      //       Container(
-                                      //         height: 1,
-                                      //         color: Color.fromRGBO(198, 198, 200, 1),
-                                      //       ),
-                                      //       SizedBox(
-                                      //         height: 12.h,
-                                      //       ),
-                                      //       Image.asset("assets/images/nextarr.png")
-                                      //     ],
-                                      //   ),
-                                      // ),
-                                      // SizedBox(
-                                      //   height: 12.h,
-                                      // ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          nextScreen(
-                                              context, YourRequestScreen());
-                                        },
-                                        child: Container(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "View all",
-                                                style: TextStyle(
-                                                  fontFamily: globalfontfamily,
-                                                  color: Color.fromRGBO(
-                                                      67, 128, 199, 1),
-                                                  fontSize: 12.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ],
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    nextScreen(context, BookAroundYouScreen());
+                                  },
+                                  child: Container(
+                                    color: Color.fromRGBO(249, 249, 249, 1),
+                                    width: screenWidth,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(bottom: 10.0.h),
+                                      child: Center(
+                                        child: Text(
+                                          "view all",
+                                          style: TextStyle(
+                                            fontFamily: globalfontfamily,
+                                            color:
+                                                Color.fromRGBO(67, 128, 199, 1),
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 10.h,
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 15.h,
-                              )
-                            ],
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                                Text(
+                                  "Your Requests",
+                                  style: TextStyle(
+                                    fontFamily: globalfontfamily,
+                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 12.h,
+                                ),
+                                Container(
+                                  height: 200.h,
+                                  width: 342.w,
+                                  color: Color.fromRGBO(249, 249, 249, 1),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 20.0.w,
+                                      right: 20.0.w,
+                                      // top: 16.h,
+                                    ),
+                                    child: StreamBuilder<QuerySnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(userglobalData!.uid)
+                                            .collection('RequestedBooks')
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}');
+                                          }
+
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          }
+                                          List<RequestedBook> books = snapshot
+                                              .data!.docs
+                                              .map((DocumentSnapshot doc) {
+                                            Map<String, dynamic> data = doc
+                                                .data() as Map<String, dynamic>;
+                                            return RequestedBook.fromMap(
+                                                data, doc.id);
+                                          }).toList();
+                                          return ListView.builder(
+                                              itemCount: books.length == 1
+                                                  ? 1
+                                                  : books.length == 0
+                                                      ? 0
+                                                      : 2,
+                                              itemBuilder: (context, index) {
+                                                return RequestBookwidget(
+                                                  book: books[index],
+                                                );
+                                              });
+                                        }),
+                                  ),
+                                ),
+                                Container(
+                                  // height: 143.h,
+                                  width: 342.w,
+                                  color: Color.fromRGBO(249, 249, 249, 1),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 20.0.w,
+                                      right: 20.0.w,
+                                      top: 1.h,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Container(
+                                        //   // color: Colors.red,
+                                        //   child: Row(
+                                        //     mainAxisAlignment:
+                                        //         MainAxisAlignment.spaceBetween,
+                                        //     children: [
+                                        //       Row(
+                                        //         mainAxisAlignment:
+                                        //             MainAxisAlignment.start,
+                                        //         crossAxisAlignment:
+                                        //             CrossAxisAlignment.start,
+                                        //         children: [
+                                        //           Padding(
+                                        //             padding:
+                                        //                 EdgeInsets.only(left: 12.0.w),
+                                        //             child: Column(
+                                        //               mainAxisAlignment:
+                                        //                   MainAxisAlignment.start,
+                                        //               crossAxisAlignment:
+                                        //                   CrossAxisAlignment.start,
+                                        //               children: [
+                                        //                 Row(
+                                        //                   children: [
+                                        //                     Text(
+                                        //                       "By: ",
+                                        //                       style: TextStyle(
+                                        //                         fontFamily:
+                                        //                             globalfontfamily,
+                                        //                         color: Color.fromRGBO(
+                                        //                             0, 0, 0, 1),
+                                        //                         fontSize: 8.sp,
+                                        //                         fontWeight:
+                                        //                             FontWeight.w200,
+                                        //                       ),
+                                        //                     ),
+                                        //                     Image.asset(
+                                        //                         "assets/images/playr1.png"),
+                                        //                     Text(
+                                        //                       "praj.eth, 350mts away",
+                                        //                       style: TextStyle(
+                                        //                         fontFamily:
+                                        //                             globalfontfamily,
+                                        //                         color: Color.fromRGBO(
+                                        //                             0, 0, 0, 1),
+                                        //                         fontSize: 8.sp,
+                                        //                         fontWeight:
+                                        //                             FontWeight.w200,
+                                        //                       ),
+                                        //                     ),
+                                        //                   ],
+                                        //                 ),
+                                        //                 Text(
+                                        //                   "The Book of Mirad",
+                                        //                   style: TextStyle(
+                                        //                     fontFamily: globalfontfamily,
+                                        //                     color: Color.fromRGBO(
+                                        //                         0, 0, 0, 1),
+                                        //                     fontSize: 16.sp,
+                                        //                     fontWeight: FontWeight.w400,
+                                        //                   ),
+                                        //                 ),
+                                        //                 // Text(
+                                        //                 //   "Author: Mikhail Naimy",
+                                        //                 //   style: TextStyle(
+                                        //                 //     fontFamily: globalfontfamily,
+                                        //                 //     color:
+                                        //                 //         Color.fromRGBO(0, 0, 0, 1),
+                                        //                 //     fontSize: 16.sp,
+                                        //                 //     fontWeight: FontWeight.w200,
+                                        //                 //   ),
+                                        //                 // ),
+                                        //                 // SizedBox(
+                                        //                 //   height: 12.h,
+                                        //                 // ),
+                                        //               ],
+                                        //             ),
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //       Container(
+                                        //         height: 1,
+                                        //         color: Color.fromRGBO(198, 198, 200, 1),
+                                        //       ),
+                                        //       SizedBox(
+                                        //         height: 12.h,
+                                        //       ),
+                                        //       Image.asset("assets/images/nextarr.png")
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                        // SizedBox(
+                                        //   height: 12.h,
+                                        // ),
+                                        // Container(
+                                        //   height: 1,
+                                        //   color: Color.fromRGBO(198, 198, 200, 1),
+                                        // ),
+                                        // SizedBox(
+                                        //   height: 12.h,
+                                        // ),
+                                        // Container(
+                                        //   // color: Colors.red,
+                                        //   child: Row(
+                                        //     mainAxisAlignment:
+                                        //         MainAxisAlignment.spaceBetween,
+                                        //     children: [
+                                        //       Row(
+                                        //         mainAxisAlignment:
+                                        //             MainAxisAlignment.start,
+                                        //         crossAxisAlignment:
+                                        //             CrossAxisAlignment.start,
+                                        //         children: [
+                                        //           Padding(
+                                        //             padding:
+                                        //                 EdgeInsets.only(left: 12.0.w),
+                                        //             child: Column(
+                                        //               mainAxisAlignment:
+                                        //                   MainAxisAlignment.start,
+                                        //               crossAxisAlignment:
+                                        //                   CrossAxisAlignment.start,
+                                        //               children: [
+                                        //                 Row(
+                                        //                   children: [
+                                        //                     Text(
+                                        //                       "By: ",
+                                        //                       style: TextStyle(
+                                        //                         fontFamily:
+                                        //                             globalfontfamily,
+                                        //                         color: Color.fromRGBO(
+                                        //                             0, 0, 0, 1),
+                                        //                         fontSize: 8.sp,
+                                        //                         fontWeight:
+                                        //                             FontWeight.w200,
+                                        //                       ),
+                                        //                     ),
+                                        //                     Image.asset(
+                                        //                         "assets/images/playr1.png"),
+                                        //                     Text(
+                                        //                       "praj.eth, 350mts away",
+                                        //                       style: TextStyle(
+                                        //                         fontFamily:
+                                        //                             globalfontfamily,
+                                        //                         color: Color.fromRGBO(
+                                        //                             0, 0, 0, 1),
+                                        //                         fontSize: 8.sp,
+                                        //                         fontWeight:
+                                        //                             FontWeight.w200,
+                                        //                       ),
+                                        //                     ),
+                                        //                   ],
+                                        //                 ),
+                                        //                 Text(
+                                        //                   "The fault in our stars",
+                                        //                   style: TextStyle(
+                                        //                     fontFamily: globalfontfamily,
+                                        //                     color: Color.fromRGBO(
+                                        //                         0, 0, 0, 1),
+                                        //                     fontSize: 16.sp,
+                                        //                     fontWeight: FontWeight.w400,
+                                        //                   ),
+                                        //                 ),
+                                        //                 // Text(
+                                        //                 //   "Author: Mikhail Naimy",
+                                        //                 //   style: TextStyle(
+                                        //                 //     fontFamily: globalfontfamily,
+                                        //                 //     color:
+                                        //                 //         Color.fromRGBO(0, 0, 0, 1),
+                                        //                 //     fontSize: 16.sp,
+                                        //                 //     fontWeight: FontWeight.w200,
+                                        //                 //   ),
+                                        //                 // ),
+                                        //                 // SizedBox(
+                                        //                 //   height: 12.h,
+                                        //                 // ),
+                                        //               ],
+                                        //             ),
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //       Container(
+                                        //         height: 1,
+                                        //         color: Color.fromRGBO(198, 198, 200, 1),
+                                        //       ),
+                                        //       SizedBox(
+                                        //         height: 12.h,
+                                        //       ),
+                                        //       Image.asset("assets/images/nextarr.png")
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                        // SizedBox(
+                                        //   height: 12.h,
+                                        // ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            nextScreen(
+                                                context, YourRequestScreen());
+                                          },
+                                          child: Container(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "View all",
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        globalfontfamily,
+                                                    color: Color.fromRGBO(
+                                                        67, 128, 199, 1),
+                                                    fontSize: 12.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 15.h,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 

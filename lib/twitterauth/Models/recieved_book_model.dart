@@ -15,6 +15,7 @@ class RecievedBook {
   final String recieveduserlocation;
   final double recieveduserlat;
   final double recieveduserlong;
+  final String bookdesc;
   RecievedBook({
     required this.bookId,
     required this.bookName,
@@ -32,6 +33,7 @@ class RecievedBook {
     required this.recieveduserlocation,
     required this.recieveduserlat,
     required this.recieveduserlong,
+    required this.bookdesc,
   });
 
   factory RecievedBook.fromMap(Map<String, dynamic> data, String documentId) {
@@ -52,6 +54,7 @@ class RecievedBook {
       recieveduserlocation: data['recieveduserlocation'],
       recieveduserlat: (data['recieveduserlat'] ?? 0.0).toDouble(),
       recieveduserlong: (data['recieveduserlong'] ?? 0.0).toDouble(),
+      bookdesc: data['bookdesc'],
     );
   }
 }

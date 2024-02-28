@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:openbook/twitterauth/utils/config.dart';
 import 'package:random_string/random_string.dart';
 
@@ -129,9 +130,76 @@ class SignInProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> thissignInWithTwitter() async {
+    TwitterAuthProvider twitterProvider = TwitterAuthProvider();
+
+    if (kIsWeb) {
+      await FirebaseAuth.instance.signInWithPopup(twitterProvider);
+    } else {
+      await FirebaseAuth.instance.signInWithProvider(twitterProvider);
+    }
+  }
+
+  Future<void> firebasesignInWithTwitter() async {
+    try {
+      // Trigger Twitter OAuth flow using Firebase
+      final twitterAuthProvider = TwitterAuthProvider();
+      twitterAuthProvider.setCustomParameters({'force_login': 'true'});
+
+      final authResult =
+          await FirebaseAuth.instance.signInWithProvider(twitterAuthProvider);
+
+      // Get user details from the authentication result
+      final userDetails = authResult.user;
+
+      // Print or use the user details as needed
+      print("authResult.user: $userDetails");
+      print("userDetails!.name: ${userDetails!.displayName}");
+      print(
+          "firebaseAuth.currentUser!.email: ${firebaseAuth.currentUser!.email}");
+
+      // Extract the necessary information
+      _username = userDetails.displayName;
+      _name = userDetails.displayName;
+      _email = firebaseAuth.currentUser!.email ?? "twitter";
+      _imageUrl = userDetails.photoURL;
+      _uid = userDetails.uid;
+      _provider = "TWITTER";
+      _isFilled = false;
+      _locationname = "location";
+      _hasError = false;
+
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "account-exists-with-different-credential":
+          _errorCode =
+              "You already have an account with us. Use correct provider";
+          _hasError = true;
+          notifyListeners();
+          break;
+
+        case "null":
+          _errorCode = "Some unexpected error while trying to sign in";
+          _hasError = true;
+          notifyListeners();
+          break;
+        default:
+          _errorCode = e.toString();
+          _hasError = true;
+          notifyListeners();
+      }
+    } catch (e) {
+      // Handle other exceptions
+      print("Error: $e");
+      _hasError = true;
+      notifyListeners();
+    }
+  }
+
   // sign in with twitter
   Future signInWithTwitter() async {
-    final authResult = await twitterLogin.login(forceLogin: true);
+    final authResult = await twitterLogin.loginV2(forceLogin: true);
     if (authResult.status == TwitterLoginStatus.loggedIn) {
       try {
         final credential = TwitterAuthProvider.credential(
@@ -268,6 +336,8 @@ class SignInProvider extends ChangeNotifier {
       "isfilled": isFilled,
       "provider": _provider,
       "location_name": _locationname,
+      "user_lat": 0.0.toDouble(),
+      "user_long": 0.0.toDouble(),
     });
     notifyListeners();
   }

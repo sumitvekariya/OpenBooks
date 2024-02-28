@@ -56,6 +56,7 @@ dependencies:
   rounded_loading_button: ^2.1.0
   shared_preferences: ^2.2.2
   simple_barcode_scanner: ^0.1.0
+  top_snackbar_flutter: ^3.1.0
   twitter_login: ^4.4.2
 
 dev_dependencies:

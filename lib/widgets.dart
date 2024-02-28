@@ -35,6 +35,14 @@ void nextScreenReplace(context, page) {
       context, MaterialPageRoute(builder: (context) => page));
 }
 
+void nextScreenpushandremove(context, page) {
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (context) => page),
+    (Route<dynamic> route) => false,
+  );
+}
+
 void showSnackbar(context, color, message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
