@@ -1,31 +1,17 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:openbook/twitterauth/utils/config.dart';
-import 'package:random_string/random_string.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:twitter_login/twitter_login.dart';
 
 class SignInProvider extends ChangeNotifier {
-  // instance of firebaseauth, facebook and google
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  final FacebookAuth facebookAuth = FacebookAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  final twitterLogin = TwitterLogin(
-      apiKey: Config.apikey_twitter,
-      apiSecretKey: Config.secretkey_twitter,
-      redirectURI: "flutter-twitter-login://");
 
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
 
-  //hasError, errorCode, provider,uid, email, name, imageUrl
   bool _hasError = false;
   bool get hasError => _hasError;
 
@@ -76,69 +62,15 @@ class SignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // sign in with google
-  Future signInWithGoogle() async {
-    final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signIn();
+  // Future<void> thissignInWithTwitter() async {
+  //   TwitterAuthProvider twitterProvider = TwitterAuthProvider();
 
-    if (googleSignInAccount != null) {
-      // executing our authentication
-      try {
-        final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken,
-        );
-
-        // signing to firebase user instance
-        final User userDetails =
-            (await firebaseAuth.signInWithCredential(credential)).user!;
-
-        // now save all values
-
-        _name = userDetails.displayName;
-        _email = userDetails.email;
-        _imageUrl = userDetails.photoURL;
-        _provider = "GOOGLE";
-        _uid = userDetails.uid;
-        _partnercode = "${randomNumeric(6)}";
-        notifyListeners();
-      } on FirebaseAuthException catch (e) {
-        switch (e.code) {
-          case "account-exists-with-different-credential":
-            _errorCode =
-                "You already have an account with us. Use correct provider";
-            _hasError = true;
-            notifyListeners();
-            break;
-
-          case "null":
-            _errorCode = "Some unexpected error while trying to sign in";
-            _hasError = true;
-            notifyListeners();
-            break;
-          default:
-            _errorCode = e.toString();
-            _hasError = true;
-            notifyListeners();
-        }
-      }
-    } else {
-      _hasError = true;
-      notifyListeners();
-    }
-  }
-
-  Future<void> thissignInWithTwitter() async {
-    TwitterAuthProvider twitterProvider = TwitterAuthProvider();
-
-    if (kIsWeb) {
-      await FirebaseAuth.instance.signInWithPopup(twitterProvider);
-    } else {
-      await FirebaseAuth.instance.signInWithProvider(twitterProvider);
-    }
-  }
+  //   if (kIsWeb) {
+  //     await FirebaseAuth.instance.signInWithPopup(twitterProvider);
+  //   } else {
+  //     await FirebaseAuth.instance.signInWithProvider(twitterProvider);
+  //   }
+  // }
 
   Future<void> firebasesignInWithTwitter() async {
     try {
@@ -192,69 +124,6 @@ class SignInProvider extends ChangeNotifier {
     } catch (e) {
       // Handle other exceptions
       print("Error: $e");
-      _hasError = true;
-      notifyListeners();
-    }
-  }
-
-  // sign in with twitter
-  Future signInWithTwitter() async {
-    final authResult = await twitterLogin.loginV2(forceLogin: true);
-    if (authResult.status == TwitterLoginStatus.loggedIn) {
-      try {
-        final credential = TwitterAuthProvider.credential(
-            accessToken: authResult.authToken!,
-            secret: authResult.authTokenSecret!);
-        await firebaseAuth.signInWithCredential(credential);
-
-        String? userUid = await FirebaseAuth.instance.currentUser?.uid;
-
-        print("firebase useruid : ${userUid}");
-
-        final userDetails = authResult.user;
-
-        print("authResult.user : ${authResult.user}");
-
-        print("userDetails!.name:  ${userDetails!.name}");
-        print(
-            "firebaseAuth.currentUser!.email:   ${firebaseAuth.currentUser!.email}");
-        print("userDetails.thumbnailImage: ${userDetails.thumbnailImage}");
-        print("userDetails.id.toString(): ${userDetails.id.toString()}");
-        // save all the data
-
-        print("userDetails.screenName : ${userDetails.screenName}");
-
-        _username = userDetails.screenName;
-        _name = userDetails.name;
-        _email = firebaseAuth.currentUser!.email ?? "twitter";
-        _imageUrl = userDetails.thumbnailImage;
-        _uid = userUid.toString();
-        _provider = "TWITTER";
-        _isFilled = false;
-        _locationname = "location";
-        _hasError = false;
-        notifyListeners();
-      } on FirebaseAuthException catch (e) {
-        switch (e.code) {
-          case "account-exists-with-different-credential":
-            _errorCode =
-                "You already have an account with us. Use correct provider";
-            _hasError = true;
-            notifyListeners();
-            break;
-
-          case "null":
-            _errorCode = "Some unexpected error while trying to sign in";
-            _hasError = true;
-            notifyListeners();
-            break;
-          default:
-            _errorCode = e.toString();
-            _hasError = true;
-            notifyListeners();
-        }
-      }
-    } else {
       _hasError = true;
       notifyListeners();
     }
@@ -383,7 +252,7 @@ class SignInProvider extends ChangeNotifier {
   // signout
   Future userSignOut() async {
     await firebaseAuth.signOut;
-    await googleSignIn.signOut();
+
     // await facebookAuth.logOut();
 
     _isSignedIn = false;
@@ -397,13 +266,5 @@ class SignInProvider extends ChangeNotifier {
     s.clear();
   }
 
-  // void phoneNumberUser(User user, email, name) {
-  //   _name = name;
-  //   _email = email;
-  //   _imageUrl =
-  //       "https://winaero.com/blog/wp-content/uploads/2017/12/User-icon-256-blue.png";
-  //   _uid = user.phoneNumber;
-  //   _provider = "PHONE";
-  //   notifyListeners();
-  // }
+
 }

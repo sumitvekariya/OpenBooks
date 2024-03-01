@@ -3,18 +3,16 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:openbook/homepage.dart';
-import 'package:openbook/onboardingscreen.dart';
-import 'package:openbook/setupaccount.dart';
-import 'package:openbook/widgets.dart';
+import 'package:openbook/Screens/homepage.dart';
+import 'package:openbook/Screens/onboardingscreen.dart';
+import 'package:openbook/Screens/setupaccount.dart';
 
+import 'package:openbook/Widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:openbook/twitterauth/Models/user_data_models.dart';
-import 'package:openbook/twitterauth/provider/sign_in_provider.dart';
-import 'package:openbook/twitterauth/screens/home_screen.dart';
-import 'package:openbook/twitterauth/screens/login_screen.dart';
-import 'package:openbook/twitterauth/utils/global_data.dart';
-import 'package:openbook/twitterauth/utils/next_screen.dart';
+import 'package:openbook/Models/user_data_models.dart';
+import 'package:openbook/TwitterAuth/provider/sign_in_provider.dart';
+
+import 'package:openbook/utils/global_data.dart';
 
 class FlashScreen extends StatefulWidget {
   const FlashScreen({super.key});
@@ -57,20 +55,6 @@ class _FlashScreenState extends State<FlashScreen> {
     super.initState();
     // create a timer of 2 seconds
     Timer(const Duration(seconds: 1), () async {
-      // if (sp.isSignedIn == true) {
-      //   // String? currentUserUID = FirebaseAuth.instance.currentUser?.uid;
-
-      //   // CollectionReference usersCollection =
-      //   //     FirebaseFirestore.instance.collection('users');
-      //   // DocumentReference userDocument = usersCollection.doc(currentUserUID);
-      //   // DocumentSnapshot documentSnapshot = await userDocument.get();
-
-      //   // fillDetails = documentSnapshot.get('fillDetails');
-
-      //   // print("the value of fillDetails : ${fillDetails}");
-
-      // }
-
       if (sp.isSignedIn == true) {
         Future.delayed(Duration(seconds: 1), () async {
           String? userUid = FirebaseAuth.instance.currentUser?.uid;
@@ -88,14 +72,6 @@ class _FlashScreenState extends State<FlashScreen> {
       } else {
         nextScreenpushandremove(context, OnBoradingScreen());
       }
-
-      // sp.isSignedIn == false
-      //     ? nextScreen(
-      //         context,
-      //         WelcomeScreen(
-      //           checkpartnercodevalue: 1,
-      //         ))
-      //     : nextScreen(context, HomeScreen());
     });
   }
 
