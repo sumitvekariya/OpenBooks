@@ -107,60 +107,63 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(microseconds: 1), () async {
-      await addCustomIcon();
+    try {
+      Future.delayed(const Duration(microseconds: 1), () async {
+        await addCustomIcon();
 
-      await FirebaseFirestore.instance
-          .collection('users')
-          .snapshots()
-          .listen((snapshot) {
-        // markers.clear();
-        snapshot.docs.forEach((doc) {
-          UserPeopleModel user = UserPeopleModel.fromMap(
-              doc.data() as Map<String, dynamic>, doc.id);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .snapshots()
+            .listen((snapshot) {
+          // markers.clear();
+          for (var doc in snapshot.docs) {
+            UserPeopleModel user = UserPeopleModel.fromMap(doc.data(), doc.id);
 
-          // Add marker for each location
+            // Add marker for each location
 
-          print("user is : ${user.username}");
-          Marker marker = Marker(
-            icon: markericon,
-            markerId: MarkerId(user.uid),
-            position: LatLng(user.userlat, user.userlong),
-            infoWindow:
-                InfoWindow(title: user.username, snippet: user.locationname),
+            print("user is : ${user.username}");
+            Marker marker = Marker(
+              icon: markericon,
+              markerId: MarkerId(user.uid),
+              position: LatLng(user.userlat, user.userlong),
+              infoWindow:
+                  InfoWindow(title: user.username, snippet: user.locationname),
+            );
+
+            markers.add(marker);
+          }
+        });
+
+        await getcurrentlocation().then((value) async {
+          print("my current loaction");
+          print(value.latitude.toString() + " " + value.longitude.toString());
+
+          userlat = value.latitude;
+          userlong = value.longitude;
+          await getLocation();
+          markers.add(
+            Marker(
+                icon: markericon,
+                markerId: const MarkerId("2"),
+                position: LatLng(value.latitude, value.longitude),
+                infoWindow: const InfoWindow(title: "my current loaction")),
           );
 
-          markers.add(marker);
+          CameraPosition cameraPosition = CameraPosition(
+            target: LatLng(value.latitude, value.longitude),
+            zoom: 14,
+          );
+
+          final GoogleMapController cotrllr = await controller.future;
+
+          cotrllr
+              .animateCamera(CameraUpdate.newCameraPosition(cameraPosition))
+              .then((value) => setState(() {}));
         });
       });
-
-      await getcurrentlocation().then((value) async {
-        print("my current loaction");
-        print(value.latitude.toString() + " " + value.longitude.toString());
-
-        userlat = value.latitude;
-        userlong = value.longitude;
-        await getLocation();
-        markers.add(
-          Marker(
-              icon: markericon,
-              markerId: MarkerId("2"),
-              position: LatLng(value.latitude, value.longitude),
-              infoWindow: InfoWindow(title: "my current loaction")),
-        );
-
-        CameraPosition cameraPosition = CameraPosition(
-          target: LatLng(value.latitude, value.longitude),
-          zoom: 14,
-        );
-
-        final GoogleMapController cotrllr = await controller.future;
-
-        cotrllr.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
-        setState(() {});
-      });
-    });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -169,7 +172,7 @@ class _HomePageState extends State<HomePage> {
       onWillPop: () async => false,
       child: Scaffold(
         body: isloading
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : Container(
@@ -179,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
-                    Container(
+                    SizedBox(
                       width: screenWidth,
                       height: 270.h,
                       child: GoogleMap(
@@ -189,11 +192,11 @@ class _HomePageState extends State<HomePage> {
                           controller.complete(controllers);
                           // addPolyline();
                         },
-                        initialCameraPosition: CameraPosition(
+                        initialCameraPosition: const CameraPosition(
                           target: LatLng(28.644800, 77.216721),
                           // zoom: 14.0,
                         ),
-                        polylines: polylines,
+                        // polylines: polylines,
                       ),
                     ),
                     Padding(
@@ -221,7 +224,8 @@ class _HomePageState extends State<HomePage> {
                                   height: 53.h,
                                   width: 342.w,
                                   decoration: BoxDecoration(
-                                    color: Color.fromRGBO(249, 249, 249, 1),
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(12.r)),
                                   ),
@@ -236,17 +240,18 @@ class _HomePageState extends State<HomePage> {
                                           "@${userglobalData!.username}",
                                           style: TextStyle(
                                             fontFamily: globalfontfamily,
-                                            color: Color.fromRGBO(0, 0, 0, 1),
+                                            color: const Color.fromRGBO(
+                                                0, 0, 0, 1),
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w900,
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            nextScreen(
-                                                context, YourAccountScreen());
+                                            nextScreen(context,
+                                                const YourAccountScreen());
                                           },
-                                          child: Container(
+                                          child: SizedBox(
                                             height: 24.h,
                                             width: 24.w,
                                             child: Image.asset(
@@ -268,17 +273,18 @@ class _HomePageState extends State<HomePage> {
                                       "Browse people around you",
                                       style: TextStyle(
                                         fontFamily: globalfontfamily,
-                                        color: Color.fromRGBO(85, 163, 255, 1),
+                                        color: const Color.fromRGBO(
+                                            85, 163, 255, 1),
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        nextScreen(
-                                            context, PeopleAroundYouScreen());
+                                        nextScreen(context,
+                                            const PeopleAroundYouScreen());
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                           height: 24.h,
                                           width: 24.w,
                                           child: Image.asset(
@@ -293,7 +299,7 @@ class _HomePageState extends State<HomePage> {
                                   "Books around you",
                                   style: TextStyle(
                                     fontFamily: globalfontfamily,
-                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    color: const Color.fromRGBO(0, 0, 0, 1),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -304,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                                 Container(
                                   height: 180.h,
                                   width: 342.w,
-                                  color: Color.fromRGBO(249, 249, 249, 1),
+                                  color: const Color.fromRGBO(249, 249, 249, 1),
                                   child: Padding(
                                     padding: EdgeInsets.only(
                                       left: 20.0.w,
@@ -323,7 +329,7 @@ class _HomePageState extends State<HomePage> {
 
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
-                                            return Center(
+                                            return const Center(
                                                 child:
                                                     CircularProgressIndicator());
                                           }
@@ -350,10 +356,12 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    nextScreen(context, BookAroundYouScreen());
+                                    nextScreen(
+                                        context, const BookAroundYouScreen());
                                   },
                                   child: Container(
-                                    color: Color.fromRGBO(249, 249, 249, 1),
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
                                     width: screenWidth,
                                     child: Padding(
                                       padding: EdgeInsets.only(bottom: 10.0.h),
@@ -362,8 +370,8 @@ class _HomePageState extends State<HomePage> {
                                           "view all",
                                           style: TextStyle(
                                             fontFamily: globalfontfamily,
-                                            color:
-                                                Color.fromRGBO(67, 128, 199, 1),
+                                            color: const Color.fromRGBO(
+                                                67, 128, 199, 1),
                                             fontSize: 12.sp,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -379,7 +387,7 @@ class _HomePageState extends State<HomePage> {
                                   "Your Requests",
                                   style: TextStyle(
                                     fontFamily: globalfontfamily,
-                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    color: const Color.fromRGBO(0, 0, 0, 1),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -390,7 +398,7 @@ class _HomePageState extends State<HomePage> {
                                 Container(
                                   height: 200.h,
                                   width: 342.w,
-                                  color: Color.fromRGBO(249, 249, 249, 1),
+                                  color: const Color.fromRGBO(249, 249, 249, 1),
                                   child: Padding(
                                     padding: EdgeInsets.only(
                                       left: 20.0.w,
@@ -411,7 +419,7 @@ class _HomePageState extends State<HomePage> {
 
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
-                                            return Center(
+                                            return const Center(
                                                 child:
                                                     CircularProgressIndicator());
                                           }
@@ -440,7 +448,7 @@ class _HomePageState extends State<HomePage> {
                                 Container(
                                   // height: 143.h,
                                   width: 342.w,
-                                  color: Color.fromRGBO(249, 249, 249, 1),
+                                  color: const Color.fromRGBO(249, 249, 249, 1),
                                   child: Padding(
                                     padding: EdgeInsets.only(
                                       left: 20.0.w,
@@ -453,8 +461,8 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            nextScreen(
-                                                context, YourRequestScreen());
+                                            nextScreen(context,
+                                                const YourRequestScreen());
                                           },
                                           child: Container(
                                             child: Row(
@@ -466,7 +474,7 @@ class _HomePageState extends State<HomePage> {
                                                   style: TextStyle(
                                                     fontFamily:
                                                         globalfontfamily,
-                                                    color: Color.fromRGBO(
+                                                    color: const Color.fromRGBO(
                                                         67, 128, 199, 1),
                                                     fontSize: 12.sp,
                                                     fontWeight: FontWeight.w600,
