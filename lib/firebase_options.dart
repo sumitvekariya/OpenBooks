@@ -17,18 +17,21 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -46,12 +49,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB5nR06fjsk5daSX51DRIy91IZ4V4AMK3k',
-    appId: '1:56322492879:web:fe8de2dcd60ec83ca56aba',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyDUnucbDf8rY1C1PDUrBnKrJI74vcVmmQQ',
+    appId: '1:56322492879:android:0df48ec2f3777666a56aba',
     messagingSenderId: '56322492879',
     projectId: 'openbook-68460',
-    authDomain: 'openbook-68460.firebaseapp.com',
     storageBucket: 'openbook-68460.appspot.com',
   );
 
@@ -62,14 +64,5 @@ class DefaultFirebaseOptions {
     projectId: 'openbook-68460',
     storageBucket: 'openbook-68460.appspot.com',
     iosBundleId: 'com.example.openbook',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAEyuIo3MiwM9snHBjWk_49gPMIrM-p-uo',
-    appId: '1:56322492879:ios:d05babcfe406e16fa56aba',
-    messagingSenderId: '56322492879',
-    projectId: 'openbook-68460',
-    storageBucket: 'openbook-68460.appspot.com',
-    iosBundleId: 'com.example.openbook.RunnerTests',
   );
 }
