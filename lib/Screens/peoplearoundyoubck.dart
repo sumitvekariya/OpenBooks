@@ -130,7 +130,7 @@
 //                       //             fontWeight: FontWeight.w400,
 //                       //           ),
 //                       //         ),
-//                       //         Image.asset("assets/images/scan.png")
+//                       //         Image.asset("assets/images/barcode-scanner.png")
 //                       //       ],
 //                       //     ),
 //                       //   ),

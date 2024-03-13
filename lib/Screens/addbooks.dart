@@ -109,7 +109,8 @@ class _AddBooksState extends State<AddBooks> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset("assets/images/scan.png")
+                                  Image.asset(
+                                      "assets/images/barcode-scanner.png")
                                 ],
                               ),
                             ),

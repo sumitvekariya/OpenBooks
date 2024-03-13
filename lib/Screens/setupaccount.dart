@@ -24,6 +24,9 @@ import 'package:geocoding/geocoding.dart' as geo;
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class SetupupAccount extends StatefulWidget {
   const SetupupAccount({super.key});
@@ -547,194 +550,23 @@ class _SetupupAccountState extends State<SetupupAccount> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Top 3 books that impacted your life",
+                            "Location*",
                             style: TextStyle(
                               fontFamily: globalfontfamily,
-                              color: Colors.black,
+                              color: Color.fromRGBO(0, 0, 0, 1),
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
-                          Text(
-                            "This helps us better match make",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Colors.black,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 12.h,
-                          ),
-                          Container(
-                            height: 290.h,
-                            width: 342.w,
-                            color: Color.fromRGBO(249, 249, 249, 1),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 20.0.w,
-                                right: 20.0.w,
-                                // top: 16.h,
-                              ),
-                              child: StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(userglobalData!.uid)
-                                      .collection('Books')
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    }
-
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center(
-                                          child: CircularProgressIndicator());
-                                    }
-                                    List<Book> books = snapshot.data!.docs
-                                        .map((DocumentSnapshot doc) {
-                                      Map<String, dynamic> data =
-                                          doc.data() as Map<String, dynamic>;
-                                      return Book.fromMap(data, doc.id);
-                                    }).toList();
-
-                                    usersbooklength = books.length;
-                                    return ListView.builder(
-                                        itemCount: books.length,
-                                        itemBuilder: (context, index) {
-                                          return AccountBookwidget(
-                                            book: books[index],
-                                          );
-                                        });
-                                  }),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 24.h,
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              setState(() {
-                                bookloading = true;
-                              });
-                              var res = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SimpleBarcodeScannerPage(),
-                                  ));
-
-                              await getBookDetails(res).then((details) {
-                                setState(() {
-                                  bookDetails = details;
-                                });
-                              });
-
-                              setState(() {
-                                if (res is String) {
-                                  result = res;
-                                }
-                              });
-
-                              print('Barcode Result: $result');
-                              print(
-                                  'Title: ${bookDetails['title'] ?? "no tittle"}');
-                              print(
-                                  'Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
-                              print(
-                                  'Description: ${bookDetails['description'] ?? "no description"}');
-                              print(
-                                  'Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
-
-                              String book1id = randomAlphaNumeric(9);
-                              String book1name =
-                                  bookDetails['title'] ?? "no tittle";
-                              String book1authorname =
-                                  bookDetails['authors'][0] ?? "no author name";
-
-                              String imgcover = bookDetails['imageLinks']
-                                      ['thumbnail'] ??
-                                  "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
-
-                              String bookdesc = bookDetails['description'] ??
-                                  "no descriptions";
-
-                              String userloc = locationcontroller.text;
-
-                              LatLng locationcoordinates =
-                                  await getLocationFromAddress(userloc);
-
-                              double userlocationlat =
-                                  locationcoordinates.latitude;
-
-                              double userlocationlong =
-                                  locationcoordinates.longitude;
-
-                              await saveDataToFirestorefromscanner(
-                                bookid: book1id,
-                                bookname: book1name,
-                                authorname: book1authorname,
-                                imgcover: imgcover,
-                                username: userglobalData!.username,
-                                userimage: avatarurl!,
-                                useruid: userglobalData!.uid,
-                                userlocation: userloc,
-                                userlat: userlocationlat,
-                                userlong: userlocationlong,
-                                bookdesc: bookdesc,
-                              );
-
-                              setState(() {
-                                bookloading = false;
-                              });
-
-                              ///
-                            },
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 25.0.w),
-                                child: Container(
-                                  // color: Colors.red,
-                                  height: 30,
-                                  width: 30,
-                                  child: bookloading
-                                      ? CircularProgressIndicator()
-                                      : Image.asset(
-                                          "assets/images/scan.png",
-                                          fit: BoxFit.cover,
-                                          height: 30,
-                                          width: 30,
-                                        ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10.h),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Location*",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              // Text(
-                              //   "This helps us better match make",
-                              //   style: TextStyle(
-                              //     fontFamily: globalfontfamily,
-                              //     color: Color.fromRGBO(0, 0, 0, 1),
-                              //     fontSize: 12.sp,
-                              //     fontWeight: FontWeight.w300,
-                              //   ),
-                              // ),
-                            ],
-                          ),
+                          // Text(
+                          //   "This helps us better match make",
+                          //   style: TextStyle(
+                          //     fontFamily: globalfontfamily,
+                          //     color: Color.fromRGBO(0, 0, 0, 1),
+                          //     fontSize: 12.sp,
+                          //     fontWeight: FontWeight.w300,
+                          //   ),
+                          // ),
                           SizedBox(
                             height: 12.h,
                           ),
@@ -813,8 +645,207 @@ class _SetupupAccountState extends State<SetupupAccount> {
                               ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Padding(
+                      padding: EdgeInsets.only(left: 24.0.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Top 3 books that impacted your life",
+                            style: TextStyle(
+                              fontFamily: globalfontfamily,
+                              color: Colors.black,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            "This helps us better match make",
+                            style: TextStyle(
+                              fontFamily: globalfontfamily,
+                              color: Colors.black,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
                           SizedBox(
-                            height: 55.h,
+                            height: 12.h,
+                          ),
+                          Container(
+                            height: 290.h,
+                            width: 342.w,
+                            color: Color.fromRGBO(249, 249, 249, 1),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: 20.0.w,
+                                right: 20.0.w,
+                                // top: 16.h,
+                              ),
+                              child: StreamBuilder<QuerySnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(userglobalData!.uid)
+                                      .collection('Books')
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    }
+
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    }
+                                    List<Book> books = snapshot.data!.docs
+                                        .map((DocumentSnapshot doc) {
+                                      Map<String, dynamic> data =
+                                          doc.data() as Map<String, dynamic>;
+                                      return Book.fromMap(data, doc.id);
+                                    }).toList();
+
+                                    usersbooklength = books.length;
+                                    return ListView.builder(
+                                        itemCount: books.length,
+                                        itemBuilder: (context, index) {
+                                          return AccountBookwidget(
+                                            book: books[index],
+                                          );
+                                        });
+                                  }),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 35.h,
+                          ),
+                          TapBounceContainer(
+                            child: GestureDetector(
+                              onTap: () async {
+                                setState(() {
+                                  bookloading = true;
+                                });
+                                var res = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SimpleBarcodeScannerPage(),
+                                    ));
+
+                                await getBookDetails(res).then((details) {
+                                  setState(() {
+                                    bookDetails = details;
+                                  });
+                                });
+
+                                setState(() {
+                                  if (res is String) {
+                                    result = res;
+                                  }
+                                });
+
+                                if (result == "-1") {
+                                  setState(() {
+                                    bookloading = false;
+                                  });
+
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.error(
+                                      message: 'Book not Found',
+                                    ),
+                                  );
+                                } else {
+                                  print('Barcode Result: $result');
+                                  print(
+                                      'Title: ${bookDetails['title'] ?? "no tittle"}');
+                                  print(
+                                      'Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
+                                  print(
+                                      'Description: ${bookDetails['description'] ?? "no description"}');
+                                  print(
+                                      'Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
+
+                                  String book1id = randomAlphaNumeric(9);
+                                  String book1name =
+                                      bookDetails['title'] ?? "no tittle";
+                                  String book1authorname =
+                                      bookDetails['authors'][0] ??
+                                          "no author name";
+
+                                  String imgcover = bookDetails['imageLinks']
+                                          ['thumbnail'] ??
+                                      "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
+
+                                  String bookdesc =
+                                      bookDetails['description'] ??
+                                          "no descriptions";
+
+                                  String userloc = locationcontroller.text;
+
+                                  LatLng locationcoordinates =
+                                      await getLocationFromAddress(userloc);
+
+                                  double userlocationlat =
+                                      locationcoordinates.latitude;
+
+                                  double userlocationlong =
+                                      locationcoordinates.longitude;
+
+                                  await saveDataToFirestorefromscanner(
+                                    bookid: book1id,
+                                    bookname: book1name,
+                                    authorname: book1authorname,
+                                    imgcover: imgcover,
+                                    username: userglobalData!.username,
+                                    userimage: avatarurl!,
+                                    useruid: userglobalData!.uid,
+                                    userlocation: userloc,
+                                    userlat: userlocationlat,
+                                    userlong: userlocationlong,
+                                    bookdesc: bookdesc,
+                                  );
+
+                                  setState(() {
+                                    bookloading = false;
+                                  });
+
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.success(
+                                      message:
+                                          '${book1name} added Sucessfully !',
+                                    ),
+                                  );
+
+                                  ///
+                                }
+                              },
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 25.0.w),
+                                  child: Container(
+                                    // color: Colors.red,
+                                    height: 30,
+                                    width: 30,
+                                    child: bookloading
+                                        ? CircularProgressIndicator()
+                                        : Image.asset(
+                                            "assets/images/barcode-scanner.png",
+                                            fit: BoxFit.cover,
+                                            height: 30,
+                                            width: 30,
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 40.h,
                           ),
                           GestureDetector(
                             onTap: () async {
