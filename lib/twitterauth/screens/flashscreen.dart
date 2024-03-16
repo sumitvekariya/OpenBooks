@@ -56,21 +56,22 @@ class _FlashScreenState extends State<FlashScreen> {
     // create a timer of 2 seconds
     Timer(const Duration(seconds: 1), () async {
       if (sp.isSignedIn == true) {
-        Future.delayed(Duration(seconds: 1), () async {
+        Future.delayed(const Duration(seconds: 1), () async {
           String? userUid = FirebaseAuth.instance.currentUser?.uid;
           print(userUid);
           await getUserData(userUid!);
 
-          if (userglobalData!.fillDetails == true) {
-            nextScreenpushandremove(context, HomePage());
+          if (userglobalData?.fillDetails != null &&
+              userglobalData!.fillDetails == true) {
+            nextScreenpushandremove(context, const HomePage());
           } else {
-            nextScreenpushandremove(context, SetupupAccount());
+            nextScreenpushandremove(context, const SetupupAccount());
           }
 
           // nextScreen(context, HomeScreen());
         });
       } else {
-        nextScreenpushandremove(context, OnBoradingScreen());
+        nextScreenpushandremove(context, const OnBoradingScreen());
       }
     });
   }
@@ -78,7 +79,7 @@ class _FlashScreenState extends State<FlashScreen> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    return Scaffold(
+    return const Scaffold(
         body: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

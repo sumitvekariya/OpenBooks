@@ -107,7 +107,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
       throw Exception("Location not found for the given address");
     } catch (e) {
       print("Error: $e");
-      return LatLng(0, 0);
+      return const LatLng(0, 0);
     }
   }
 
@@ -121,7 +121,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
   bool kisloading = true;
 
   Future<Map<String, dynamic>> getBookDetails(String isbn) async {
-    final apiKey =
+    const apiKey =
         'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
     final apiUrl =
         'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
@@ -225,7 +225,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(const Duration(seconds: 1), () async {
       await getcurrentlocation().then((value) async {
         print("my current loaction");
         print(value.latitude.toString() + " " + value.longitude.toString());
@@ -249,11 +249,11 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
     final sp = context.watch<SignInProvider>();
     return Scaffold(
       body: kisloading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
-              child: Container(
+              child: SizedBox(
                 // color: Colors.red,
                 width: screenWidth,
                 child: Column(
@@ -284,7 +284,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                     ),
                     Center(
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
                         height: 102.h,
                         width: 102.w,
                         child: ClipRRect(
@@ -309,7 +309,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 24.0.w),
-                      child: Container(
+                      child: SizedBox(
                         // color: Colors.red,
                         height: 98.h,
                         width: 342.w,
@@ -348,7 +348,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                               ),
                               Container(
                                 height: 1,
-                                color: Color.fromRGBO(198, 198, 200, 1),
+                                color: const Color.fromRGBO(198, 198, 200, 1),
                               ),
                               SizedBox(
                                 height: 12.h,
@@ -417,7 +417,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           Container(
                             height: 290.h,
                             width: 342.w,
-                            color: Color.fromRGBO(249, 249, 249, 1),
+                            color: const Color.fromRGBO(249, 249, 249, 1),
                             child: Padding(
                               padding: EdgeInsets.only(
                                 left: 20.0.w,
@@ -439,7 +439,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return Center(
+                                      return const Center(
                                           child: CircularProgressIndicator());
                                     }
                                     List<Book> books = snapshot.data!.docs
@@ -495,7 +495,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
                                   showTopSnackBar(
                                     Overlay.of(context),
-                                    CustomSnackBar.error(
+                                    const CustomSnackBar.error(
                                       message: 'Book not Found',
                                     ),
                                   );
@@ -568,12 +568,12 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                               child: Center(
                                 child: Padding(
                                   padding: EdgeInsets.only(right: 25.0.w),
-                                  child: Container(
+                                  child: SizedBox(
                                     // color: Colors.red,
                                     height: 30,
                                     width: 30,
                                     child: bookloading
-                                        ? CircularProgressIndicator()
+                                        ? const CircularProgressIndicator()
                                         : Image.asset(
                                             "assets/images/barcode-scanner.png",
                                             fit: BoxFit.cover,
@@ -615,7 +615,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           Container(
                             height: 200.h,
                             width: 342.w,
-                            color: Color.fromRGBO(249, 249, 249, 1),
+                            color: const Color.fromRGBO(249, 249, 249, 1),
                             child: Padding(
                               padding: EdgeInsets.only(
                                 left: 20.0.w,
@@ -635,7 +635,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return Center(
+                                      return const Center(
                                           child: CircularProgressIndicator());
                                     }
                                     List<RecievedBook> books = snapshot
@@ -662,11 +662,11 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
                           GestureDetector(
                             onTap: () {
-                              nextScreen(context, RecievedBookScreen());
+                              nextScreen(context, const RecievedBookScreen());
                             },
                             child: Container(
                               width: 342.w,
-                              color: Color.fromRGBO(249, 249, 249, 1),
+                              color: const Color.fromRGBO(249, 249, 249, 1),
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 14.0.h),
                                 child: Center(
@@ -674,7 +674,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                     "view all",
                                     style: TextStyle(
                                       fontFamily: globalfontfamily,
-                                      color: Color.fromRGBO(67, 128, 199, 1),
+                                      color:
+                                          const Color.fromRGBO(67, 128, 199, 1),
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -713,7 +714,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           Container(
                             height: 290.h,
                             width: 342.w,
-                            color: Color.fromRGBO(249, 249, 249, 1),
+                            color: const Color.fromRGBO(249, 249, 249, 1),
                             child: Padding(
                               padding: EdgeInsets.only(
                                 left: 20.0.w,
@@ -733,7 +734,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return Center(
+                                      return const Center(
                                           child: CircularProgressIndicator());
                                     }
                                     List<RentedBook> books = snapshot.data!.docs
@@ -763,7 +764,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                 "Invite readers",
                                 style: TextStyle(
                                   fontFamily: globalfontfamily,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
+                                  color: const Color.fromRGBO(0, 0, 0, 1),
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -772,7 +773,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                 "This helps us better match make",
                                 style: TextStyle(
                                   fontFamily: globalfontfamily,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
+                                  color: const Color.fromRGBO(0, 0, 0, 1),
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w300,
                                 ),
@@ -786,7 +787,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           Container(
                             // height: 143.h,
                             width: 342.w,
-                            color: Color.fromRGBO(249, 249, 249, 1),
+                            color: const Color.fromRGBO(249, 249, 249, 1),
                             child: Padding(
                               padding: EdgeInsets.only(
                                 left: 20.0.w,
@@ -812,7 +813,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                               "Whatsapp",
                                               style: TextStyle(
                                                 fontFamily: globalfontfamily,
-                                                color: Color.fromRGBO(
+                                                color: const Color.fromRGBO(
                                                     75, 200, 118, 1),
                                                 fontSize: 16.sp,
                                                 fontWeight: FontWeight.w400,
@@ -822,8 +823,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                         ),
                                         Image.asset(
                                           "assets/images/frd.png",
-                                          color:
-                                              Color.fromRGBO(75, 200, 118, 1),
+                                          color: const Color.fromRGBO(
+                                              75, 200, 118, 1),
                                         )
                                       ],
                                     ),
@@ -833,7 +834,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   ),
                                   Container(
                                     height: 1,
-                                    color: Color.fromRGBO(198, 198, 200, 1),
+                                    color:
+                                        const Color.fromRGBO(198, 198, 200, 1),
                                   ),
                                   SizedBox(
                                     height: 12.h,
@@ -853,8 +855,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                               "Twitter",
                                               style: TextStyle(
                                                 fontFamily: globalfontfamily,
-                                                color:
-                                                    Color.fromRGBO(0, 0, 0, 1),
+                                                color: const Color.fromRGBO(
+                                                    0, 0, 0, 1),
                                                 fontSize: 16.sp,
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -863,7 +865,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                         ),
                                         Image.asset(
                                           "assets/images/frd.png",
-                                          color: Color.fromRGBO(0, 0, 0, 1),
+                                          color:
+                                              const Color.fromRGBO(0, 0, 0, 1),
                                         )
                                       ],
                                     ),
@@ -873,7 +876,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   ),
                                   Container(
                                     height: 1,
-                                    color: Color.fromRGBO(198, 198, 200, 1),
+                                    color:
+                                        const Color.fromRGBO(198, 198, 200, 1),
                                   ),
                                   SizedBox(
                                     height: 12.h,
@@ -894,7 +898,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                               "Instagram",
                                               style: TextStyle(
                                                 fontFamily: globalfontfamily,
-                                                color: Color.fromRGBO(
+                                                color: const Color.fromRGBO(
                                                     242, 68, 65, 1),
                                                 fontSize: 16.sp,
                                                 fontWeight: FontWeight.w400,
@@ -904,7 +908,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                         ),
                                         Image.asset(
                                           "assets/images/frd.png",
-                                          color: Color.fromRGBO(242, 68, 65, 1),
+                                          color: const Color.fromRGBO(
+                                              242, 68, 65, 1),
                                         )
                                       ],
                                     ),
@@ -914,7 +919,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   ),
                                   Container(
                                     height: 1,
-                                    color: Color.fromRGBO(198, 198, 200, 1),
+                                    color:
+                                        const Color.fromRGBO(198, 198, 200, 1),
                                   ),
                                   SizedBox(
                                     height: 16.h,
