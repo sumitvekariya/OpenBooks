@@ -21,6 +21,7 @@ import 'package:openbook/Widgets/widgets.dart';
 
 import 'package:random_string/random_string.dart';
 import 'package:geocoding/geocoding.dart' as geo;
+import 'package:simple_barcode_scanner/enum.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -150,12 +151,6 @@ class _SetupupAccountState extends State<SetupupAccount> {
   }
 
   final formKey = GlobalKey<FormState>();
-  TextEditingController book1namecontroller = TextEditingController();
-  TextEditingController book2namecontroller = TextEditingController();
-  TextEditingController book3namecontroller = TextEditingController();
-  TextEditingController book1authornamecontroller = TextEditingController();
-  TextEditingController book2authornamecontroller = TextEditingController();
-  TextEditingController book3authornamecontroller = TextEditingController();
   TextEditingController locationcontroller = TextEditingController();
 
   bool bookloading = false;
@@ -291,7 +286,6 @@ class _SetupupAccountState extends State<SetupupAccount> {
     });
   }
 
-  String result = '';
   Map<String, dynamic> bookDetails = {};
 
   Future<LatLng> getLocationFromAddress(String address) async {
@@ -304,7 +298,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
       throw Exception("Location not found for the given address");
     } catch (e) {
       print("Error: $e");
-      return LatLng(0, 0);
+      return const LatLng(0, 0);
     }
   }
 
@@ -313,7 +307,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(microseconds: 1), () async {
+    Future.delayed(const Duration(microseconds: 1), () async {
       await getcurrentlocation().then((value) async {
         print("my current loaction");
         print(value.latitude.toString() + " " + value.longitude.toString());
@@ -357,11 +351,11 @@ class _SetupupAccountState extends State<SetupupAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isloading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
-              child: Container(
+              child: SizedBox(
                 // color: Colors.red,
                 width: screenWidth,
                 child: Column(
@@ -384,7 +378,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 fontSize: 28.sp,
                                 fontWeight: FontWeight.w600),
                           ),
-                          Container(
+                          SizedBox(
                             width: 300.w,
                             child: Text(
                               "Help us know more about your book preferences so we can let others know about your books",
@@ -414,16 +408,16 @@ class _SetupupAccountState extends State<SetupupAccount> {
                           });
                         },
                         child: isimageloading
-                            ? Container(
+                            ? SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: CircularProgressIndicator(
+                                child: const CircularProgressIndicator(
                                     color: Color.fromRGBO(38, 90, 232, 1)),
                               )
                             : selectedImage != null
                                 ? Container(
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 16),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 16),
                                     height: 102.h,
                                     width: 102.w,
                                     child: ClipRRect(
@@ -450,7 +444,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                         height: 102.h,
                                         width: 102.w,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         // color: Colors.red,
                                         height: 24.h,
                                         width: 24.w,
@@ -466,7 +460,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 24.0.w),
-                      child: Container(
+                      child: SizedBox(
                         // color: Colors.red,
                         height: 98.h,
                         width: 342.w,
@@ -505,7 +499,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                               ),
                               Container(
                                 height: 1,
-                                color: Color.fromRGBO(198, 198, 200, 1),
+                                color: const Color.fromRGBO(198, 198, 200, 1),
                               ),
                               SizedBox(
                                 height: 12.h,
@@ -553,7 +547,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                             "Location*",
                             style: TextStyle(
                               fontFamily: globalfontfamily,
-                              color: Color.fromRGBO(0, 0, 0, 1),
+                              color: const Color.fromRGBO(0, 0, 0, 1),
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w400,
                             ),
@@ -571,7 +565,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                             height: 12.h,
                           ),
                           Container(
-                            color: Color.fromRGBO(249, 249, 249, 1),
+                            color: const Color.fromRGBO(249, 249, 249, 1),
                             width: 342.w,
                             child: Padding(
                               padding: EdgeInsets.only(left: 8.0.w),
@@ -587,14 +581,14 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                   hintText: "Location",
                                   hintStyle: TextStyle(
                                     fontFamily: globalfontfamily,
-                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    color: const Color.fromRGBO(0, 0, 0, 1),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w300,
                                   ),
                                   // labelText: 'Mumbai',
                                   labelStyle: TextStyle(
                                     fontFamily: globalfontfamily,
-                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                    color: const Color.fromRGBO(0, 0, 0, 1),
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w300,
                                   ),
@@ -604,7 +598,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 ),
                                 boxDecoration: BoxDecoration(
                                   border: Border.all(
-                                    color: Color.fromRGBO(249, 249, 249, 1),
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
                                   ),
                                 ),
                                 debounceTime: 800,
@@ -626,11 +621,11 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 itemBuilder:
                                     (context, index, Prediction prediction) {
                                   return Container(
-                                    padding: EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(10),
                                     child: Row(
                                       children: [
-                                        Icon(Icons.location_on),
-                                        SizedBox(
+                                        const Icon(Icons.location_on),
+                                        const SizedBox(
                                           width: 7,
                                         ),
                                         Expanded(
@@ -640,7 +635,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                     ),
                                   );
                                 },
-                                seperatedBuilder: Divider(),
+                                seperatedBuilder: const Divider(),
                                 isCrossBtnShown: true,
                               ),
                             ),
@@ -678,7 +673,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                           Container(
                             height: 290.h,
                             width: 342.w,
-                            color: Color.fromRGBO(249, 249, 249, 1),
+                            color: const Color.fromRGBO(249, 249, 249, 1),
                             child: Padding(
                               padding: EdgeInsets.only(
                                 left: 20.0.w,
@@ -698,7 +693,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
 
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return Center(
+                                      return const Center(
                                           child: CircularProgressIndicator());
                                     }
                                     List<Book> books = snapshot.data!.docs
@@ -725,41 +720,37 @@ class _SetupupAccountState extends State<SetupupAccount> {
                           TapBounceContainer(
                             child: GestureDetector(
                               onTap: () async {
-                                setState(() {
-                                  bookloading = true;
-                                });
                                 var res = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const SimpleBarcodeScannerPage(),
+                                          const SimpleBarcodeScannerPage(
+                                        scanType: ScanType.barcode,
+                                      ),
                                     ));
 
-                                await getBookDetails(res).then((details) {
+                                if (res != '-1') {
                                   setState(() {
-                                    bookDetails = details;
+                                    bookloading = true;
                                   });
-                                });
+                                  await getBookDetails(res).then((details) {
+                                    setState(() {
+                                      bookDetails = details;
+                                    });
+                                  }).catchError((e) {
+                                    setState(() {
+                                      bookloading = false;
+                                    });
 
-                                setState(() {
-                                  if (res is String) {
-                                    result = res;
-                                  }
-                                });
-
-                                if (result == "-1") {
-                                  setState(() {
-                                    bookloading = false;
+                                    showTopSnackBar(
+                                      Overlay.of(context),
+                                      const CustomSnackBar.error(
+                                        message: 'Book not Found',
+                                      ),
+                                    );
                                   });
 
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(
-                                      message: 'Book not Found',
-                                    ),
-                                  );
-                                } else {
-                                  print('Barcode Result: $result');
+                                  print('Barcode Result: $res');
                                   print(
                                       'Title: ${bookDetails['title'] ?? "no tittle"}');
                                   print(
@@ -827,12 +818,12 @@ class _SetupupAccountState extends State<SetupupAccount> {
                               child: Center(
                                 child: Padding(
                                   padding: EdgeInsets.only(right: 25.0.w),
-                                  child: Container(
+                                  child: SizedBox(
                                     // color: Colors.red,
                                     height: 30,
                                     width: 30,
                                     child: bookloading
-                                        ? CircularProgressIndicator()
+                                        ? const CircularProgressIndicator()
                                         : Image.asset(
                                             "assets/images/barcode-scanner.png",
                                             fit: BoxFit.cover,
@@ -849,178 +840,82 @@ class _SetupupAccountState extends State<SetupupAccount> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              if (locationcontroller.text.length > 0 &&
+                              if (locationcontroller.text.isNotEmpty &&
                                   usersbooklength != 0) {
                                 print(isuploaded);
-                                if (isuploaded == false) {
-                                  avatarurl =
-                                      "https://firebasestorage.googleapis.com/v0/b/easyed-prod.appspot.com/o/account.png?alt=media&token=85b40cb4-c4d2-4946-9317-e6aed240948d";
+                                avatarurl =
+                                    "https://firebasestorage.googleapis.com/v0/b/easyed-prod.appspot.com/o/account.png?alt=media&token=85b40cb4-c4d2-4946-9317-e6aed240948d";
 
-                                  setState(() {
-                                    kisloading = true;
-                                  });
+                                setState(() {
+                                  kisloading = true;
+                                });
 
-                                  String book1id = randomAlphaNumeric(9);
-                                  String book1name = book1namecontroller.text;
-                                  String book1authorname =
-                                      book1authornamecontroller.text;
-
-                                  print("book1id: ${book1id}");
-                                  print("book1name: ${book1name}");
-                                  print("book1authorname: ${book1authorname}");
-
-                                  String imgcover =
-                                      "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
-                                  String userloc = locationcontroller.text;
-
-                                  LatLng locationcoordinates =
-                                      await getLocationFromAddress(userloc);
-
-                                  double userlocationlat =
-                                      locationcoordinates.latitude;
-
-                                  double userlocationlong =
-                                      locationcoordinates.longitude;
-
-                                  String book2id = randomAlphaNumeric(9);
-                                  String book2name = book2namecontroller.text;
-                                  String book2authorname =
-                                      book2authornamecontroller.text;
-
-                                  print("book2id: ${book2id}");
-                                  print("book2name: ${book2name}");
-                                  print("book2authorname: ${book2authorname}");
-
-                                  String book3id = randomAlphaNumeric(9);
-                                  String book3name = book3namecontroller.text;
-                                  String book3authorname =
-                                      book3authornamecontroller.text;
-
-                                  print("book3id: ${book3id}");
-                                  print("book3name: ${book3name}");
-                                  print("book3authorname: ${book3authorname}");
-
-                                  await FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(userglobalData!.uid)
-                                      .update({
-                                    "isfilled": true,
-                                    "location_name": userloc,
-                                    "image_url": avatarurl,
-                                    "user_lat": userlocationlat,
-                                    "user_long": userlocationlong,
-                                  });
-
-                                  setState(() {
-                                    kisloading = false;
-                                  });
-
-                                  nextScreenpushandremove(context, HomePage());
-                                } else {
-                                  setState(() {
-                                    kisloading = true;
-                                  });
+                                if (!isuploaded) {
                                   await uploadavatar();
+                                }
 
-                                  String book1id = randomAlphaNumeric(9);
-                                  String book1name = book1namecontroller.text;
-                                  String book1authorname =
-                                      book1authornamecontroller.text;
+                                String imgcover =
+                                    "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
+                                String userloc = locationcontroller.text;
 
-                                  print("book1id: ${book1id}");
-                                  print("book1name: ${book1name}");
-                                  print("book1authorname: ${book1authorname}");
+                                LatLng locationcoordinates =
+                                    await getLocationFromAddress(userloc);
 
-                                  String imgcover =
-                                      "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
-                                  String userloc = locationcontroller.text;
+                                double userlocationlat =
+                                    locationcoordinates.latitude;
 
-                                  LatLng locationcoordinates =
-                                      await getLocationFromAddress(userloc);
+                                double userlocationlong =
+                                    locationcoordinates.longitude;
 
-                                  double userlocationlat =
-                                      locationcoordinates.latitude;
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(userglobalData!.uid)
+                                    .update({
+                                  "isfilled": true,
+                                  "location_name": userloc,
+                                  "image_url": avatarurl,
+                                  "user_lat": userlocationlat,
+                                  "user_long": userlocationlong,
+                                });
 
-                                  double userlocationlong =
-                                      locationcoordinates.longitude;
-
-                                  String book2id = randomAlphaNumeric(9);
-                                  String book2name = book2namecontroller.text;
-                                  String book2authorname =
-                                      book2authornamecontroller.text;
-
-                                  print("book2id: ${book2id}");
-                                  print("book2name: ${book2name}");
-                                  print("book2authorname: ${book2authorname}");
-
-                                  String book3id = randomAlphaNumeric(9);
-                                  String book3name = book3namecontroller.text;
-                                  String book3authorname =
-                                      book3authornamecontroller.text;
-
-                                  print("book3id: ${book3id}");
-                                  print("book3name: ${book3name}");
-                                  print("book3authorname: ${book3authorname}");
-
-                                  // await saveDataToFirestore(
-                                  //     bookid: book3id,
-                                  //     bookname: book3name,
-                                  //     authorname: book3authorname,
-                                  //     imgcover: imgcover,
-                                  //     username: userglobalData!.username,
-                                  //     userimage: avatarurl!,
-                                  //     useruid: userglobalData!.uid,
-                                  //     userlocation: userloc,
-                                  //     userlat: userlocationlat,
-                                  //     userlong: userlocationlong);
-
-                                  await FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(userglobalData!.uid)
-                                      .update({
-                                    "isfilled": true,
-                                    "location_name": userloc,
-                                    "image_url": avatarurl,
-                                    "user_lat": userlocationlat,
-                                    "user_long": userlocationlong,
-                                  });
-
+                                if (!isuploaded) {
                                   String? userUid =
                                       FirebaseAuth.instance.currentUser?.uid;
                                   print(userUid);
                                   await getUserData(userUid!);
-
-                                  setState(() {
-                                    kisloading = false;
-                                  });
-
-                                  nextScreenpushandremove(context, HomePage());
                                 }
+
+                                setState(() {
+                                  kisloading = false;
+                                });
+
+                                nextScreenpushandremove(
+                                    context, const HomePage());
                               }
-                              // nextScreen(context, AddBooks());
                             },
                             child: Container(
                               height: 43.h,
                               width: 339.w,
                               decoration: BoxDecoration(
-                                color: Color.fromRGBO(85, 163, 255, 1),
+                                color: const Color.fromRGBO(85, 163, 255, 1),
                                 borderRadius: BorderRadius.circular(22.r),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.4),
                                     spreadRadius: 0,
                                     blurRadius: 4,
-                                    offset: Offset(0, 4),
+                                    offset: const Offset(0, 4),
                                   ),
                                 ],
                               ),
                               child: Center(
                                   child: kisloading
                                       ? Center(
-                                          child: Container(
+                                          child: SizedBox(
                                             height: 18.h,
                                             width: 18.w,
-                                            child: CircularProgressIndicator(
+                                            child:
+                                                const CircularProgressIndicator(
                                               color: Colors.white,
                                             ),
                                           ),
