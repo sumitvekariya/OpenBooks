@@ -1,9 +1,7 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInProvider extends ChangeNotifier {
@@ -78,8 +76,7 @@ class SignInProvider extends ChangeNotifier {
       final twitterAuthProvider = TwitterAuthProvider();
       twitterAuthProvider.setCustomParameters({'force_login': 'true'});
 
-      final authResult =
-          await FirebaseAuth.instance.signInWithProvider(twitterAuthProvider);
+      final authResult = await FirebaseAuth.instance.signInWithProvider(twitterAuthProvider);
 
       // Get user details from the authentication result
       final userDetails = authResult.user;
@@ -87,11 +84,11 @@ class SignInProvider extends ChangeNotifier {
       // Print or use the user details as needed
       print("authResult.user: $userDetails");
       print("userDetails!.name: ${userDetails!.displayName}");
-      print(
-          "firebaseAuth.currentUser!.email: ${firebaseAuth.currentUser!.email}");
+      print("userDetails!.username: ${authResult.additionalUserInfo!.username}");
+      print("firebaseAuth.currentUser!.email: ${firebaseAuth.currentUser!.email}");
 
       // Extract the necessary information
-      _username = userDetails.displayName;
+      _username = authResult.additionalUserInfo!.username;
       _name = userDetails.displayName;
       _email = firebaseAuth.currentUser!.email ?? "twitter";
       _imageUrl = userDetails.photoURL;
@@ -105,8 +102,7 @@ class SignInProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "account-exists-with-different-credential":
-          _errorCode =
-              "You already have an account with us. Use correct provider";
+          _errorCode = "You already have an account with us. Use correct provider";
           _hasError = true;
           notifyListeners();
           break;
@@ -179,24 +175,19 @@ class SignInProvider extends ChangeNotifier {
 
   // ENTRY FOR CLOUDFIRESTORE
   Future getUserDataFromFirestore(uid) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(uid)
-        .get()
-        .then((DocumentSnapshot snapshot) => {
-              _uid = snapshot['uid'],
-              _username = snapshot['username'],
-              _name = snapshot['name'],
-              _imageUrl = snapshot['image_url'],
-              _isFilled = snapshot['isfilled'],
-              _provider = snapshot['provider'],
-              _locationname = snapshot['location_name']
-            });
+    await FirebaseFirestore.instance.collection("users").doc(uid).get().then((DocumentSnapshot snapshot) => {
+          _uid = snapshot['uid'],
+          _username = snapshot['username'],
+          _name = snapshot['name'],
+          _imageUrl = snapshot['image_url'],
+          _isFilled = snapshot['isfilled'],
+          _provider = snapshot['provider'],
+          _locationname = snapshot['location_name']
+        });
   }
 
   Future saveDataToFirestore() async {
-    final DocumentReference r =
-        FirebaseFirestore.instance.collection("users").doc(uid);
+    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(uid);
     await r.set({
       "uid": _uid,
       "username": _username,
@@ -238,8 +229,7 @@ class SignInProvider extends ChangeNotifier {
 
   // checkUser exists or not in cloudfirestore
   Future<bool> checkUserExists() async {
-    DocumentSnapshot snap =
-        await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+    DocumentSnapshot snap = await FirebaseFirestore.instance.collection('users').doc(_uid).get();
     if (snap.exists) {
       print("EXISTING USER");
       return true;
@@ -265,6 +255,4 @@ class SignInProvider extends ChangeNotifier {
     final SharedPreferences s = await SharedPreferences.getInstance();
     s.clear();
   }
-
-
 }
