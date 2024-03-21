@@ -3,6 +3,7 @@
 
 Every book lying on your shelf holds value. Let’s put it on-chain. OpenBooks is an innovative mobile app that aims to unlock the value of books by creating a decentralized global library network run by passionate readers. By scanning the barcodes of books on your shelves, you can create listings visible to people in your vicinity. This facilitates peer-to-peer book sharing, fostering connections and friendships among book lovers worldwide.
 
+https://talented-debt-219.notion.site/OpenBooks-f2e2c36980064bdfb1c3e1ed07654336
 
 ## Use Cases
 **Getting Books On-chain:** OpenBooks unlocks the value of books by creating a decentralized library network. Books become accessible to a wider audience, promoting knowledge sharing and community building.
