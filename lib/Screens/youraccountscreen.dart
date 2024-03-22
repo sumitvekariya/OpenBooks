@@ -700,13 +700,23 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                         ),
                                       ));
                                 } else {
-                                  return ListView.builder(
-                                      itemCount: books.length,
-                                      itemBuilder: (context, index) {
-                                        return RentedBookWidget(
-                                          book: books[index],
-                                        );
-                                      });
+                                  return Container(
+                                    height: 180.h,
+                                    width: 342.w,
+                                    color: const Color.fromRGBO(249, 249, 249, 1),
+                                    padding: EdgeInsets.only(
+                                      left: 20.0.w,
+                                      right: 20.0.w,
+                                      // top: 16.h,
+                                    ),
+                                    child: ListView.builder(
+                                        itemCount: books.length,
+                                        itemBuilder: (context, index) {
+                                          return RentedBookWidget(
+                                            book: books[index],
+                                          );
+                                        }),
+                                  );
                                 }
                               }),
 
