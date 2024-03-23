@@ -266,7 +266,7 @@ class _HomePageState extends State<HomePage> {
                                     fontFamily: globalfontfamily,
                                     color: const Color.fromRGBO(0, 0, 0, 1),
                                     fontSize: 16.sp,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 SizedBox(
@@ -296,12 +296,14 @@ class _HomePageState extends State<HomePage> {
                                               // top: 16.h,
                                             ),
                                             color: const Color.fromRGBO(249, 249, 249, 1),
-                                            child: const Text(
-                                              "No books are available",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: globalfontfamily,
-                                                fontSize: 14,
+                                            child: const Center(
+                                              child: Text(
+                                                "No books are available",
+                                                style: TextStyle(
+                                                  // fontWeight: FontWeight.bold,
+                                                  fontFamily: globalfontfamily,
+                                                  fontSize: 14,
+                                                ),
                                               ),
                                             ));
                                       } else {
@@ -360,7 +362,7 @@ class _HomePageState extends State<HomePage> {
                                     fontFamily: globalfontfamily,
                                     color: const Color.fromRGBO(0, 0, 0, 1),
                                     fontSize: 16.sp,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 SizedBox(
@@ -389,12 +391,14 @@ class _HomePageState extends State<HomePage> {
                                               // top: 16.h,
                                             ),
                                             color: const Color.fromRGBO(249, 249, 249, 1),
-                                            child: const Text(
-                                              "No pending requests",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: globalfontfamily,
-                                                fontSize: 14,
+                                            child: const Center(
+                                              child: Text(
+                                                "No books are available",
+                                                style: TextStyle(
+                                                  // fontWeight: FontWeight.bold,
+                                                  fontFamily: globalfontfamily,
+                                                  fontSize: 14,
+                                                ),
                                               ),
                                             ));
                                       } else {

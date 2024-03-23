@@ -212,8 +212,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
     Future.delayed(const Duration(seconds: 1), () async {
       await getcurrentlocation().then((value) async {
-        print("my current loaction");
-        print(value.latitude.toString() + " " + value.longitude.toString());
+        print("my current location");
+        print("${value.latitude} ${value.longitude}");
 
         userlat = value.latitude;
         userlong = value.longitude;
@@ -314,7 +314,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                     width: 50.w,
                                   ),
                                   Text(
-                                    "${userglobalData!.name}",
+                                    userglobalData!.name,
                                     style: TextStyle(
                                       fontFamily: globalfontfamily,
                                       color: Colors.black,
@@ -350,7 +350,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                     width: 22.w,
                                   ),
                                   Text(
-                                    "${userglobalData!.username}",
+                                    userglobalData!.username,
                                     style: TextStyle(
                                       fontFamily: globalfontfamily,
                                       color: Colors.black,
@@ -395,42 +395,60 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                             height: 12.h,
                           ),
 
-                          Container(
-                            height: 290.h,
-                            width: 342.w,
-                            color: const Color.fromRGBO(249, 249, 249, 1),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 20.0.w,
-                                right: 20.0.w,
-                                // top: 16.h,
-                              ),
-                              child: StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('Books').snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    }
+                          StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('Books').snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                }
 
-                                    print(!snapshot.hasData);
+                                print(!snapshot.hasData);
 
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(child: CircularProgressIndicator());
-                                    }
-                                    List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                                      return Book.fromMap(data, doc.id);
-                                    }).toList();
-                                    return ListView.builder(
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const Center(child: CircularProgressIndicator());
+                                }
+                                List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                  return Book.fromMap(data, doc.id);
+                                }).toList();
+                                if (books.isEmpty) {
+                                  return Container(
+                                      width: 342.h,
+                                      padding: EdgeInsets.only(
+                                        left: 20.0.w,
+                                        right: 20.0.w,
+                                        // top: 16.h,
+                                      ),
+                                      color: const Color.fromRGBO(249, 249, 249, 1),
+                                      child: const Center(
+                                        child: Text(
+                                          "No books are available",
+                                          style: TextStyle(
+                                            // fontWeight: FontWeight.bold,
+                                            fontFamily: globalfontfamily,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ));
+                                } else {
+                                  return Container(
+                                    height: 290.h,
+                                    width: 342.w,
+                                    color: const Color.fromRGBO(249, 249, 249, 1),
+                                    padding: EdgeInsets.only(
+                                      left: 20.0.w,
+                                      right: 20.0.w,
+                                    ),
+                                    child: ListView.builder(
                                         itemCount: books.length,
                                         itemBuilder: (context, index) {
                                           return AccountBookwidget(
                                             book: books[index],
                                           );
-                                        });
-                                  }),
-                            ),
-                          ),
+                                        }),
+                                  );
+                                }
+                              }),
 
                           SizedBox(
                             height: 24.h,
@@ -516,7 +534,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   showTopSnackBar(
                                     Overlay.of(context),
                                     CustomSnackBar.success(
-                                      message: '${book1name} added Sucessfully !',
+                                      message: '$book1name added Successfully !',
                                     ),
                                   );
 
@@ -549,7 +567,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           ),
 
                           Text(
-                            "Recieved Books",
+                            "Received Books",
                             style: TextStyle(
                               fontFamily: globalfontfamily,
                               color: Colors.black,
@@ -594,12 +612,14 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                         // top: 16.h,
                                       ),
                                       color: const Color.fromRGBO(249, 249, 249, 1),
-                                      child: const Text(
-                                        "No books are available",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: globalfontfamily,
-                                          fontSize: 14,
+                                      child: const Center(
+                                        child: Text(
+                                          "No books are available",
+                                          style: TextStyle(
+                                            // fontWeight: FontWeight.bold,
+                                            fontFamily: globalfontfamily,
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ));
                                 } else {
@@ -691,12 +711,14 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                         // top: 16.h,
                                       ),
                                       color: const Color.fromRGBO(249, 249, 249, 1),
-                                      child: const Text(
-                                        "No books are available",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: globalfontfamily,
-                                          fontSize: 14,
+                                      child: const Center(
+                                        child: Text(
+                                          "No books are available",
+                                          style: TextStyle(
+                                            //fontWeight: FontWeight.bold,
+                                            fontFamily: globalfontfamily,
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ));
                                 } else {

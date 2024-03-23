@@ -24,177 +24,174 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
   bool isloading = false;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            // color: Colors.red,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Image.network(widget.book.imageCover),
-                    Padding(
-                      padding: EdgeInsets.only(left: 12.0.w),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                // Image.network(widget.book.imageCover),
+                Padding(
+                  padding: EdgeInsets.only(left: 12.0.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                "requested by: ",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 8.sp,
-                                  fontWeight: FontWeight.w200,
-                                ),
-                              ),
-                              Container(
-                                height: 8.h,
-                                width: 8.w,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    backgroundImage: Image.network(
-                                      widget.book.requestuserimage,
-                                      fit: BoxFit.cover,
-                                    ).image,
-                                    radius: 4,
-                                    // child: Image.file(
-                                    //   selectedImage!,
-                                    //   fit: BoxFit.cover,
-                                    // ),
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(
-                                width: 2.w,
-                              ),
-                              // Image.asset("assets/images/playr1.png"),
-                              Text(
-                                "${widget.book.requestusername}, ${widget.book.requestuserlocation}",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 8.sp,
-                                  fontWeight: FontWeight.w200,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          Container(
-                            width: 200.w,
-                            child: Text(
-                              "${widget.book.bookName}",
-                              style: TextStyle(
-                                fontFamily: globalfontfamily,
-                                color: Color.fromRGBO(0, 0, 0, 1),
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
                           Text(
-                            "Author: ${widget.book.authorName}",
+                            "requested by: ",
                             style: TextStyle(
                               fontFamily: globalfontfamily,
-                              color: Color.fromRGBO(0, 0, 0, 1),
-                              fontSize: 12.sp,
+                              color: const Color.fromRGBO(0, 0, 0, 1),
+                              fontSize: 8.sp,
                               fontWeight: FontWeight.w200,
                             ),
                           ),
-                          // SizedBox(
-                          //   height: 12.h,
-                          // ),
+                          SizedBox(
+                            height: 8.h,
+                            width: 8.w,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                backgroundImage: Image.network(
+                                  widget.book.requestuserimage,
+                                  fit: BoxFit.cover,
+                                ).image,
+                                radius: 4,
+                                // child: Image.file(
+                                //   selectedImage!,
+                                //   fit: BoxFit.cover,
+                                // ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          // Image.asset("assets/images/playr1.png"),
+                          SizedBox(
+                            width: 180.w,
+                            child: Text(
+                              "${widget.book.requestusername}, ${widget.book.requestuserlocation}",
+                              style: TextStyle(
+                                fontFamily: globalfontfamily,
+                                color: const Color.fromRGBO(0, 0, 0, 1),
+                                fontSize: 8.sp,
+                                fontWeight: FontWeight.w200,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                Container(
-                  height: 1,
-                  color: Color.fromRGBO(198, 198, 200, 1),
-                ),
-                SizedBox(
-                  height: 12.h,
-                ),
-                TapBounceContainer(
-                  child: GestureDetector(
-                    onTap: () async {
-                      showTopSnackBar(
-                        Overlay.of(context),
-                        CustomSnackBar.success(
-                          message:
-                              'Great! ${widget.book.bookName} sucessfully rented to ${widget.book.requestusername}',
-                        ),
-                      );
-                      setState(() {
-                        isloading = true;
-                      });
 
-                      print("Bookname :  ${widget.book.bookName}");
-
-                      await saveDataToFirestore(
-                        bookid: widget.book.bookId,
-                        bookname: widget.book.bookName,
-                        authorname: widget.book.authorName,
-                        imgcover: widget.book.imageCover,
-                        username: widget.book.username,
-                        userimage: widget.book.userimage,
-                        useruid: widget.book.userUid,
-                        userlocation: widget.book.userLocation,
-                        userlat: widget.book.userLat,
-                        userlong: widget.book.userLong,
-                        rentedusername: widget.book.requestusername,
-                        renteduserimage: widget.book.requestuserimage,
-                        renteduseruid: widget.book.requestuseruid,
-                        renteduserlocation: widget.book.requestuserlocation,
-                        rentedtuserlat: widget.book.requestuserlat,
-                        renteduserlong: widget.book.requestuserlong,
-                        bookdesc: widget.book.bookdesc,
-                      );
-
-                      setState(() {
-                        isloading = false;
-                      });
-                      // warningNoTask(context);
-                    },
-                    child: isloading
-                        ? Container(
-                            height: 19.h,
-                            width: 19.w,
-                            child: CircularProgressIndicator(),
-                          )
-                        : Container(
-                            height: 24.h,
-                            width: 24.w,
-                            child: Image.asset("assets/images/nextarr.png"),
+                      SizedBox(
+                        width: 200.w,
+                        child: Text(
+                          widget.book.bookName,
+                          style: TextStyle(
+                            fontFamily: globalfontfamily,
+                            color: const Color.fromRGBO(0, 0, 0, 1),
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
                           ),
+                        ),
+                      ),
+                      Text(
+                        "Author: ${widget.book.authorName}",
+                        style: TextStyle(
+                          fontFamily: globalfontfamily,
+                          color: const Color.fromRGBO(0, 0, 0, 1),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w200,
+                        ),
+                      ),
+                      // SizedBox(
+                      //   height: 12.h,
+                      // ),
+                    ],
                   ),
-                )
+                ),
               ],
             ),
-          ),
-          SizedBox(
-            height: 12.h,
-          ),
-          Container(
-            height: 1,
-            color: Color.fromRGBO(198, 198, 200, 1),
-          ),
-          SizedBox(
-            height: 12.h,
-          ),
-        ],
-      ),
+            Container(
+              height: 1,
+              color: const Color.fromRGBO(198, 198, 200, 1),
+            ),
+            SizedBox(
+              height: 12.h,
+            ),
+            TapBounceContainer(
+              child: GestureDetector(
+                onTap: () async {
+                  showTopSnackBar(
+                    Overlay.of(context),
+                    CustomSnackBar.success(
+                      message: 'Great! ${widget.book.bookName} successfully rented to ${widget.book.requestusername}',
+                    ),
+                  );
+                  setState(() {
+                    isloading = true;
+                  });
+
+                  print("Bookname :  ${widget.book.bookName}");
+
+                  await saveDataToFirestore(
+                    bookid: widget.book.bookId,
+                    bookname: widget.book.bookName,
+                    authorname: widget.book.authorName,
+                    imgcover: widget.book.imageCover,
+                    username: widget.book.username,
+                    userimage: widget.book.userimage,
+                    useruid: widget.book.userUid,
+                    userlocation: widget.book.userLocation,
+                    userlat: widget.book.userLat,
+                    userlong: widget.book.userLong,
+                    rentedusername: widget.book.requestusername,
+                    renteduserimage: widget.book.requestuserimage,
+                    renteduseruid: widget.book.requestuseruid,
+                    renteduserlocation: widget.book.requestuserlocation,
+                    rentedtuserlat: widget.book.requestuserlat,
+                    renteduserlong: widget.book.requestuserlong,
+                    bookdesc: widget.book.bookdesc,
+                  );
+
+                  setState(() {
+                    isloading = false;
+                  });
+                  // warningNoTask(context);
+                },
+                child: isloading
+                    ? SizedBox(
+                        height: 19.h,
+                        width: 19.w,
+                        child: const CircularProgressIndicator(),
+                      )
+                    : SizedBox(
+                        height: 24.h,
+                        width: 24.w,
+                        child: Image.asset("assets/images/nextarr.png"),
+                      ),
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: 12.h,
+        ),
+        Container(
+          height: 1,
+          color: const Color.fromRGBO(198, 198, 200, 1),
+        ),
+        SizedBox(
+          height: 12.h,
+        ),
+      ],
     );
   }
 
@@ -203,8 +200,7 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       noImage: true,
       context,
       title: "Normal",
-      message:
-          "There is no Task For Delete!\n Try adding some and then try to delete it!",
+      message: "There is no Task For Delete!\n Try adding some and then try to delete it!",
       buttonText: "Okay",
       onTapDismiss: () async {
         Navigator.pop(context);
@@ -232,11 +228,7 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
     required double renteduserlong,
     required String bookdesc,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance
-        .collection("users")
-        .doc(useruid)
-        .collection("RentedBooks")
-        .doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RentedBooks").doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -258,11 +250,7 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance
-        .collection("users")
-        .doc(renteduseruid)
-        .collection("RecievedBooks")
-        .doc(bookid);
+    final DocumentReference br = FirebaseFirestore.instance.collection("users").doc(renteduseruid).collection("RecievedBooks").doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -284,21 +272,13 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference dl = FirebaseFirestore.instance
-        .collection("users")
-        .doc(useruid)
-        .collection("RequestedBooks")
-        .doc(bookid);
+    final DocumentReference dl = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid);
 
     await dl.delete();
 
     print("THis 1 runs");
 
-    final DocumentReference del = FirebaseFirestore.instance
-        .collection("users")
-        .doc(useruid)
-        .collection("Books")
-        .doc(bookid);
+    final DocumentReference del = FirebaseFirestore.instance.collection("users").doc(useruid).collection("Books").doc(bookid);
 
     await del.delete();
 
