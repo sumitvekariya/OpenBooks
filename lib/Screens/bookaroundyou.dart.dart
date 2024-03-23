@@ -43,7 +43,7 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(microseconds: 1), () async {
+    Future.delayed(const Duration(microseconds: 1), () async {
       // markers.add(
       //   Marker(
       //     markerId: MarkerId("2"),
@@ -59,7 +59,7 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
       //     infoWindow: InfoWindow(title: "Destination"),
       //   ),
       // );
-      CameraPosition cameraPosition = CameraPosition(
+      CameraPosition cameraPosition = const CameraPosition(
         target: LatLng(28.644800, 77.216721),
         zoom: 14,
       );
@@ -76,92 +76,107 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
   Widget build(BuildContext context) {
     final sp = context.watch<SignInProvider>();
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: screenHeight,
-          width: screenWidth,
-          color: Colors.transparent,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                height: screenHeight! * 0.9,
-                width: 390.w,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(32.r), topRight: Radius.circular(32.r)),
-                ),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 24.0,
-                      right: 24,
-                      top: 24,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 20.h,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: Container(
+        height: screenHeight,
+        width: screenWidth,
+        color: const Color.fromRGBO(249, 249, 249, 1),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              height: screenHeight! * 0.9,
+              width: 390.w,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(32.r), topRight: Radius.circular(32.r)),
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 24.0,
+                    right: 24,
+                    top: 24,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Text(
+                        "Books around you",
+                        style: TextStyle(
+                          fontFamily: globalfontfamily,
+                          color: Color.fromRGBO(0, 0, 0, 1),
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
                         ),
-                        Text(
-                          "Books around you",
-                          style: TextStyle(
-                            fontFamily: globalfontfamily,
-                            color: Color.fromRGBO(0, 0, 0, 1),
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        Container(
-                          height: 650.h,
-                          width: 342.w,
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Container(
+                        height: 650.h,
+                        width: 342.w,
+                        decoration: BoxDecoration(
                           color: Color.fromRGBO(249, 249, 249, 1),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              left: 20.0.w,
-                              right: 20.0.w,
-                              top: 0.h,
-                              bottom: 10.h,
-                            ),
-                            child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance.collection('Books').snapshots(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  }
-
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Center(child: CircularProgressIndicator());
-                                  }
-
-                                  List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                                    return Book.fromMap(data, doc.id);
-                                  }).toList();
-                                  return ListView.builder(
-                                      itemCount: books.length,
-                                      itemBuilder: (context, index) {
-                                        return Bookwidget(
-                                          book: books[index],
-                                        );
-                                      });
-                                }),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(32.r),
+                            topRight: Radius.circular(32.r),
+                            bottomLeft: Radius.circular(32.r),
+                            bottomRight: Radius.circular(32.r),
                           ),
                         ),
-                        SizedBox(
-                          height: 20.h,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: 20.0.w,
+                            right: 20.0.w,
+                            top: 20.h,
+                            bottom: 20.h,
+                          ),
+                          child: StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance.collection('Books').snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                }
+
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const Center(child: CircularProgressIndicator());
+                                }
+
+                                List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                  return Book.fromMap(data, doc.id);
+                                }).toList();
+
+                                return ListView.builder(
+                                    itemCount: books.length,
+                                    itemBuilder: (context, index) {
+                                      return Bookwidget(
+                                        book: books[index],
+                                      );
+                                    });
+                              }),
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                    ],
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
