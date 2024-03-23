@@ -1,3 +1,5 @@
+import 'book_model.dart';
+
 class RecievedBook {
   final String bookId;
   final String bookName;
@@ -55,6 +57,22 @@ class RecievedBook {
       recieveduserlat: (data['recieveduserlat'] ?? 0.0).toDouble(),
       recieveduserlong: (data['recieveduserlong'] ?? 0.0).toDouble(),
       bookdesc: data['bookdesc'],
+    );
+  }
+  Book convertToBook() {
+    return Book(
+      bookId: this.bookId ?? '',
+      bookName: this.bookName ?? '',
+      authorName: this.authorName ?? '',
+      imageCover: this.imageCover ?? '',
+      username: this.username ?? '',
+      userUid: this.userUid ?? '',
+      userLocation: this.userLocation ?? '',
+      userLat: this.userLat ?? 0.0,
+      userLong: this.userLong ?? 0.0,
+      userimage: this.userimage ?? '',
+      isrented: false,
+      bookdesc: this.bookdesc ?? '',
     );
   }
 }

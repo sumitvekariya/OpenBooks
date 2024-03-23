@@ -31,8 +31,7 @@ void nextScreen(context, page) {
 }
 
 void nextScreenReplace(context, page) {
-  Navigator.pushReplacement(
-      context, MaterialPageRoute(builder: (context) => page));
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
 }
 
 void nextScreenpushandremove(context, page) {
