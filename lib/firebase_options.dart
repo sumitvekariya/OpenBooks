@@ -28,10 +28,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -51,7 +48,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDUnucbDf8rY1C1PDUrBnKrJI74vcVmmQQ',
-    appId: '1:56322492879:android:0df48ec2f3777666a56aba',
+    appId: '1:56322492879:android:098816f00370e036a56aba',
     messagingSenderId: '56322492879',
     projectId: 'openbook-68460',
     storageBucket: 'openbook-68460.appspot.com',
@@ -59,10 +56,19 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAEyuIo3MiwM9snHBjWk_49gPMIrM-p-uo',
-    appId: '1:56322492879:ios:620e65360ecbb26da56aba',
+    appId: '1:56322492879:ios:db9acfd42a2a4bb1a56aba',
     messagingSenderId: '56322492879',
     projectId: 'openbook-68460',
     storageBucket: 'openbook-68460.appspot.com',
-    iosBundleId: 'com.example.openbook',
+    iosBundleId: 'com.openbooks.community',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAEyuIo3MiwM9snHBjWk_49gPMIrM-p-uo',
+    appId: '1:56322492879:ios:d05babcfe406e16fa56aba',
+    messagingSenderId: '56322492879',
+    projectId: 'openbook-68460',
+    storageBucket: 'openbook-68460.appspot.com',
+    iosBundleId: 'com.example.openbook.RunnerTests',
   );
 }

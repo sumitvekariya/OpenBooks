@@ -1,4 +1,4 @@
-package com.example.openbook
+package com.openbooks.community
 
 import io.flutter.embedding.android.FlutterActivity
 
