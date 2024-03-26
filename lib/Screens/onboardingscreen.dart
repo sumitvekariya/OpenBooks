@@ -3,16 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:openbook/Models/user_data_models.dart';
 import 'package:openbook/Screens/homepage.dart';
 import 'package:openbook/Screens/setupaccount.dart';
-import 'package:openbook/utils/globalvar.dart';
-
-import 'package:openbook/Models/user_data_models.dart';
 import 'package:openbook/TwitterAuth/provider/internet_provider.dart';
 import 'package:openbook/TwitterAuth/provider/sign_in_provider.dart';
-import 'package:openbook/utils/global_data.dart';
-import 'package:openbook/utils/snack_bar.dart';
 import 'package:openbook/Widgets/widgets.dart';
+import 'package:openbook/utils/global_data.dart';
+import 'package:openbook/utils/globalvar.dart';
+import 'package:openbook/utils/snack_bar.dart';
 import 'package:provider/provider.dart';
 
 class OnBoradingScreen extends StatefulWidget {
@@ -28,8 +27,7 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot =
-          await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
@@ -55,90 +53,77 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 160.h,
-                ),
-                Container(
-                    height: 265.h,
-                    width: 258.w,
-                    child: SvgPicture.asset("assets/images/grp1.svg")),
-                SizedBox(
-                  height: 194.h,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    setState(() {
-                      isloading = true;
-                    });
-                    await handleTwitterAuth();
-                  },
-                  child: Container(
-                    height: 43.h,
-                    width: 339.w,
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(85, 163, 255, 1),
-                      borderRadius: BorderRadius.circular(22.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                        child: isloading
-                            ? Center(
-                                child: Container(
-                                  height: 18.h,
-                                  width: 18.w,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            : Row(
-                                children: [
-                                  SizedBox(
-                                    width: 32.w,
-                                  ),
-                                  Image.asset(
-                                    "assets/images/tw.png",
-                                    height: 16.h,
-                                    width: 16.w,
-                                  ),
-                                  SizedBox(
-                                    width: 78.w,
-                                  ),
-                                  Text(
-                                    "Login with X",
-                                    style: TextStyle(
-                                        fontFamily: globalfontfamily,
-                                        color: Colors.white,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              )),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 160.h,
+              ),
+              SizedBox(height: 265.h, width: 258.w, child: SvgPicture.asset("assets/images/grp1.svg")),
+              SizedBox(
+                height: 194.h,
+              ),
+              GestureDetector(
+                onTap: () async {
+                  setState(() {
+                    isloading = true;
+                  });
+                  await handleTwitterAuth();
+                },
+                child: Container(
+                  height: 43.h,
+                  width: 339.w,
+                  decoration: BoxDecoration(
+                    color: const Color.fromRGBO(85, 163, 255, 1),
+                    borderRadius: BorderRadius.circular(22.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        spreadRadius: 0,
+                        blurRadius: 4,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
+                  child: Center(
+                      child: isloading
+                          ? Center(
+                              child: SizedBox(
+                                height: 18.h,
+                                width: 18.w,
+                                child: const CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          : Row(
+                              children: [
+                                SizedBox(
+                                  width: 32.w,
+                                ),
+                                Image.asset(
+                                  "assets/images/tw.png",
+                                  height: 16.h,
+                                  width: 16.w,
+                                ),
+                                SizedBox(
+                                  width: 78.w,
+                                ),
+                                Text(
+                                  "Login with X",
+                                  style: TextStyle(fontFamily: globalfontfamily, color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            )),
                 ),
-                SizedBox(height: 11.h),
-                Text(
-                  "Skip and explore books",
-                  style: TextStyle(
-                      color: Color.fromRGBO(87, 128, 199, 1),
-                      fontFamily: globalfontfamily,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600),
-                )
-              ],
-            ),
+              ),
+              SizedBox(height: 11.h),
+              Text(
+                "Skip and explore books",
+                style: TextStyle(color: const Color.fromRGBO(87, 128, 199, 1), fontFamily: globalfontfamily, fontSize: 12.sp, fontWeight: FontWeight.w600),
+              )
+            ],
           ),
         ),
       ),
@@ -155,24 +140,23 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
     } else {
       await sp.firebasesignInWithTwitter().then((value) {
         if (sp.hasError == true) {
+          setState(() {
+            isloading = false;
+          });
           openSnackbar(context, sp.errorCode.toString(), Colors.red);
         } else {
           // checking whether user exists or not
           sp.checkUserExists().then((value) async {
             if (value == true) {
               // user exists
-              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp
-                  .saveDataToSharedPreferences()
-                  .then((value) async => sp.setSignIn().then((value) async {
-                        await handleAfterSignIn();
-                      })));
+              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
+                    await handleAfterSignIn();
+                  })));
             } else {
               // user does not exist
-              sp.saveDataToFirestore().then((value) async => sp
-                  .saveDataToSharedPreferences()
-                  .then((value) async => sp.setSignIn().then((value) async {
-                        await handleAfterSignIn();
-                      })));
+              sp.saveDataToFirestore().then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
+                    await handleAfterSignIn();
+                  })));
             }
           });
         }
@@ -186,11 +170,11 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
     await getUserData(currentUserUID!);
 
     Future.delayed(const Duration(milliseconds: 1000)).then((value) {
-      print("userglobalData!.fillDetails : ${userglobalData!.fillDetails} ");
+      print("user globalData!.fillDetails : ${userglobalData!.fillDetails} ");
       if (userglobalData!.fillDetails == true) {
-        nextScreenReplace(context, HomePage());
+        nextScreenReplace(context, const HomePage());
       } else {
-        nextScreenReplace(context, SetupupAccount());
+        nextScreenReplace(context, const SetupupAccount());
       }
     });
   }
