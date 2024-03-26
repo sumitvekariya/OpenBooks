@@ -293,9 +293,9 @@ class _HomePageState extends State<HomePage> {
                                             padding: EdgeInsets.only(
                                               left: 20.0.w,
                                               right: 20.0.w,
-                                              // top: 16.h,
+                                              top: 5.h,
                                             ),
-                                            color: const Color.fromRGBO(249, 249, 249, 1),
+                                            // color: const Color.fromRGBO(249, 249, 249, 1),
                                             child: const Center(
                                               child: Text(
                                                 "No books are available",
@@ -388,14 +388,14 @@ class _HomePageState extends State<HomePage> {
                                             padding: EdgeInsets.only(
                                               left: 20.0.w,
                                               right: 20.0.w,
-                                              // top: 16.h,
+                                              top: 5.h,
                                             ),
-                                            color: const Color.fromRGBO(249, 249, 249, 1),
+                                            // color: const Color.fromRGBO(249, 249, 249, 1),
                                             child: const Center(
                                               child: Text(
                                                 "No books are available",
                                                 style: TextStyle(
-                                                  // fontWeight: FontWeight.bold,
+                                                  //fontWeight: FontWeight.,
                                                   fontFamily: globalfontfamily,
                                                   fontSize: 14,
                                                 ),

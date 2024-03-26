@@ -198,6 +198,8 @@ class _BookwidgetState extends State<Bookwidget> {
   bool isloading = false;
   @override
   Widget build(BuildContext context) {
+    String userNameLoc = "${widget.book.username}, ${widget.book.userLocation}";
+    userNameLoc = userNameLoc.length <= 44 ? userNameLoc : "${userNameLoc.substring(0, 41)}...";
     return widget.book.isrented
         ? const SizedBox()
         : widget.book.userUid == userglobalData!.uid
@@ -252,9 +254,10 @@ class _BookwidgetState extends State<Bookwidget> {
                                         width: 2.w,
                                       ),
                                       SizedBox(
-                                        width: 180.w,
+                                        width: 170.w,
                                         child: Text(
-                                          "${widget.book.username}, ${widget.book.userLocation}",
+                                          userNameLoc,
+                                          //"${widget.book.username}, ${widget.book.userLocation}",
                                           style: TextStyle(
                                             fontFamily: globalfontfamily,
                                             color: const Color.fromRGBO(0, 0, 0, 1),

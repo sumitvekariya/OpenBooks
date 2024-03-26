@@ -88,7 +88,8 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
                             SizedBox(
                               width: 180.w,
                               child: Text(
-                                "${widget.book.username}, ${widget.book.userLocation}",
+                                userNameLoc,
+                                // "${widget.book.username}, ${widget.book.userLocation}",
                                 style: TextStyle(
                                   fontFamily: globalfontfamily,
                                   color: const Color.fromRGBO(0, 0, 0, 1),

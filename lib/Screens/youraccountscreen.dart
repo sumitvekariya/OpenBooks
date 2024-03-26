@@ -417,9 +417,9 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       padding: EdgeInsets.only(
                                         left: 20.0.w,
                                         right: 20.0.w,
-                                        // top: 16.h,
+                                        top: 5.h,
                                       ),
-                                      color: const Color.fromRGBO(249, 249, 249, 1),
+                                      // color: const Color.fromRGBO(249, 249, 249, 1),
                                       child: const Center(
                                         child: Text(
                                           "No books are available",
@@ -609,9 +609,9 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       padding: EdgeInsets.only(
                                         left: 20.0.w,
                                         right: 20.0.w,
-                                        // top: 16.h,
+                                        top: 5.h,
                                       ),
-                                      color: const Color.fromRGBO(249, 249, 249, 1),
+                                      //color: const Color.fromRGBO(249, 249, 249, 1),
                                       child: const Center(
                                         child: Text(
                                           "No books are available",
@@ -708,9 +708,9 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       padding: EdgeInsets.only(
                                         left: 20.0.w,
                                         right: 20.0.w,
-                                        // top: 16.h,
+                                        top: 5.h,
                                       ),
-                                      color: const Color.fromRGBO(249, 249, 249, 1),
+                                      //color: const Color.fromRGBO(249, 249, 249, 1),
                                       child: const Center(
                                         child: Text(
                                           "No books are available",
@@ -785,33 +785,31 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Image.asset("assets/images/whatsapp.png"),
-                                            SizedBox(
-                                              width: 12.h,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset("assets/images/whatsapp.png"),
+                                          SizedBox(
+                                            width: 12.h,
+                                          ),
+                                          Text(
+                                            "Whatsapp",
+                                            style: TextStyle(
+                                              fontFamily: globalfontfamily,
+                                              color: const Color.fromRGBO(75, 200, 118, 1),
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w400,
                                             ),
-                                            Text(
-                                              "Whatsapp",
-                                              style: TextStyle(
-                                                fontFamily: globalfontfamily,
-                                                color: const Color.fromRGBO(75, 200, 118, 1),
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Image.asset(
-                                          "assets/images/frd.png",
-                                          color: const Color.fromRGBO(75, 200, 118, 1),
-                                        )
-                                      ],
-                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                      Image.asset(
+                                        "assets/images/frd.png",
+                                        color: const Color.fromRGBO(75, 200, 118, 1),
+                                      )
+                                    ],
                                   ),
                                   SizedBox(
                                     height: 12.h,
@@ -823,33 +821,31 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   SizedBox(
                                     height: 12.h,
                                   ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Image.asset("assets/images/x.png"),
-                                            SizedBox(
-                                              width: 12.h,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset("assets/images/x.png"),
+                                          SizedBox(
+                                            width: 12.h,
+                                          ),
+                                          Text(
+                                            "Twitter",
+                                            style: TextStyle(
+                                              fontFamily: globalfontfamily,
+                                              color: const Color.fromRGBO(0, 0, 0, 1),
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w400,
                                             ),
-                                            Text(
-                                              "Twitter",
-                                              style: TextStyle(
-                                                fontFamily: globalfontfamily,
-                                                color: const Color.fromRGBO(0, 0, 0, 1),
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Image.asset(
-                                          "assets/images/frd.png",
-                                          color: const Color.fromRGBO(0, 0, 0, 1),
-                                        )
-                                      ],
-                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                      Image.asset(
+                                        "assets/images/frd.png",
+                                        color: const Color.fromRGBO(0, 0, 0, 1),
+                                      )
+                                    ],
                                   ),
                                   SizedBox(
                                     height: 12.h,
@@ -861,33 +857,31 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   SizedBox(
                                     height: 12.h,
                                   ),
-                                  Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Image.asset("assets/images/inst.png"),
-                                            SizedBox(
-                                              width: 12.h,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset("assets/images/inst.png"),
+                                          SizedBox(
+                                            width: 12.h,
+                                          ),
+                                          Text(
+                                            "Instagram",
+                                            style: TextStyle(
+                                              fontFamily: globalfontfamily,
+                                              color: const Color.fromRGBO(242, 68, 65, 1),
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w400,
                                             ),
-                                            Text(
-                                              "Instagram",
-                                              style: TextStyle(
-                                                fontFamily: globalfontfamily,
-                                                color: const Color.fromRGBO(242, 68, 65, 1),
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Image.asset(
-                                          "assets/images/frd.png",
-                                          color: const Color.fromRGBO(242, 68, 65, 1),
-                                        )
-                                      ],
-                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                      Image.asset(
+                                        "assets/images/frd.png",
+                                        color: const Color.fromRGBO(242, 68, 65, 1),
+                                      )
+                                    ],
                                   ),
                                   SizedBox(
                                     height: 12.h,
@@ -915,7 +909,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                     sp.userSignOut();
                                     nextScreenReplace(context, const OnBoradingScreen());
                                   },
-                                  child: const Text("SIGNOUT",
+                                  child: const Text("SIGN OUT",
                                       style: TextStyle(
                                         color: Colors.black,
                                       ))),
