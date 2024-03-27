@@ -23,6 +23,7 @@ import 'package:openbook/utils/globalvar.dart';
 import 'package:openbook/utils/next_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:random_string/random_string.dart';
+import 'package:simple_barcode_scanner/enum.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
@@ -457,88 +458,96 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           TapBounceContainer(
                             child: GestureDetector(
                               onTap: () async {
-                                setState(() {
-                                  bookloading = true;
-                                });
                                 var res = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const SimpleBarcodeScannerPage(),
+                                      builder: (context) => const SimpleBarcodeScannerPage(
+                                        scanType: ScanType.barcode,
+                                      ),
                                     ));
 
-                                await getBookDetails(res).then((details) {
+                                if (res != '-1') {
                                   setState(() {
-                                    bookDetails = details;
+                                    bookloading = true;
                                   });
-                                });
+                                  await getBookDetails(res).then((details) {
+                                    setState(() {
+                                      bookDetails = details;
+                                    });
+                                  }).catchError((e) {
+                                    setState(() {
+                                      bookloading = false;
+                                    });
 
-                                setState(() {
-                                  if (res is String) {
-                                    result = res;
+                                    showTopSnackBar(
+                                      Overlay.of(context),
+                                      const CustomSnackBar.error(
+                                        message: 'Book not Found',
+                                      ),
+                                    );
+                                  });
+                                  try {
+                                    print('Barcode Result: $res');
+                                    print('Title: ${bookDetails['title'] ?? "no tittle"}');
+                                    print('Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
+                                    print('Description: ${bookDetails['description'] ?? "no description"}');
+                                    print('Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
+
+                                    String book1id = randomAlphaNumeric(9);
+                                    String book1name = bookDetails['title'] ?? "no tittle";
+                                    String book1authorname = bookDetails['authors'][0] ?? "no author name";
+
+                                    String imgcover = bookDetails['imageLinks']['thumbnail'] ??
+                                        "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
+
+                                    String bookdesc = bookDetails['description'] ?? "no descriptions";
+
+                                    String userloc = locationcontroller.text;
+
+                                    LatLng locationcoordinates = await getLocationFromAddress(userloc);
+
+                                    double userlocationlat = locationcoordinates.latitude;
+
+                                    double userlocationlong = locationcoordinates.longitude;
+
+                                    await saveDataToFirestorefromscanner(
+                                      bookid: book1id,
+                                      bookname: book1name,
+                                      authorname: book1authorname,
+                                      imgcover: imgcover,
+                                      username: userglobalData!.username,
+                                      userimage: userglobalData!.imageurl,
+                                      useruid: userglobalData!.uid,
+                                      userlocation: userloc,
+                                      userlat: userlocationlat,
+                                      userlong: userlocationlong,
+                                      bookdesc: bookdesc,
+                                    );
+
+                                    setState(() {
+                                      bookloading = false;
+                                    });
+
+                                    showTopSnackBar(
+                                      Overlay.of(context),
+                                      CustomSnackBar.success(
+                                        message: '$book1name added Successfully !',
+                                      ),
+                                    );
+
+                                    ///
+                                  } catch (e) {
+                                    setState(() {
+                                      bookloading = false;
+                                    });
+
+                                    showTopSnackBar(
+                                      Overlay.of(context),
+                                      const CustomSnackBar.error(
+                                        message: 'An error occurred while processing the book details',
+                                      ),
+                                    );
                                   }
-                                });
-
-                                if (result == "-1") {
-                                  setState(() {
-                                    bookloading = false;
-                                  });
-
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    const CustomSnackBar.error(
-                                      message: 'Book not Found',
-                                    ),
-                                  );
-                                } else {
-                                  print('Barcode Result: $result');
-                                  print('Title: ${bookDetails['title'] ?? "no tittle"}');
-                                  print('Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
-                                  print('Description: ${bookDetails['description'] ?? "no description"}');
-                                  print('Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
-
-                                  String book1id = randomAlphaNumeric(9);
-                                  String book1name = bookDetails['title'] ?? "no tittle";
-                                  String book1authorname = bookDetails['authors'][0] ?? "no author name";
-
-                                  String imgcover = bookDetails['imageLinks']['thumbnail'] ??
-                                      "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
-
-                                  String bookdesc = bookDetails['description'] ?? "no descriptions";
-
-                                  String userloc = locationcontroller.text;
-
-                                  LatLng locationcoordinates = await getLocationFromAddress(userloc);
-
-                                  double userlocationlat = locationcoordinates.latitude;
-
-                                  double userlocationlong = locationcoordinates.longitude;
-
-                                  await saveDataToFirestorefromscanner(
-                                    bookid: book1id,
-                                    bookname: book1name,
-                                    authorname: book1authorname,
-                                    imgcover: imgcover,
-                                    username: userglobalData!.username,
-                                    userimage: userglobalData!.imageurl,
-                                    useruid: userglobalData!.uid,
-                                    userlocation: userloc,
-                                    userlat: userlocationlat,
-                                    userlong: userlocationlong,
-                                    bookdesc: bookdesc,
-                                  );
-
-                                  setState(() {
-                                    bookloading = false;
-                                  });
-
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.success(
-                                      message: '$book1name added Successfully !',
-                                    ),
-                                  );
-
-                                  ///
                                 }
                               },
                               child: Center(
