@@ -84,24 +84,21 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
                               width: 2.w,
                             ),
                             // Image.asset("assets/images/playr1.png"),
-                            SizedBox(
-                              width: 170.w,
-                              child: Text(
-                                userNameLoc,
-                                //"${widget.book.requestusername}, ${widget.book.requestuserlocation}",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: const Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 8.sp,
-                                  fontWeight: FontWeight.w200,
-                                ),
+                            Text(
+                              userNameLoc,
+                              //"${widget.book.requestusername}, ${widget.book.requestuserlocation}",
+                              style: TextStyle(
+                                fontFamily: globalfontfamily,
+                                color: const Color.fromRGBO(0, 0, 0, 1),
+                                fontSize: 8.sp,
+                                fontWeight: FontWeight.w200,
                               ),
                             ),
                           ],
                         ),
 
                         SizedBox(
-                          width: 200.w,
+                          width: 180.w,
                           child: Text(
                             widget.book.bookName,
                             style: TextStyle(
