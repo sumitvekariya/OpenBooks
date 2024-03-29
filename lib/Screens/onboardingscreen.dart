@@ -27,7 +27,8 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot =
+          await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
@@ -60,7 +61,10 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
               SizedBox(
                 height: 160.h,
               ),
-              SizedBox(height: 265.h, width: 258.w, child: SvgPicture.asset("assets/images/grp1.svg")),
+              SizedBox(
+                  height: 265.h,
+                  width: 258.w,
+                  child: SvgPicture.asset("assets/images/grp1.svg")),
               SizedBox(
                 height: 194.h,
               ),
@@ -112,17 +116,16 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
                                 ),
                                 Text(
                                   "Login with X",
-                                  style: TextStyle(fontFamily: globalfontfamily, color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                                  style: TextStyle(
+                                      fontFamily: globalfontfamily,
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ],
                             )),
                 ),
               ),
-              SizedBox(height: 11.h),
-              Text(
-                "Skip and explore books",
-                style: TextStyle(color: const Color.fromRGBO(87, 128, 199, 1), fontFamily: globalfontfamily, fontSize: 12.sp, fontWeight: FontWeight.w600),
-              )
             ],
           ),
         ),
@@ -149,14 +152,18 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
           sp.checkUserExists().then((value) async {
             if (value == true) {
               // user exists
-              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
-                    await handleAfterSignIn();
-                  })));
+              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) async => sp.setSignIn().then((value) async {
+                        await handleAfterSignIn();
+                      })));
             } else {
               // user does not exist
-              sp.saveDataToFirestore().then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
-                    await handleAfterSignIn();
-                  })));
+              sp.saveDataToFirestore().then((value) async => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) async => sp.setSignIn().then((value) async {
+                        await handleAfterSignIn();
+                      })));
             }
           });
         }
