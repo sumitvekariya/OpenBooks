@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
             ],
             child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                title: 'Flutter Demo',
+                title: 'Openbooks',
                 theme: ThemeData(
                   colorScheme:
                       ColorScheme.fromSeed(seedColor: Colors.deepPurple),
