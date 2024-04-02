@@ -1,172 +1,88 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:openbook/Models/user_model.dart';
 import 'package:openbook/utils/globalvar.dart';
 
-import 'package:openbook/Models/user_model.dart';
-import 'package:openbook/Widgets/widgets.dart';
-import 'package:openbook/Screens/youraccountscreen.dart';
+import '../Chat/chat.dart';
 
-class PeopleWidget extends StatelessWidget {
-  final UserPeopleModel usermodel;
-  const PeopleWidget({
-    super.key,
-    required this.usermodel,
-  });
+class UserTile extends StatelessWidget {
+  final UserPeopleModel userModel;
+  final types.User typeUser;
+  const UserTile({super.key, required this.userModel, required this.typeUser});
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    // margin: EdgeInsets.symmetric(horizontal: 16),
-                    height: 30.h,
-                    width: 30.w,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: Image.network(
-                          usermodel.imageurl,
-                          fit: BoxFit.cover,
-                        ).image,
-                        radius: 50,
-                        // child: Image.file(
-                        //   selectedImage!,
-                        //   fit: BoxFit.cover,
-                        // ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 12.0.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${usermodel.username}",
-                          style: TextStyle(
-                            fontFamily: globalfontfamily,
-                            color: Color.fromRGBO(0, 0, 0, 1),
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Text(
-                          "${usermodel.locationname}",
-                          style: TextStyle(
-                            fontFamily: globalfontfamily,
-                            color: Color.fromRGBO(0, 0, 0, 1),
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w200,
-                          ),
-                        ),
-                        // SizedBox(
-                        //   height: 12.h,
-                        // ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 1,
-                color: Color.fromRGBO(198, 198, 200, 1),
-              ),
-              SizedBox(
-                height: 12.h,
-              ),
-              Image.asset("assets/images/msg.png")
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 12.h,
-        ),
-        Container(
-          height: 1,
-          color: Color.fromRGBO(198, 198, 200, 1),
-        ),
-        SizedBox(
-          height: 12.h,
-        ),
-      ],
+  void _handlePressed(types.User otherUser, BuildContext context, UserPeopleModel userData) async {
+    final navigator = Navigator.of(context);
+    final room = await FirebaseChatCore.instance.createRoom(otherUser);
+
+    //navigator.pop();
+    await navigator.push(
+      MaterialPageRoute(
+        builder: (context) => ChatPage(room: room, userModel: userData),
+      ),
     );
   }
-}
-
-class PeopleBox extends StatelessWidget {
-  const PeopleBox({
-    super.key,
-  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        nextScreen(context, YourAccountScreen());
-      },
-      child: Container(
-        // color: Colors.red,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
+      margin: EdgeInsets.symmetric(vertical: 1.h),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.transparent,
+            radius: 22.w,
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: userModel.imageurl.isNotEmpty ? userModel.imageurl : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                width: ScreenUtil().screenWidth * 0.2,
+                height: ScreenUtil().screenWidth * 0.2,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Image.network(
+                  'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // Placeholder image
+                  width: ScreenUtil().screenWidth * 0.2,
+                  height: ScreenUtil().screenWidth * 0.2,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 20.w),
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image.asset("assets/images/people.png"),
-                Padding(
-                  padding: EdgeInsets.only(left: 12.0.w),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Aisha Mukherjee",
-                        style: TextStyle(
-                          fontFamily: globalfontfamily,
-                          color: Color.fromRGBO(0, 0, 0, 1),
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        "320+ books",
-                        style: TextStyle(
-                          fontFamily: globalfontfamily,
-                          color: Color.fromRGBO(0, 0, 0, 1),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                      // SizedBox(
-                      //   height: 12.h,
-                      // ),
-                    ],
-                  ),
+                Text(
+                  userModel.name,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  style: TextStyle(fontFamily: globalfontfamily, fontSize: 13.sp, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  userModel.locationname,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  style: TextStyle(fontFamily: globalfontfamily, color: Colors.grey, fontSize: 12.sp),
                 ),
               ],
             ),
-            Container(
-              height: 1,
-              color: Color.fromRGBO(198, 198, 200, 1),
-            ),
-            SizedBox(
-              height: 12.h,
-            ),
-            Image.asset("assets/images/msg.png")
-          ],
-        ),
+          ),
+          IconButton(
+              onPressed: () {
+                _handlePressed(typeUser, context, userModel);
+              },
+              icon: Icon(CupertinoIcons.chat_bubble_text, color: Colors.blue, size: 20.w))
+        ],
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -50,17 +51,32 @@ class _SetupupAccountState extends State<SetupupAccount> {
     );
   }
 
-  double? userlat;
-  double? userlong;
+  double? userlat = 19.0760;
+  double? userlong = 72.8777;
   String? userlocationname;
   bool isloading = true;
 
-  Future<Position> getcurrentlocation() async {
-    await Geolocator.requestPermission().then((value) {}).onError((error, stackTrace) {
-      print("error" + error.toString());
-    });
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-    return Geolocator.getCurrentPosition();
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition();
   }
 
   Future<String> getLocationName(double latitude, double longitude) async {
@@ -285,7 +301,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
     super.initState();
 
     Future.delayed(const Duration(microseconds: 1), () async {
-      await getcurrentlocation().then((value) async {
+      await _determinePosition().then((value) async {
         print("my current loaction");
         print(value.latitude.toString() + " " + value.longitude.toString());
 
@@ -293,6 +309,9 @@ class _SetupupAccountState extends State<SetupupAccount> {
         userlong = value.longitude;
         await getLocation();
       });
+    }).onError((error, stackTrace) async {
+      log(error.toString());
+      await getLocation();
     });
   }
 
@@ -352,7 +371,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                           SizedBox(
                             width: 300.w,
                             child: Text(
-                              "Help us know more about your book preferences so we can let others know about your books",
+                              "Welcome you are the books you read",
                               style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 12.sp, fontWeight: FontWeight.w300),
                             ),
                           ),
@@ -480,7 +499,7 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "username",
+                                    "Username",
                                     style: TextStyle(
                                       fontFamily: globalfontfamily,
                                       color: Colors.black,
@@ -615,15 +634,15 @@ class _SetupupAccountState extends State<SetupupAccount> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text(
-                            "This helps us better match make",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Colors.black,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
+                          // Text(
+                          //   "This helps us better match make",
+                          //   style: TextStyle(
+                          //     fontFamily: globalfontfamily,
+                          //     color: Colors.black,
+                          //     fontSize: 12.sp,
+                          //     fontWeight: FontWeight.w300,
+                          //   ),
+                          // ),
                           SizedBox(
                             height: 12.h,
                           ),
