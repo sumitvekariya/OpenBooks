@@ -91,7 +91,8 @@ class SignInProvider extends ChangeNotifier {
           "firebaseAuth.currentUser!.email: ${firebaseAuth.currentUser!.email}");
 
       // Extract the necessary information
-      _username = authResult.additionalUserInfo!.username;
+      _username =
+          authResult.additionalUserInfo!.username ?? userDetails.displayName;
       _name = userDetails.displayName;
       _email = firebaseAuth.currentUser!.email ?? "twitter";
       _imageUrl = userDetails.photoURL;
@@ -214,7 +215,7 @@ class SignInProvider extends ChangeNotifier {
   Future saveDataToSharedPreferences() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     await s.setString('uid', _uid!);
-    await s.setString('username', _username!);
+    await s.setString('username', _username ?? _name!);
     await s.setString('name', _name!);
     await s.setString('image_url', _imageUrl!);
     await s.setBool('isfilled', _isFilled!);
