@@ -60,12 +60,12 @@ class _FlashScreenState extends State<FlashScreen> {
           print(userUid);
           await getUserData(userUid!);
 
-          // if (userglobalData?.fillDetails != null &&
-          //     userglobalData!.fillDetails == true) {
-          //   nextScreenpushandremove(context, const HomePage());
-          // } else {
+          if (userglobalData?.fillDetails != null &&
+              userglobalData!.fillDetails == true) {
+            nextScreenpushandremove(context, const HomePage());
+          } else {
             nextScreenpushandremove(context, const SetupAccount());
-          //}
+          }
 
           // nextScreen(context, HomeScreen());
         });

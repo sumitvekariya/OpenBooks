@@ -357,7 +357,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 20.h,
                                 ),
                                 Text(
-                                  "Connection Requests",
+                                  "Requests to Dm",
                                   style: TextStyle(
                                     fontFamily: globalfontfamily,
                                     color: const Color.fromRGBO(0, 0, 0, 1),
