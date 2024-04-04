@@ -130,12 +130,16 @@ class _RentedBookWidgetState extends State<RentedBookWidget> {
               TapBounceContainer(
                 child: GestureDetector(
                   onTap: () async {
-                    showTopSnackBar(
-                      Overlay.of(context),
-                      CustomSnackBar.error(
-                        message: '${widget.book.bookName} successfully withdrawn from ${widget.book.rentedusername} to My Book Shelf',
-                      ),
-                    );
+                      showSnackbar(context, Colors.blue,
+                        '${widget.book.bookName} successfully withdrawn from ${widget.book.rentedusername} to My Book Shelf');
+                    
+                    
+                    // showTopSnackBar(
+                    //   Overlay.of(context),
+                    //   CustomSnackBar.error(
+                    //     message: '${widget.book.bookName} successfully withdrawn from ${widget.book.rentedusername} to My Book Shelf',
+                    //   ),
+                    // );
                     setState(() {
                       isloading = true;
                     });

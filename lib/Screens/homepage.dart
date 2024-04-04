@@ -357,7 +357,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 20.h,
                                 ),
                                 Text(
-                                  "Your Requests",
+                                  "Connection Requests",
                                   style: TextStyle(
                                     fontFamily: globalfontfamily,
                                     color: const Color.fromRGBO(0, 0, 0, 1),
@@ -393,7 +393,7 @@ class _HomePageState extends State<HomePage> {
                                             // color: const Color.fromRGBO(249, 249, 249, 1),
                                             child: const Center(
                                               child: Text(
-                                                "No books are available",
+                                                "No requests are pending",
                                                 style: TextStyle(
                                                   //fontWeight: FontWeight.,
                                                   fontFamily: globalfontfamily,

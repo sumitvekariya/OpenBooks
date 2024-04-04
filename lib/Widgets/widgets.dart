@@ -49,13 +49,9 @@ void showSnackbar(context, color, message) {
         message,
         style: const TextStyle(fontSize: 14),
       ),
-      backgroundColor: color,
+      backgroundColor: Colors.blue,
+      behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 2),
-      action: SnackBarAction(
-        label: "OK",
-        onPressed: () {},
-        textColor: Colors.white,
-      ),
     ),
   );
 }

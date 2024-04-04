@@ -38,14 +38,14 @@ class MyApp extends StatelessWidget {
               ),
             ],
             child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: 'Openbooks',
-                theme: ThemeData(
-                  colorScheme:
-                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                  useMaterial3: true,
-                ),
-                home: Builder(builder: (context) {
+              debugShowCheckedModeBanner: false,
+              title: 'OpenBooks',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                useMaterial3: true,
+              ),
+              home: Builder(
+                builder: (context) {
                   screenHeight = MediaQuery.of(context).size.height;
                   screenWidth = MediaQuery.of(context).size.width;
                   return AnimatedSplashScreen(
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
                     splashTransition: SplashTransition.fadeTransition,
                     backgroundColor: Colors.black,
                     splash: Container(
-                      margin: EdgeInsets.all(10),
+                      margin: const EdgeInsets.all(10),
                       alignment: Alignment.center,
                       child: Image.asset(
                         "assets/images/book.png",
@@ -61,10 +61,11 @@ class MyApp extends StatelessWidget {
                         width: 800,
                       ),
                     ),
-                    nextScreen: FlashScreen(),
-                    // nextScreen: FlashScreen(),
+                    nextScreen: const FlashScreen(),
                   );
-                })),
+                },
+              ),
+            ),
           );
         });
   }

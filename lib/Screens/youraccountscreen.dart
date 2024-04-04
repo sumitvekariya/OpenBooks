@@ -18,6 +18,7 @@ import 'package:openbook/ScreenWidgets/rentedbookwidget.dart';
 import 'package:openbook/Screens/onboardingscreen.dart';
 import 'package:openbook/Screens/recievedbookscreen.dart';
 import 'package:openbook/TwitterAuth/provider/sign_in_provider.dart';
+import 'package:openbook/Widgets/widgets.dart' as SnackBar;
 import 'package:openbook/utils/global_data.dart';
 import 'package:openbook/utils/globalvar.dart';
 import 'package:openbook/utils/next_screen.dart';
@@ -52,7 +53,11 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
     required double userlong,
     required String bookdesc,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).collection("Books").doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance
+        .collection("users")
+        .doc(userglobalData!.uid)
+        .collection("Books")
+        .doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -69,7 +74,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance.collection("Books").doc(bookid);
+    final DocumentReference br =
+        FirebaseFirestore.instance.collection("Books").doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -114,8 +120,10 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
   bool kisloading = true;
 
   Future<Map<String, dynamic>> getBookDetails(String isbn) async {
-    const apiKey = 'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
-    final apiUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
+    const apiKey =
+        'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
+    final apiUrl =
+        'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
 
     //https://www.googleapis.com/books/v1/volumes?q=isbn:4577714843828&key=AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M
 
@@ -142,7 +150,9 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
   }
 
   Future<Position> getcurrentlocation() async {
-    await Geolocator.requestPermission().then((value) {}).onError((error, stackTrace) {
+    await Geolocator.requestPermission()
+        .then((value) {})
+        .onError((error, stackTrace) {
       print("error" + error.toString());
     });
 
@@ -151,11 +161,13 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
   Future<String> getLocationName(double latitude, double longitude) async {
     try {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(latitude, longitude);
+      List<geo.Placemark> placemarks =
+          await geo.placemarkFromCoordinates(latitude, longitude);
 
       if (placemarks != null && placemarks.isNotEmpty) {
         geo.Placemark place = placemarks[0];
-        String locationName = "${place.subLocality}, ${place.locality}, ${place.country}";
+        String locationName =
+            "${place.subLocality}, ${place.locality}, ${place.country}";
 
         setState(() {
           isloading = false;
@@ -184,7 +196,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot =
+          await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
@@ -256,7 +269,11 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                         children: [
                           Text(
                             "Your account",
-                            style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 28.sp, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                                fontFamily: globalfontfamily,
+                                color: Colors.black,
+                                fontSize: 28.sp,
+                                fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -397,7 +414,11 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           ),
 
                           StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('Books').snapshots(),
+                              stream: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userglobalData!.uid)
+                                  .collection('Books')
+                                  .snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
@@ -405,11 +426,15 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
                                 print(!snapshot.hasData);
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
                                 }
-                                List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                List<Book> books = snapshot.data!.docs
+                                    .map((DocumentSnapshot doc) {
+                                  Map<String, dynamic> data =
+                                      doc.data() as Map<String, dynamic>;
                                   return Book.fromMap(data, doc.id);
                                 }).toList();
                                 if (books.isEmpty) {
@@ -435,7 +460,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   return Container(
                                     height: 290.h,
                                     width: 342.w,
-                                    color: const Color.fromRGBO(249, 249, 249, 1),
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
                                     padding: EdgeInsets.only(
                                       left: 20.0.w,
                                       right: 20.0.w,
@@ -461,7 +487,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                 var res = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const SimpleBarcodeScannerPage(
+                                      builder: (context) =>
+                                          const SimpleBarcodeScannerPage(
                                         scanType: ScanType.barcode,
                                       ),
                                     ));
@@ -479,36 +506,52 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       bookloading = false;
                                     });
 
-                                    showTopSnackBar(
-                                      Overlay.of(context),
-                                      const CustomSnackBar.error(
-                                        message: 'Book not Found',
-                                      ),
-                                    );
+                                    SnackBar.showSnackbar(
+                                        context, Colors.red, 'Book not Found');
+
+                                    // showTopSnackBar(
+                                    //   Overlay.of(context),
+                                    //   const CustomSnackBar.error(
+                                    //     message: 'Book not Found',
+                                    //   ),
+                                    // );
                                   });
                                   try {
                                     print('Barcode Result: $res');
-                                    print('Title: ${bookDetails['title'] ?? "no tittle"}');
-                                    print('Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
-                                    print('Description: ${bookDetails['description'] ?? "no description"}');
-                                    print('Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
+                                    print(
+                                        'Title: ${bookDetails['title'] ?? "no tittle"}');
+                                    print(
+                                        'Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
+                                    print(
+                                        'Description: ${bookDetails['description'] ?? "no description"}');
+                                    print(
+                                        'Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
 
                                     String book1id = randomAlphaNumeric(9);
-                                    String book1name = bookDetails['title'] ?? "no tittle";
-                                    String book1authorname = bookDetails['authors'][0] ?? "no author name";
+                                    String book1name =
+                                        bookDetails['title'] ?? "no tittle";
+                                    String book1authorname =
+                                        bookDetails['authors'][0] ??
+                                            "no author name";
 
-                                    String imgcover = bookDetails['imageLinks']['thumbnail'] ??
+                                    String imgcover = bookDetails['imageLinks']
+                                            ['thumbnail'] ??
                                         "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
 
-                                    String bookdesc = bookDetails['description'] ?? "no descriptions";
+                                    String bookdesc =
+                                        bookDetails['description'] ??
+                                            "no descriptions";
 
                                     String userloc = locationcontroller.text;
 
-                                    LatLng locationcoordinates = await getLocationFromAddress(userloc);
+                                    LatLng locationcoordinates =
+                                        await getLocationFromAddress(userloc);
 
-                                    double userlocationlat = locationcoordinates.latitude;
+                                    double userlocationlat =
+                                        locationcoordinates.latitude;
 
-                                    double userlocationlong = locationcoordinates.longitude;
+                                    double userlocationlong =
+                                        locationcoordinates.longitude;
 
                                     await saveDataToFirestorefromscanner(
                                       bookid: book1id,
@@ -528,12 +571,16 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       bookloading = false;
                                     });
 
-                                    showTopSnackBar(
-                                      Overlay.of(context),
-                                      CustomSnackBar.success(
-                                        message: '$book1name added Successfully !',
-                                      ),
-                                    );
+                                    SnackBar.showSnackbar(
+                                        context, Colors.blue, '$book1name added Successfully !');
+
+                                    // showTopSnackBar(
+                                    //   Overlay.of(context),
+                                    //   CustomSnackBar.success(
+                                    //     message:
+                                    //         '$book1name added Successfully !',
+                                    //   ),
+                                    // );
 
                                     ///
                                   } catch (e) {
@@ -541,12 +588,16 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       bookloading = false;
                                     });
 
-                                    showTopSnackBar(
-                                      Overlay.of(context),
-                                      const CustomSnackBar.error(
-                                        message: 'An error occurred while processing the book details',
-                                      ),
-                                    );
+                                    SnackBar.showSnackbar(
+                                        context, Colors.red, 'An error occurred while processing the book details');
+
+                                    // showTopSnackBar(
+                                    //   Overlay.of(context),
+                                    //   const CustomSnackBar.error(
+                                    //     message:
+                                    //         'An error occurred while processing the book details',
+                                    //   ),
+                                    // );
                                   }
                                 }
                               },
@@ -598,17 +649,25 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           ),
 
                           StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('RecievedBooks').snapshots(),
+                              stream: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userglobalData!.uid)
+                                  .collection('RecievedBooks')
+                                  .snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 }
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
                                 }
-                                List<RecievedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                List<RecievedBook> books = snapshot.data!.docs
+                                    .map((DocumentSnapshot doc) {
+                                  Map<String, dynamic> data =
+                                      doc.data() as Map<String, dynamic>;
                                   return RecievedBook.fromMap(data, doc.id);
                                 }).toList();
 
@@ -637,7 +696,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       Container(
                                         height: 180.h,
                                         width: 342.w,
-                                        color: const Color.fromRGBO(249, 249, 249, 1),
+                                        color: const Color.fromRGBO(
+                                            249, 249, 249, 1),
                                         padding: EdgeInsets.only(
                                           left: 20.0.w,
                                           right: 20.0.w,
@@ -653,19 +713,23 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          nextScreen(context, const RecievedBookScreen());
+                                          nextScreen(context,
+                                              const RecievedBookScreen());
                                         },
                                         child: Container(
                                           width: 342.w,
-                                          color: const Color.fromRGBO(249, 249, 249, 1),
+                                          color: const Color.fromRGBO(
+                                              249, 249, 249, 1),
                                           child: Padding(
-                                            padding: EdgeInsets.only(bottom: 14.0.h),
+                                            padding:
+                                                EdgeInsets.only(bottom: 14.0.h),
                                             child: Center(
                                               child: Text(
                                                 "view all",
                                                 style: TextStyle(
                                                   fontFamily: globalfontfamily,
-                                                  color: const Color.fromRGBO(67, 128, 199, 1),
+                                                  color: const Color.fromRGBO(
+                                                      67, 128, 199, 1),
                                                   fontSize: 12.sp,
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -698,17 +762,25 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                           ),
 
                           StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('RentedBooks').snapshots(),
+                              stream: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userglobalData!.uid)
+                                  .collection('RentedBooks')
+                                  .snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 }
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
                                 }
-                                List<RentedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                List<RentedBook> books = snapshot.data!.docs
+                                    .map((DocumentSnapshot doc) {
+                                  Map<String, dynamic> data =
+                                      doc.data() as Map<String, dynamic>;
                                   return RentedBook.fromMap(data, doc.id);
                                 }).toList();
                                 if (books.isEmpty) {
@@ -734,7 +806,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   return Container(
                                     height: 180.h,
                                     width: 342.w,
-                                    color: const Color.fromRGBO(249, 249, 249, 1),
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
                                     padding: EdgeInsets.only(
                                       left: 20.0.w,
                                       right: 20.0.w,
@@ -795,11 +868,13 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
-                                          Image.asset("assets/images/whatsapp.png"),
+                                          Image.asset(
+                                              "assets/images/whatsapp.png"),
                                           SizedBox(
                                             width: 12.h,
                                           ),
@@ -807,7 +882,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                             "Whatsapp",
                                             style: TextStyle(
                                               fontFamily: globalfontfamily,
-                                              color: const Color.fromRGBO(75, 200, 118, 1),
+                                              color: const Color.fromRGBO(
+                                                  75, 200, 118, 1),
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -816,7 +892,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       ),
                                       Image.asset(
                                         "assets/images/frd.png",
-                                        color: const Color.fromRGBO(75, 200, 118, 1),
+                                        color: const Color.fromRGBO(
+                                            75, 200, 118, 1),
                                       )
                                     ],
                                   ),
@@ -825,13 +902,15 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   ),
                                   Container(
                                     height: 1,
-                                    color: const Color.fromRGBO(198, 198, 200, 1),
+                                    color:
+                                        const Color.fromRGBO(198, 198, 200, 1),
                                   ),
                                   SizedBox(
                                     height: 12.h,
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -843,7 +922,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                             "Twitter",
                                             style: TextStyle(
                                               fontFamily: globalfontfamily,
-                                              color: const Color.fromRGBO(0, 0, 0, 1),
+                                              color: const Color.fromRGBO(
+                                                  0, 0, 0, 1),
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -861,13 +941,15 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   ),
                                   Container(
                                     height: 1,
-                                    color: const Color.fromRGBO(198, 198, 200, 1),
+                                    color:
+                                        const Color.fromRGBO(198, 198, 200, 1),
                                   ),
                                   SizedBox(
                                     height: 12.h,
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -879,7 +961,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                             "Instagram",
                                             style: TextStyle(
                                               fontFamily: globalfontfamily,
-                                              color: const Color.fromRGBO(242, 68, 65, 1),
+                                              color: const Color.fromRGBO(
+                                                  242, 68, 65, 1),
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -888,7 +971,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                       ),
                                       Image.asset(
                                         "assets/images/frd.png",
-                                        color: const Color.fromRGBO(242, 68, 65, 1),
+                                        color: const Color.fromRGBO(
+                                            242, 68, 65, 1),
                                       )
                                     ],
                                   ),
@@ -897,7 +981,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                   ),
                                   Container(
                                     height: 1,
-                                    color: const Color.fromRGBO(198, 198, 200, 1),
+                                    color:
+                                        const Color.fromRGBO(198, 198, 200, 1),
                                   ),
                                   SizedBox(
                                     height: 16.h,
@@ -916,7 +1001,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                               child: ElevatedButton(
                                   onPressed: () {
                                     sp.userSignOut();
-                                    nextScreenReplace(context, const OnBoradingScreen());
+                                    nextScreenReplace(
+                                        context, const OnBoardingScreen());
                                   },
                                   child: const Text("SIGN OUT",
                                       style: TextStyle(

@@ -14,14 +14,14 @@ import 'package:openbook/utils/globalvar.dart';
 import 'package:openbook/utils/snack_bar.dart';
 import 'package:provider/provider.dart';
 
-class OnBoradingScreen extends StatefulWidget {
-  const OnBoradingScreen({super.key});
+class OnBoardingScreen extends StatefulWidget {
+  const OnBoardingScreen({super.key});
 
   @override
-  State<OnBoradingScreen> createState() => _OnBoradingScreenState();
+  State<OnBoardingScreen> createState() => _OnBoardingScreenState();
 }
 
-class _OnBoradingScreenState extends State<OnBoradingScreen> {
+class _OnBoardingScreenState extends State<OnBoardingScreen> {
   bool isloading = false;
   Future<UserData> getUserData(String uid) async {
     try {
@@ -181,7 +181,7 @@ class _OnBoradingScreenState extends State<OnBoradingScreen> {
       if (userglobalData!.fillDetails == true) {
         nextScreenReplace(context, const HomePage());
       } else {
-        nextScreenReplace(context, const SetupupAccount());
+        nextScreenReplace(context, const SetupAccount());
       }
     });
   }

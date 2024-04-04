@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:openbook/Screens/homepage.dart';
 import 'package:openbook/Screens/onboardingscreen.dart';
 import 'package:openbook/Screens/setupaccount.dart';
-
 import 'package:openbook/Widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:openbook/Models/user_data_models.dart';
@@ -61,17 +60,17 @@ class _FlashScreenState extends State<FlashScreen> {
           print(userUid);
           await getUserData(userUid!);
 
-          if (userglobalData?.fillDetails != null &&
-              userglobalData!.fillDetails == true) {
-            nextScreenpushandremove(context, const HomePage());
-          } else {
-            nextScreenpushandremove(context, const SetupupAccount());
-          }
+          // if (userglobalData?.fillDetails != null &&
+          //     userglobalData!.fillDetails == true) {
+          //   nextScreenpushandremove(context, const HomePage());
+          // } else {
+            nextScreenpushandremove(context, const SetupAccount());
+          //}
 
           // nextScreen(context, HomeScreen());
         });
       } else {
-        nextScreenpushandremove(context, const OnBoradingScreen());
+        nextScreenpushandremove(context, const OnBoardingScreen());
       }
     });
   }
@@ -80,16 +79,17 @@ class _FlashScreenState extends State<FlashScreen> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return const Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: CircularProgressIndicator(
-              // color: Color.fromRGBO(234, 192, 42, 1),/
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: CircularProgressIndicator(
+                // color: Color.fromRGBO(234, 192, 42, 1),/
 
-              ),
-        ),
-      ],
-    ));
+                ),
+          ),
+        ],
+      ),
+    );
   }
 }

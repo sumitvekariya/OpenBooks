@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:openbook/Models/book_model.dart';
 import 'package:openbook/Screens/bookdetails.dart';
 import 'package:openbook/TwitterAuth/provider/sign_in_provider.dart';
+import 'package:openbook/Widgets/widgets.dart' as snackbar;
 import 'package:openbook/utils/global_data.dart';
 import 'package:openbook/utils/globalvar.dart';
 import 'package:openbook/utils/next_screen.dart';
@@ -96,7 +97,9 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
               width: 390.w,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(32.r), topRight: Radius.circular(32.r)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(32.r),
+                    topRight: Radius.circular(32.r)),
               ),
               child: SingleChildScrollView(
                 child: Padding(
@@ -143,18 +146,24 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
                             bottom: 20.h,
                           ),
                           child: StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance.collection('Books').snapshots(),
+                              stream: FirebaseFirestore.instance
+                                  .collection('Books')
+                                  .snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 }
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
                                 }
 
-                                List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                List<Book> books = snapshot.data!.docs
+                                    .map((DocumentSnapshot doc) {
+                                  Map<String, dynamic> data =
+                                      doc.data() as Map<String, dynamic>;
                                   return Book.fromMap(data, doc.id);
                                 }).toList();
 
@@ -199,7 +208,9 @@ class _BookwidgetState extends State<Bookwidget> {
   @override
   Widget build(BuildContext context) {
     String userNameLoc = "${widget.book.username}, ${widget.book.userLocation}";
-    userNameLoc = userNameLoc.length <= 44 ? userNameLoc : "${userNameLoc.substring(0, 41)}...";
+    userNameLoc = userNameLoc.length <= 44
+        ? userNameLoc
+        : "${userNameLoc.substring(0, 41)}...";
     return widget.book.isrented
         ? const SizedBox()
         : widget.book.userUid == userglobalData!.uid
@@ -217,7 +228,10 @@ class _BookwidgetState extends State<Bookwidget> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 50.h, width: 50.w, child: Image.network(widget.book.imageCover)),
+                            SizedBox(
+                                height: 50.h,
+                                width: 50.w,
+                                child: Image.network(widget.book.imageCover)),
                             Padding(
                               padding: EdgeInsets.only(left: 12.0.w),
                               child: Column(
@@ -230,7 +244,8 @@ class _BookwidgetState extends State<Bookwidget> {
                                         "By: ",
                                         style: TextStyle(
                                           fontFamily: globalfontfamily,
-                                          color: const Color.fromRGBO(0, 0, 0, 1),
+                                          color:
+                                              const Color.fromRGBO(0, 0, 0, 1),
                                           fontSize: 8.sp,
                                           fontWeight: FontWeight.w200,
                                         ),
@@ -239,7 +254,8 @@ class _BookwidgetState extends State<Bookwidget> {
                                         height: 8.h,
                                         width: 8.w,
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
                                           child: CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: Image.network(
@@ -258,7 +274,8 @@ class _BookwidgetState extends State<Bookwidget> {
                                         //"${widget.book.username}, ${widget.book.userLocation}",
                                         style: TextStyle(
                                           fontFamily: globalfontfamily,
-                                          color: const Color.fromRGBO(0, 0, 0, 1),
+                                          color:
+                                              const Color.fromRGBO(0, 0, 0, 1),
                                           fontSize: 8.sp,
                                           fontWeight: FontWeight.w200,
                                         ),
@@ -301,12 +318,12 @@ class _BookwidgetState extends State<Bookwidget> {
                         TapBounceContainer(
                           child: GestureDetector(
                             onTap: () async {
-                              showTopSnackBar(
-                                Overlay.of(context),
-                                CustomSnackBar.success(
-                                  message: 'Good job, The ${widget.book.bookName} request send to @${widget.book.username}',
-                                ),
+                              snackbar.showSnackbar(
+                                context,
+                                Colors.blue,
+                                    'Good job, The ${widget.book.bookName} request send to @${widget.book.username}',
                               );
+
                               setState(() {
                                 isloading = true;
                               });
@@ -325,7 +342,8 @@ class _BookwidgetState extends State<Bookwidget> {
                                 requestusername: userglobalData!.username,
                                 requestuserimage: userglobalData!.imageurl,
                                 requestuseruid: userglobalData!.uid,
-                                requestuserlocation: userglobalData!.locationname,
+                                requestuserlocation:
+                                    userglobalData!.locationname,
                                 requestuserlat: userglobalData!.userlat,
                                 requestuserlong: userglobalData!.userlong,
                                 bookdesc: widget.book.bookdesc,
@@ -343,10 +361,14 @@ class _BookwidgetState extends State<Bookwidget> {
                                     width: 19.w,
                                     child: const CircularProgressIndicator(),
                                   )
-                                : SizedBox(
-                                    height: 24.h,
-                                    width: 24.w,
-                                    child: Image.asset("assets/images/nextarr.png"),
+                                : const Text(
+                                    "Chat",
+                                    style: TextStyle(
+                                      fontFamily: globalfontfamily,
+                                      color: Colors.blue,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                           ),
                         )
@@ -372,7 +394,7 @@ class _BookwidgetState extends State<Bookwidget> {
       noImage: true,
       context,
       title: "Warning",
-      message: "You already Requested That Book",
+      message: "Already Requested to Chat",
       buttonText: "Okay",
       onTapDismiss: () async {
         Navigator.pop(context);
@@ -400,7 +422,12 @@ class _BookwidgetState extends State<Bookwidget> {
       required double requestuserlong,
       required String bookdesc,
       re}) async {
-    final DocumentSnapshot pr = await FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid).get();
+    final DocumentSnapshot pr = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("RequestedBooks")
+        .doc(bookid)
+        .get();
 
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -416,7 +443,11 @@ class _BookwidgetState extends State<Bookwidget> {
       warningNoTask(context);
       print("already  requested");
     } else {
-      final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid);
+      final DocumentReference r = FirebaseFirestore.instance
+          .collection("users")
+          .doc(useruid)
+          .collection("RequestedBooks")
+          .doc(bookid);
 
       await r.set({
         "book_id": bookid,

@@ -28,20 +28,21 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-class SetupupAccount extends StatefulWidget {
-  const SetupupAccount({super.key});
+class SetupAccount extends StatefulWidget {
+  const SetupAccount({super.key});
 
   @override
-  State<SetupupAccount> createState() => _SetupupAccountState();
+  State<SetupAccount> createState() => _SetupAccountState();
 }
 
-class _SetupupAccountState extends State<SetupupAccount> {
+class _SetupAccountState extends State<SetupAccount> {
   bool kisloading = false;
   bool isimageloading = false;
   bool isuploaded = false;
   File? selectedImage;
 
-  String? avatarurl = "https://firebasestorage.googleapis.com/v0/b/easyed-prod.appspot.com/o/account.png?alt=media&token=85b40cb4-c4d2-4946-9317-e6aed240948d";
+  String? avatarurl =
+      "https://firebasestorage.googleapis.com/v0/b/easyed-prod.appspot.com/o/account.png?alt=media&token=85b40cb4-c4d2-4946-9317-e6aed240948d";
 
   void showSnackBar({required BuildContext context, required String content}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -74,18 +75,21 @@ class _SetupupAccountState extends State<SetupupAccount> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
     return await Geolocator.getCurrentPosition();
   }
 
   Future<String> getLocationName(double latitude, double longitude) async {
     try {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(latitude, longitude);
+      List<geo.Placemark> placemarks =
+          await geo.placemarkFromCoordinates(latitude, longitude);
 
       if (placemarks != null && placemarks.isNotEmpty) {
         geo.Placemark place = placemarks[0];
-        String locationName = "${place.subLocality}, ${place.locality}, ${place.country}";
+        String locationName =
+            "${place.subLocality}, ${place.locality}, ${place.country}";
 
         setState(() {
           isloading = false;
@@ -113,9 +117,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
   Future<File?> pickImageFromGallery(BuildContext context) async {
     File? image;
     try {
-      // final pickedImage =
-      //     await ImagePicker().pickImage(source: ImageSource.gallery);
-      final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
 
       if (pickedImage != null) {
         image = File(pickedImage.path);
@@ -142,7 +145,11 @@ class _SetupupAccountState extends State<SetupupAccount> {
     if (selectedImage != null) {
       setState(() {});
 
-      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child("UserAvatarImages").child(userglobalData!.uid).child("${randomAlphaNumeric(9)}.jpg");
+      Reference firebaseStorageRef = FirebaseStorage.instance
+          .ref()
+          .child("UserAvatarImages")
+          .child(userglobalData!.uid)
+          .child("${randomAlphaNumeric(9)}.jpg");
 
       ///create a task to upload this data to our storage
       final UploadTask task = firebaseStorageRef.putFile(selectedImage!);
@@ -172,7 +179,11 @@ class _SetupupAccountState extends State<SetupupAccount> {
     required double userlat,
     required double userlong,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).collection("Books").doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance
+        .collection("users")
+        .doc(userglobalData!.uid)
+        .collection("Books")
+        .doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -188,7 +199,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
       "isrented": false,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance.collection("Books").doc(bookid);
+    final DocumentReference br =
+        FirebaseFirestore.instance.collection("Books").doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -209,7 +221,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot =
+          await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
@@ -244,7 +257,11 @@ class _SetupupAccountState extends State<SetupupAccount> {
     required double userlong,
     required String bookdesc,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).collection("Books").doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance
+        .collection("users")
+        .doc(userglobalData!.uid)
+        .collection("Books")
+        .doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -261,7 +278,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance.collection("Books").doc(bookid);
+    final DocumentReference br =
+        FirebaseFirestore.instance.collection("Books").doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -316,8 +334,10 @@ class _SetupupAccountState extends State<SetupupAccount> {
   }
 
   Future<Map<String, dynamic>> getBookDetails(String isbn) async {
-    final apiKey = 'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
-    final apiUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
+    final apiKey =
+        'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
+    final apiUrl =
+        'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
 
     //https://www.googleapis.com/books/v1/volumes?q=isbn:4577714843828&key=AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M
 
@@ -366,13 +386,21 @@ class _SetupupAccountState extends State<SetupupAccount> {
                         children: [
                           Text(
                             "Set up your account",
-                            style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 28.sp, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                                fontFamily: globalfontfamily,
+                                color: Colors.black,
+                                fontSize: 28.sp,
+                                fontWeight: FontWeight.w600),
                           ),
                           SizedBox(
                             width: 300.w,
                             child: Text(
                               "Welcome you are the books you read",
-                              style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 12.sp, fontWeight: FontWeight.w300),
+                              style: TextStyle(
+                                  fontFamily: globalfontfamily,
+                                  color: Colors.black,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w300),
                             ),
                           ),
                         ],
@@ -397,11 +425,13 @@ class _SetupupAccountState extends State<SetupupAccount> {
                             ? const SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: CircularProgressIndicator(color: Color.fromRGBO(38, 90, 232, 1)),
+                                child: CircularProgressIndicator(
+                                    color: Color.fromRGBO(38, 90, 232, 1)),
                               )
                             : selectedImage != null
                                 ? Container(
-                                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 16),
                                     height: 102.h,
                                     width: 102.w,
                                     child: ClipRRect(
@@ -428,7 +458,9 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                         child: CircleAvatar(
                                           backgroundColor: Colors.white,
                                           backgroundImage: Image.network(
-                                            userglobalData!.imageurl.isNotEmpty ? userglobalData!.imageurl : avatarurl!,
+                                            userglobalData!.imageurl.isNotEmpty
+                                                ? userglobalData!.imageurl
+                                                : avatarurl!,
                                             fit: BoxFit.cover,
                                           ).image,
                                           radius: 50,
@@ -442,7 +474,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                         // color: Colors.red,
                                         height: 24.h,
                                         width: 24.w,
-                                        child: Image.asset("assets/images/edit1.png"),
+                                        child: Image.asset(
+                                            "assets/images/edit1.png"),
                                       ),
                                     ],
                                   ),
@@ -455,10 +488,9 @@ class _SetupupAccountState extends State<SetupupAccount> {
                       padding: EdgeInsets.only(left: 24.0.w),
                       child: SizedBox(
                         // color: Colors.red,
-                        height: 98.h,
-                        width: 342.w,
+                        height: 80.h,
                         child: Padding(
-                          padding: EdgeInsets.only(left: 20.0.w, top: 16.h),
+                          padding: EdgeInsets.only(top: 16.h),
                           child: Column(
                             children: [
                               Row(
@@ -481,43 +513,14 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                       fontFamily: globalfontfamily,
                                       color: Colors.black,
                                       fontSize: 16.sp,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
-                              ),
-                              SizedBox(
-                                height: 10.h,
                               ),
                               Container(
                                 height: 1,
                                 color: const Color.fromRGBO(198, 198, 200, 1),
-                              ),
-                              SizedBox(
-                                height: 10.h,
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Username",
-                                    style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 22.w,
-                                  ),
-                                  Text(
-                                    "@${userglobalData!.username}",
-                                    style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
@@ -559,10 +562,12 @@ class _SetupupAccountState extends State<SetupupAccount> {
                               padding: EdgeInsets.only(left: 8.0.w),
                               child: GooglePlaceAutoCompleteTextField(
                                 textEditingController: locationcontroller,
-                                googleAPIKey: "AIzaSyC1xIPJQYPYjT83ki9L1d0-NgiejK8loNw",
+                                googleAPIKey:
+                                    "AIzaSyC1xIPJQYPYjT83ki9L1d0-NgiejK8loNw",
                                 inputDecoration: InputDecoration(
                                   border: InputBorder.none,
-                                  suffixIcon: Image.asset("assets/images/loc.png"),
+                                  suffixIcon:
+                                      Image.asset("assets/images/loc.png"),
 
                                   hintText: "Location",
                                   hintStyle: TextStyle(
@@ -584,20 +589,27 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 ),
                                 boxDecoration: BoxDecoration(
                                   border: Border.all(
-                                    color: const Color.fromRGBO(249, 249, 249, 1),
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
                                   ),
                                 ),
                                 debounceTime: 800,
                                 countries: const ["in", "fr"],
                                 isLatLngRequired: true,
-                                getPlaceDetailWithLatLng: (Prediction prediction) {
+                                getPlaceDetailWithLatLng:
+                                    (Prediction prediction) {
                                   print("placeDetails${prediction.lng}");
                                 },
                                 itemClick: (Prediction prediction) {
-                                  locationcontroller.text = prediction.description!;
-                                  locationcontroller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description!.length));
+                                  locationcontroller.text =
+                                      prediction.description!;
+                                  locationcontroller.selection =
+                                      TextSelection.fromPosition(TextPosition(
+                                          offset:
+                                              prediction.description!.length));
                                 },
-                                itemBuilder: (context, index, Prediction prediction) {
+                                itemBuilder:
+                                    (context, index, Prediction prediction) {
                                   return Container(
                                     padding: const EdgeInsets.all(10),
                                     child: Row(
@@ -606,7 +618,9 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                         const SizedBox(
                                           width: 7,
                                         ),
-                                        Expanded(child: Text(prediction.description ?? ""))
+                                        Expanded(
+                                            child: Text(
+                                                prediction.description ?? ""))
                                       ],
                                     ),
                                   );
@@ -647,17 +661,25 @@ class _SetupupAccountState extends State<SetupupAccount> {
                             height: 12.h,
                           ),
                           StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('Books').snapshots(),
+                              stream: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userglobalData!.uid)
+                                  .collection('Books')
+                                  .snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 }
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
                                 }
-                                List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                List<Book> books = snapshot.data!.docs
+                                    .map((DocumentSnapshot doc) {
+                                  Map<String, dynamic> data =
+                                      doc.data() as Map<String, dynamic>;
                                   return Book.fromMap(data, doc.id);
                                 }).toList();
 
@@ -685,8 +707,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 } else {
                                   return Container(
                                     height: 225.h,
-                                    width: 342.w,
-                                    color: const Color.fromRGBO(249, 249, 249, 1),
+                                    color:
+                                        const Color.fromRGBO(249, 249, 249, 1),
                                     padding: EdgeInsets.only(
                                       left: 20.0.w,
                                       right: 20.0.w,
@@ -710,7 +732,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 var res = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const SimpleBarcodeScannerPage(
+                                      builder: (context) =>
+                                          const SimpleBarcodeScannerPage(
                                         scanType: ScanType.barcode,
                                       ),
                                     ));
@@ -728,36 +751,52 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                       bookloading = false;
                                     });
 
-                                    showTopSnackBar(
-                                      Overlay.of(context),
-                                      const CustomSnackBar.error(
-                                        message: 'Book not Found',
-                                      ),
-                                    );
+                                    showSnackbar(
+                                        context, Colors.red, 'Book not Found');
+
+                                    // showTopSnackBar(
+                                    //   Overlay.of(context),
+                                    //   const CustomSnackBar.error(
+                                    //     message: 'Book not Found',
+                                    //   ),
+                                    // );
                                   });
                                   try {
                                     print('Barcode Result: $res');
-                                    print('Title: ${bookDetails['title'] ?? "no tittle"}');
-                                    print('Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
-                                    print('Description: ${bookDetails['description'] ?? "no description"}');
-                                    print('Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
+                                    print(
+                                        'Title: ${bookDetails['title'] ?? "no tittle"}');
+                                    print(
+                                        'Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
+                                    print(
+                                        'Description: ${bookDetails['description'] ?? "no description"}');
+                                    print(
+                                        'Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
 
                                     String book1id = randomAlphaNumeric(9);
-                                    String book1name = bookDetails['title'] ?? "no tittle";
-                                    String book1authorname = bookDetails['authors'][0] ?? "no author name";
+                                    String book1name =
+                                        bookDetails['title'] ?? "no tittle";
+                                    String book1authorname =
+                                        bookDetails['authors'][0] ??
+                                            "no author name";
 
-                                    String imgcover = bookDetails['imageLinks']['thumbnail'] ??
+                                    String imgcover = bookDetails['imageLinks']
+                                            ['thumbnail'] ??
                                         "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
 
-                                    String bookdesc = bookDetails['description'] ?? "no descriptions";
+                                    String bookdesc =
+                                        bookDetails['description'] ??
+                                            "no descriptions";
 
                                     String userloc = locationcontroller.text;
 
-                                    LatLng locationcoordinates = await getLocationFromAddress(userloc);
+                                    LatLng locationcoordinates =
+                                        await getLocationFromAddress(userloc);
 
-                                    double userlocationlat = locationcoordinates.latitude;
+                                    double userlocationlat =
+                                        locationcoordinates.latitude;
 
-                                    double userlocationlong = locationcoordinates.longitude;
+                                    double userlocationlong =
+                                        locationcoordinates.longitude;
 
                                     await saveDataToFirestorefromscanner(
                                       bookid: book1id,
@@ -765,7 +804,10 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                       authorname: book1authorname,
                                       imgcover: imgcover,
                                       username: userglobalData!.username,
-                                      userimage: userglobalData!.imageurl.isEmpty ? userglobalData!.imageurl : avatarurl!,
+                                      userimage:
+                                          userglobalData!.imageurl.isEmpty
+                                              ? userglobalData!.imageurl
+                                              : avatarurl!,
                                       useruid: userglobalData!.uid,
                                       userlocation: userloc,
                                       userlat: userlocationlat,
@@ -777,12 +819,16 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                       bookloading = false;
                                     });
 
-                                    showTopSnackBar(
-                                      Overlay.of(context),
-                                      CustomSnackBar.success(
-                                        message: '$book1name added Successfully !',
-                                      ),
-                                    );
+                                    showSnackbar(
+                                        context, Colors.blue, '$book1name added Successfully !');
+
+                                    // showTopSnackBar(
+                                    //   Overlay.of(context),
+                                    //   CustomSnackBar.success(
+                                    //     message:
+                                    //         '$book1name added Successfully !',
+                                    //   ),
+                                    // );
 
                                     ///
                                   } catch (e) {
@@ -790,12 +836,16 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                       bookloading = false;
                                     });
 
-                                    showTopSnackBar(
-                                      Overlay.of(context),
-                                      const CustomSnackBar.error(
-                                        message: 'An error occurred while processing the book details',
-                                      ),
-                                    );
+                                     showSnackbar(context, Colors.red,
+                                        'An error occurred while processing the book details');
+
+                                    // showTopSnackBar(
+                                    //   Overlay.of(context),
+                                    //   const CustomSnackBar.error(
+                                    //     message:
+                                    //         'An error occurred while processing the book details',
+                                    //   ),
+                                    // );
                                   }
                                 }
                               },
@@ -824,7 +874,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              if (locationcontroller.text.isNotEmpty && usersbooklength != 0) {
+                              if (locationcontroller.text.isNotEmpty &&
+                                  usersbooklength != 0) {
                                 print(isuploaded);
                                 avatarurl = userglobalData!.imageurl.isNotEmpty
                                     ? userglobalData?.imageurl
@@ -842,13 +893,19 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                     "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
                                 String userloc = locationcontroller.text;
 
-                                LatLng locationcoordinates = await getLocationFromAddress(userloc);
+                                LatLng locationcoordinates =
+                                    await getLocationFromAddress(userloc);
 
-                                double userlocationlat = locationcoordinates.latitude;
+                                double userlocationlat =
+                                    locationcoordinates.latitude;
 
-                                double userlocationlong = locationcoordinates.longitude;
+                                double userlocationlong =
+                                    locationcoordinates.longitude;
 
-                                await FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).update({
+                                await FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(userglobalData!.uid)
+                                    .update({
                                   "isfilled": true,
                                   "location_name": userloc,
                                   "image_url": avatarurl,
@@ -857,7 +914,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                 });
 
                                 if (!isuploaded) {
-                                  String? userUid = FirebaseAuth.instance.currentUser?.uid;
+                                  String? userUid =
+                                      FirebaseAuth.instance.currentUser?.uid;
                                   print(userUid);
                                   await getUserData(userUid!);
                                 }
@@ -866,7 +924,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                   kisloading = false;
                                 });
 
-                                nextScreenpushandremove(context, const HomePage());
+                                nextScreenpushandremove(
+                                    context, const HomePage());
                               }
                             },
                             child: Container(
@@ -890,7 +949,8 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                           child: SizedBox(
                                             height: 18.h,
                                             width: 18.w,
-                                            child: const CircularProgressIndicator(
+                                            child:
+                                                const CircularProgressIndicator(
                                               color: Colors.white,
                                             ),
                                           ),
@@ -902,12 +962,17 @@ class _SetupupAccountState extends State<SetupupAccount> {
                                             ),
                                             Text(
                                               "Add books to your shelf",
-                                              style: TextStyle(fontFamily: globalfontfamily, color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                                              style: TextStyle(
+                                                  fontFamily: globalfontfamily,
+                                                  color: Colors.white,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w600),
                                             ),
                                             SizedBox(
                                               width: 46.5.w,
                                             ),
-                                            Image.asset("assets/images/icarr.png")
+                                            Image.asset(
+                                                "assets/images/icarr.png")
                                           ],
                                         )),
                             ),

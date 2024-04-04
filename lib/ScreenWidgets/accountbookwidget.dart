@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openbook/Models/book_model.dart';
 import 'package:openbook/utils/globalvar.dart';
@@ -28,7 +30,9 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
   @override
   Widget build(BuildContext context) {
     String userNameLoc = "${widget.book.username}, ${widget.book.userLocation}";
-    userNameLoc = userNameLoc.length <= 44 ? userNameLoc : "${userNameLoc.substring(0, 41)}...";
+    userNameLoc = userNameLoc.length <= 44
+        ? userNameLoc
+        : "${userNameLoc.substring(0, 41)}...";
 
     return GestureDetector(
       onTap: () {
@@ -43,7 +47,10 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 50.h, width: 50.w, child: Image.network(widget.book.imageCover)),
+                  SizedBox(
+                      height: 50.h,
+                      width: 50.w,
+                      child: Image.network(widget.book.imageCover)),
                   Padding(
                     padding: EdgeInsets.only(left: 12.0.w),
                     child: Column(
@@ -111,6 +118,7 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
                         ),
                         Text(
                           "Author: ${widget.book.authorName}",
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontFamily: globalfontfamily,
                             color: const Color.fromRGBO(0, 0, 0, 1),
@@ -136,21 +144,29 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
               TapBounceContainer(
                 child: GestureDetector(
                   onTap: () async {
-                    showTopSnackBar(
-                      Overlay.of(context),
-                      CustomSnackBar.error(
-                        message: '${widget.book.bookName} deleted Successfully !',
-                      ),
-                    );
+                    showSnackbar(context, Colors.blue,
+                        '${widget.book.bookName} deleted Successfully !');
+                    // showTopSnackBar(
+                    //   Overlay.of(context),
+                    //   CustomSnackBar.error(
+                    //     message: '${widget.book.bookName} deleted Successfully !',
+                    //   ),
+                    // );
                     setState(() {
                       isloading = true;
                     });
 
-                    final DocumentReference dl = FirebaseFirestore.instance.collection("users").doc(widget.book.userUid).collection("Books").doc(widget.book.bookId);
+                    final DocumentReference dl = FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(widget.book.userUid)
+                        .collection("Books")
+                        .doc(widget.book.bookId);
 
                     await dl.delete();
 
-                    final DocumentReference del = FirebaseFirestore.instance.collection("Books").doc(widget.book.bookId);
+                    final DocumentReference del = FirebaseFirestore.instance
+                        .collection("Books")
+                        .doc(widget.book.bookId);
 
                     await del.delete();
 
@@ -197,7 +213,8 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
       noImage: true,
       context,
       title: "Normal",
-      message: "There is no Task For Delete!\n Try adding some and then try to delete it!",
+      message:
+          "There is no Task For Delete!\n Try adding some and then try to delete it!",
       buttonText: "Okay",
       onTapDismiss: () async {
         Navigator.pop(context);

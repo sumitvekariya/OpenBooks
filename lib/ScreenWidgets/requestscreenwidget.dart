@@ -28,7 +28,9 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
   @override
   Widget build(BuildContext context) {
     String userNameLoc = "${widget.book.username}, ${widget.book.userLocation}";
-    userNameLoc = userNameLoc.length <= 44 ? userNameLoc : "${userNameLoc.substring(0, 41)}...";
+    userNameLoc = userNameLoc.length <= 44
+        ? userNameLoc
+        : "${userNameLoc.substring(0, 41)}...";
     return GestureDetector(
       onTap: () {
         nextScreen(context, BookDetails(book: widget.book.convertToBook()));
@@ -136,12 +138,16 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
               TapBounceContainer(
                 child: GestureDetector(
                   onTap: () async {
-                    showTopSnackBar(
-                      Overlay.of(context),
-                      CustomSnackBar.success(
-                        message: 'Great! ${widget.book.bookName} successfully rented to ${widget.book.requestusername}',
-                      ),
-                    );
+                     showSnackbar(context, Colors.blue,
+                        'Great! ${widget.book.bookName} successfully rented to ${widget.book.requestusername}');
+      
+                    // showTopSnackBar(
+                    //   Overlay.of(context),
+                    //   CustomSnackBar.success(
+                    //     message:
+                    //         'Great! ${widget.book.bookName} successfully rented to ${widget.book.requestusername}',
+                    //   ),
+                    // );
                     setState(() {
                       isloading = true;
                     });
@@ -179,11 +185,15 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
                           width: 19.w,
                           child: const CircularProgressIndicator(),
                         )
-                      : SizedBox(
-                          height: 24.h,
-                          width: 24.w,
-                          child: Image.asset("assets/images/nextarr.png"),
+                      : const Text(
+                        "Chat",
+                        style: TextStyle(
+                          fontFamily: globalfontfamily,
+                          color: Colors.blue,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
                 ),
               )
             ],
@@ -208,7 +218,8 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       noImage: true,
       context,
       title: "Normal",
-      message: "There is no Task For Delete!\n Try adding some and then try to delete it!",
+      message:
+          "There is no Task For Delete!\n Try adding some and then try to delete it!",
       buttonText: "Okay",
       onTapDismiss: () async {
         Navigator.pop(context);
@@ -236,7 +247,11 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
     required double renteduserlong,
     required String bookdesc,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RentedBooks").doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("RentedBooks")
+        .doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -258,7 +273,11 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance.collection("users").doc(renteduseruid).collection("RecievedBooks").doc(bookid);
+    final DocumentReference br = FirebaseFirestore.instance
+        .collection("users")
+        .doc(renteduseruid)
+        .collection("RecievedBooks")
+        .doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -280,13 +299,21 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference dl = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid);
+    final DocumentReference dl = FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("RequestedBooks")
+        .doc(bookid);
 
     await dl.delete();
 
     print("THis 1 runs");
 
-    final DocumentReference del = FirebaseFirestore.instance.collection("users").doc(useruid).collection("Books").doc(bookid);
+    final DocumentReference del = FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("Books")
+        .doc(bookid);
 
     await del.delete();
 
