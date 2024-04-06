@@ -367,7 +367,7 @@ class _SetupAccountState extends State<SetupAccount> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            icon: const Icon(Icons.logout_rounded),
+                            icon: const Icon(Icons.arrow_forward_ios_rounded),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
@@ -524,31 +524,9 @@ class _SetupAccountState extends State<SetupAccount> {
                             usersbooklength = books.length;
 
                             if (books.isEmpty) {
-                              return Container(
-                                height: 200.h,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
-                                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                                child: Center(
-                                  child: Text(
-                                    "No books added yet",
-                                    style: TextStyle(
-                                        // fontWeight: FontWeight.bold,
-                                        fontFamily: globalfontfamily,
-                                        fontSize: 13.sp),
-                                  ),
-                                ),
-                              );
+                              return buildNoBooks();
                             } else {
-                              return Container(
-                                height: 200.h,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
-                                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                                child: ListView.builder(
-                                    itemCount: books.length,
-                                    itemBuilder: (context, index) {
-                                      return AccountBookwidget(book: books[index]);
-                                    }),
-                              );
+                              return buildBooks(books);
                             }
                           }),
                       SizedBox(height: 35.h),
@@ -729,5 +707,35 @@ class _SetupAccountState extends State<SetupAccount> {
                   ),
           ),
         ));
+  }
+
+  Container buildBooks(List<Book> books) {
+    return Container(
+      height: 200.h,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: ListView.builder(
+          itemCount: books.length,
+          itemBuilder: (context, index) {
+            return AccountBookwidget(book: books[index]);
+          }),
+    );
+  }
+
+  Container buildNoBooks() {
+    return Container(
+      height: 200.h,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Center(
+        child: Text(
+          "No books added yet",
+          style: TextStyle(
+              // fontWeight: FontWeight.bold,
+              fontFamily: globalfontfamily,
+              fontSize: 13.sp),
+        ),
+      ),
+    );
   }
 }

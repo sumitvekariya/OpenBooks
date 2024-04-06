@@ -124,20 +124,30 @@ class _RecievedBookScreenState extends State<RecievedBookScreen> {
                                 }
 
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Center(child: CircularProgressIndicator());
+                                  return const Center(child: CircularProgressIndicator());
                                 }
 
                                 List<RecievedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
                                   Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                                   return RecievedBook.fromMap(data, doc.id);
                                 }).toList();
-                                return ListView.builder(
-                                    itemCount: books.length,
-                                    itemBuilder: (context, index) {
-                                      return RecievedBookwidget(
-                                        book: books[index],
-                                      );
-                                    });
+                                return ListView.separated(
+                                  itemCount: books.length,
+                                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return RecievedBookwidget(
+                                      book: books[index],
+                                    );
+                                  },
+                                );
+
+                                // ListView.builder(
+                                //   itemCount: books.length,
+                                //   itemBuilder: (context, index) {
+                                //     return RecievedBookwidget(
+                                //       book: books[index],
+                                //     );
+                                //   });
                               }),
                         ),
                       ),
