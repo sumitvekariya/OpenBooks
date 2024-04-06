@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -84,15 +85,7 @@ class UserTile extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () => _handlePressed(typeUser, context, userModel),
-              child: const Text(
-                "Chat",
-                style: TextStyle(
-                  fontFamily: globalfontfamily,
-                  color: Colors.blue,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              child: const Icon(CupertinoIcons.chat_bubble_2, color: Colors.blueAccent),
             ),
           ],
         ),

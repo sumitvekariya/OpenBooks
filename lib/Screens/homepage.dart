@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<Position> getcurrentlocation() async {
     await Geolocator.requestPermission().then((value) {}).onError((error, stackTrace) {
-      print("error" + error.toString());
+      log("error$error");
     });
 
     return Geolocator.getCurrentPosition();
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
         return "Location not found";
       }
     } catch (e) {
-      print("An error occurred: $e");
+      log("An error occurred: $e");
       return "Error retrieving location";
     }
   }
@@ -75,7 +76,7 @@ class _HomePageState extends State<HomePage> {
     double longitude = userlong!;
 
     userlocationname = await getLocationName(latitude, longitude);
-    print("location details are : ${userlocationname}");
+    log("location details are : $userlocationname");
   }
 
   Future addCustomIcon() async {
@@ -109,7 +110,7 @@ class _HomePageState extends State<HomePage> {
 
             // Add marker for each location
 
-            print("user is : ${user.username}");
+            log("user is : ${user.username}");
             Marker marker = Marker(
               icon: markericon,
               markerId: MarkerId(user.uid),
@@ -122,8 +123,8 @@ class _HomePageState extends State<HomePage> {
         });
 
         await getcurrentlocation().then((value) async {
-          print("my current loaction");
-          print(value.latitude.toString() + " " + value.longitude.toString());
+          log("my current location");
+          log("${value.latitude} ${value.longitude}");
 
           userlat = value.latitude;
           userlong = value.longitude;
@@ -143,7 +144,7 @@ class _HomePageState extends State<HomePage> {
         });
       });
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
   }
 
@@ -189,6 +190,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: EdgeInsets.only(top: 250.h),
                       child: Container(
+                        height: 600.h,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(topLeft: Radius.circular(32.r), topRight: Radius.circular(32.r)),

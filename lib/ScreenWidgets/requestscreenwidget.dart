@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openbook/Models/rquest_book_model.dart';
@@ -135,15 +136,7 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
                             width: 19.w,
                             child: const CircularProgressIndicator(),
                           )
-                        : Text(
-                            "Chat",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Colors.blueAccent,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                        : const Icon(CupertinoIcons.chat_bubble_2, color: Colors.blueAccent),
                   ),
                 ),
           SizedBox(width: 10.w)
