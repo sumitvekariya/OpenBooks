@@ -82,6 +82,8 @@ class SignInProvider extends ChangeNotifier {
       // Get user details from the authentication result
       final userDetails = authResult.user;
 
+      print(userDetails.toString());
+
       // Print or use the user details as needed
       print("authResult.user: $userDetails");
       print("userDetails!.name: ${userDetails!.displayName}");

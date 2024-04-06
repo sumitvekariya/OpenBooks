@@ -42,7 +42,12 @@ class _SetupAccountState extends State<SetupAccount> {
   File? selectedImage;
   int bookCount = 0;
 
-  String? avatarurl = "https://firebasestorage.googleapis.com/v0/b/easyed-prod.appspot.com/o/account.png?alt=media&token=85b40cb4-c4d2-4946-9317-e6aed240948d";
+  static const underdogApiEndpoint = "https://devnet.underdogprotocol.com";
+  static const UNDERDOG_API_KEY = 'your_api_key_here';
+  static const projectId = 1;
+
+  String? avatarurl =
+      "https://firebasestorage.googleapis.com/v0/b/easyed-prod.appspot.com/o/account.png?alt=media&token=85b40cb4-c4d2-4946-9317-e6aed240948d";
 
   void showSnackBar({required BuildContext context, required String content}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -75,18 +80,21 @@ class _SetupAccountState extends State<SetupAccount> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
     return await Geolocator.getCurrentPosition();
   }
 
   Future<String> getLocationName(double latitude, double longitude) async {
     try {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(latitude, longitude);
+      List<geo.Placemark> placemarks =
+          await geo.placemarkFromCoordinates(latitude, longitude);
 
       if (placemarks != null && placemarks.isNotEmpty) {
         geo.Placemark place = placemarks[0];
-        String locationName = "${place.subLocality}, ${place.locality}, ${place.country}";
+        String locationName =
+            "${place.subLocality}, ${place.locality}, ${place.country}";
 
         setState(() {
           isloading = false;
@@ -116,7 +124,8 @@ class _SetupAccountState extends State<SetupAccount> {
     try {
       // final pickedImage =
       //     await ImagePicker().pickImage(source: ImageSource.gallery);
-      final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
 
       if (pickedImage != null) {
         image = File(pickedImage.path);
@@ -143,7 +152,11 @@ class _SetupAccountState extends State<SetupAccount> {
     if (selectedImage != null) {
       setState(() {});
 
-      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child("UserAvatarImages").child(userglobalData!.uid).child("${randomAlphaNumeric(9)}.jpg");
+      Reference firebaseStorageRef = FirebaseStorage.instance
+          .ref()
+          .child("UserAvatarImages")
+          .child(userglobalData!.uid)
+          .child("${randomAlphaNumeric(9)}.jpg");
 
       ///create a task to upload this data to our storage
       final UploadTask task = firebaseStorageRef.putFile(selectedImage!);
@@ -153,6 +166,36 @@ class _SetupAccountState extends State<SetupAccount> {
 
       avatarurl = downoadUrl;
     } else {}
+  }
+
+  Future<http.Response> createNft(
+      String name, String isbn, String image, String author, String desc, String minter, String receiver) async {
+    final nftData = {
+       "name": name,
+      "isbn": isbn,
+      "image": image,
+      "author": author,
+      "description": desc,
+      "minter": minter,
+      "receiver": {"identifier": receiver,"namespace": minter}
+    };
+
+    final response = await http.post(
+      Uri.parse('$underdogApiEndpoint/v2/projects/$projectId/nfts'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $UNDERDOG_API_KEY',
+      },
+      body: jsonEncode(nftData),
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response, then parse the JSON.
+      return response;
+    } else {
+      // If the server did not return a 200 OK response, then throw an exception.
+      throw Exception('Failed to create NFT');
+    }
   }
 
   final formKey = GlobalKey<FormState>();
@@ -173,7 +216,11 @@ class _SetupAccountState extends State<SetupAccount> {
     required double userlat,
     required double userlong,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).collection("Books").doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance
+        .collection("users")
+        .doc(userglobalData!.uid)
+        .collection("Books")
+        .doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -189,7 +236,8 @@ class _SetupAccountState extends State<SetupAccount> {
       "isrented": false,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance.collection("Books").doc(bookid);
+    final DocumentReference br =
+        FirebaseFirestore.instance.collection("Books").doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -210,7 +258,8 @@ class _SetupAccountState extends State<SetupAccount> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot =
+          await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
@@ -245,7 +294,11 @@ class _SetupAccountState extends State<SetupAccount> {
     required double userlong,
     required String bookdesc,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).collection("Books").doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance
+        .collection("users")
+        .doc(userglobalData!.uid)
+        .collection("Books")
+        .doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -262,7 +315,8 @@ class _SetupAccountState extends State<SetupAccount> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance.collection("Books").doc(bookid);
+    final DocumentReference br =
+        FirebaseFirestore.instance.collection("Books").doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -317,10 +371,12 @@ class _SetupAccountState extends State<SetupAccount> {
   }
 
   Future<Map<String, dynamic>> getBookDetails(String isbn) async {
-    const apiKey = 'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
-    final apiUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
+    const apiKey =
+        'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
+    final apiUrl =
+        'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
 
-    //https://www.googleapis.com/books/v1/volumes?q=isbn:4577714843828&key=AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M
+    //https://www.googleapis.com/books/v1/volumes?q=isbn:9781612680019&key=AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -360,7 +416,11 @@ class _SetupAccountState extends State<SetupAccount> {
                         children: [
                           Text(
                             "Set up your account",
-                            style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 28.sp, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                                fontFamily: globalfontfamily,
+                                color: Colors.black,
+                                fontSize: 28.sp,
+                                fontWeight: FontWeight.w600),
                           ),
                           const Spacer(),
                           IconButton(
@@ -370,13 +430,19 @@ class _SetupAccountState extends State<SetupAccount> {
                             icon: const Icon(Icons.logout_rounded),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
-                            style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                            style: const ButtonStyle(
+                                tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap),
                           ),
                         ],
                       ),
                       Text(
                         "Welcome you are the books you read",
-                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 12.sp, fontWeight: FontWeight.w300),
+                        style: TextStyle(
+                            fontFamily: globalfontfamily,
+                            color: Colors.black,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w300),
                       ),
                       SizedBox(height: 20.h),
                       Center(
@@ -395,11 +461,13 @@ class _SetupAccountState extends State<SetupAccount> {
                               ? const SizedBox(
                                   height: 20,
                                   width: 20,
-                                  child: CircularProgressIndicator(color: Color.fromRGBO(38, 90, 232, 1)),
+                                  child: CircularProgressIndicator(
+                                      color: Color.fromRGBO(38, 90, 232, 1)),
                                 )
                               : selectedImage != null
                                   ? Container(
-                                      margin: EdgeInsets.symmetric(horizontal: 16.w),
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 16.w),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(6),
                                         child: CircleAvatar(
@@ -415,11 +483,15 @@ class _SetupAccountState extends State<SetupAccount> {
                                       alignment: Alignment.topRight,
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
                                           child: CircleAvatar(
                                               backgroundColor: Colors.white,
                                               backgroundImage: Image.network(
-                                                userglobalData!.imageurl.isNotEmpty ? userglobalData!.imageurl : avatarurl!,
+                                                userglobalData!
+                                                        .imageurl.isNotEmpty
+                                                    ? userglobalData!.imageurl
+                                                    : avatarurl!,
                                                 fit: BoxFit.cover,
                                               ).image,
                                               radius: 50),
@@ -428,7 +500,8 @@ class _SetupAccountState extends State<SetupAccount> {
                                           radius: 12,
                                           // backgroundColor: CupertinoColors.activeBlue,
                                           backgroundColor: Colors.blue,
-                                          child: Icon(Icons.edit_rounded, color: Colors.white, size: 16),
+                                          child: Icon(Icons.edit_rounded,
+                                              color: Colors.white, size: 16),
                                         ),
                                       ],
                                     ),
@@ -436,13 +509,19 @@ class _SetupAccountState extends State<SetupAccount> {
                       ),
                       SizedBox(height: 20.h),
                       Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
-                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.grey[100]),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.w, vertical: 12.h),
                         child: Row(
                           children: [
                             Text(
                               "Name",
-                              style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp),
+                              style: TextStyle(
+                                  fontFamily: globalfontfamily,
+                                  color: Colors.black,
+                                  fontSize: 16.sp),
                             ),
                             SizedBox(width: 60.w),
                             Expanded(
@@ -450,7 +529,10 @@ class _SetupAccountState extends State<SetupAccount> {
                                 userglobalData!.name,
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
-                                style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp),
+                                style: TextStyle(
+                                    fontFamily: globalfontfamily,
+                                    color: Colors.black,
+                                    fontSize: 16.sp),
                               ),
                             ),
                           ],
@@ -460,38 +542,64 @@ class _SetupAccountState extends State<SetupAccount> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Location*", style: TextStyle(fontFamily: globalfontfamily, fontSize: 14.sp)),
+                          Text("Location*",
+                              style: TextStyle(
+                                  fontFamily: globalfontfamily,
+                                  fontSize: 14.sp)),
                           SizedBox(height: 5.h),
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10.0),
                               color: Colors.grey[100],
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.w, vertical: 6.h),
                             child: GooglePlaceAutoCompleteTextField(
                               textEditingController: locationcontroller,
-                              googleAPIKey: "AIzaSyC1xIPJQYPYjT83ki9L1d0-NgiejK8loNw",
+                              googleAPIKey:
+                                  "AIzaSyC1xIPJQYPYjT83ki9L1d0-NgiejK8loNw",
                               inputDecoration: InputDecoration(
                                 border: InputBorder.none,
-                                suffixIcon: const Icon(Icons.near_me_rounded, color: Colors.blue),
+                                suffixIcon: const Icon(Icons.near_me_rounded,
+                                    color: Colors.blue),
                                 hintText: "Location",
-                                hintStyle: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, fontWeight: FontWeight.w300),
-                                labelStyle: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, fontWeight: FontWeight.w300),
+                                hintStyle: TextStyle(
+                                    fontFamily: globalfontfamily,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w300),
+                                labelStyle: TextStyle(
+                                    fontFamily: globalfontfamily,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w300),
                               ),
-                              boxDecoration: BoxDecoration(border: Border.all(color: const Color(0x00f9f9f9))),
+                              boxDecoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: const Color(0x00f9f9f9))),
                               debounceTime: 800,
                               countries: const ["in", "fr"],
                               isLatLngRequired: true,
-                              getPlaceDetailWithLatLng: (Prediction prediction) {
+                              getPlaceDetailWithLatLng:
+                                  (Prediction prediction) {
                                 log("placeDetails${prediction.lng}");
                               },
                               itemClick: (Prediction prediction) {
-                                locationcontroller.text = prediction.description!;
-                                locationcontroller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description!.length));
+                                locationcontroller.text =
+                                    prediction.description!;
+                                locationcontroller.selection =
+                                    TextSelection.fromPosition(TextPosition(
+                                        offset:
+                                            prediction.description!.length));
                               },
-                              itemBuilder: (context, index, Prediction prediction) {
+                              itemBuilder:
+                                  (context, index, Prediction prediction) {
                                 return Row(
-                                  children: [const Icon(Icons.location_on), SizedBox(width: 7.w), Expanded(child: Text(prediction.description ?? ""))],
+                                  children: [
+                                    const Icon(Icons.location_on),
+                                    SizedBox(width: 7.w),
+                                    Expanded(
+                                        child:
+                                            Text(prediction.description ?? ""))
+                                  ],
                                 );
                               },
                               seperatedBuilder: const Divider(),
@@ -503,21 +611,33 @@ class _SetupAccountState extends State<SetupAccount> {
                       SizedBox(height: 10.h),
                       Text(
                         "Top 3 books that impacted your life",
-                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontFamily: globalfontfamily,
+                            color: Colors.black,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 12.h),
                       StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('Books').snapshots(),
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(userglobalData!.uid)
+                              .collection('Books')
+                              .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
                             }
 
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             }
-                            List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                            List<Book> books =
+                                snapshot.data!.docs.map((DocumentSnapshot doc) {
+                              Map<String, dynamic> data =
+                                  doc.data() as Map<String, dynamic>;
                               return Book.fromMap(data, doc.id);
                             }).toList();
 
@@ -526,7 +646,9 @@ class _SetupAccountState extends State<SetupAccount> {
                             if (books.isEmpty) {
                               return Container(
                                 height: 200.h,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Colors.grey[100]),
                                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                                 child: Center(
                                   child: Text(
@@ -541,12 +663,15 @@ class _SetupAccountState extends State<SetupAccount> {
                             } else {
                               return Container(
                                 height: 200.h,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Colors.grey[100]),
                                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                                 child: ListView.builder(
                                     itemCount: books.length,
                                     itemBuilder: (context, index) {
-                                      return AccountBookwidget(book: books[index]);
+                                      return AccountBookwidget(
+                                          book: books[index]);
                                     }),
                               );
                             }
@@ -558,7 +683,9 @@ class _SetupAccountState extends State<SetupAccount> {
                             var res = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SimpleBarcodeScannerPage(scanType: ScanType.barcode),
+                                  builder: (context) =>
+                                      const SimpleBarcodeScannerPage(
+                                          scanType: ScanType.barcode),
                                 ));
 
                             if (res != '-1') {
@@ -576,7 +703,8 @@ class _SetupAccountState extends State<SetupAccount> {
 
                                 showTopSnackBar(
                                   Overlay.of(context),
-                                  const CustomSnackBar.error(message: 'Book not Found'),
+                                  const CustomSnackBar.error(
+                                      message: 'Book not Found'),
                                 );
                               });
                               try {
@@ -587,21 +715,29 @@ class _SetupAccountState extends State<SetupAccount> {
                                 log('Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no image cover"}');
 
                                 String book1id = randomAlphaNumeric(9);
-                                String book1name = bookDetails['title'] ?? "no tittle";
-                                String book1authorname = bookDetails['authors'][0] ?? "no author name";
+                                String book1name =
+                                    bookDetails['title'] ?? "no tittle";
+                                String book1authorname = bookDetails['authors']
+                                        [0] ??
+                                    "no author name";
 
-                                String imgcover = bookDetails['imageLinks']['thumbnail'] ??
+                                String imgcover = bookDetails['imageLinks']
+                                        ['thumbnail'] ??
                                     "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
 
-                                String bookdesc = bookDetails['description'] ?? "no descriptions";
+                                String bookdesc = bookDetails['description'] ??
+                                    "no descriptions";
 
                                 String userloc = locationcontroller.text;
 
-                                LatLng locationcoordinates = await getLocationFromAddress(userloc);
+                                LatLng locationcoordinates =
+                                    await getLocationFromAddress(userloc);
 
-                                double userlocationlat = locationcoordinates.latitude;
+                                double userlocationlat =
+                                    locationcoordinates.latitude;
 
-                                double userlocationlong = locationcoordinates.longitude;
+                                double userlocationlong =
+                                    locationcoordinates.longitude;
 
                                 await saveDataToFirestorefromscanner(
                                   bookid: book1id,
@@ -609,7 +745,9 @@ class _SetupAccountState extends State<SetupAccount> {
                                   authorname: book1authorname,
                                   imgcover: imgcover,
                                   username: userglobalData!.username,
-                                  userimage: userglobalData!.imageurl.isEmpty ? userglobalData!.imageurl : avatarurl!,
+                                  userimage: userglobalData!.imageurl.isEmpty
+                                      ? userglobalData!.imageurl
+                                      : avatarurl!,
                                   useruid: userglobalData!.uid,
                                   userlocation: userloc,
                                   userlat: userlocationlat,
@@ -617,13 +755,17 @@ class _SetupAccountState extends State<SetupAccount> {
                                   bookdesc: bookdesc,
                                 );
 
+                                createNft(book1name, res, imgcover, book1authorname, bookdesc, "OpenBooks", userglobalData!.username);
+
                                 setState(() {
                                   bookloading = false;
                                 });
 
                                 showTopSnackBar(
                                   Overlay.of(context),
-                                  CustomSnackBar.success(message: '$book1name added Successfully !'),
+                                  CustomSnackBar.success(
+                                      message:
+                                          '$book1name added Successfully !'),
                                 );
                               } catch (e) {
                                 setState(() {
@@ -632,7 +774,9 @@ class _SetupAccountState extends State<SetupAccount> {
 
                                 showTopSnackBar(
                                   Overlay.of(context),
-                                  const CustomSnackBar.error(message: 'An error occurred while processing the book details'),
+                                  const CustomSnackBar.error(
+                                      message:
+                                          'An error occurred while processing the book details'),
                                 );
                               }
                             }
@@ -672,13 +816,17 @@ class _SetupAccountState extends State<SetupAccount> {
 
                 String userloc = locationcontroller.text;
 
-                LatLng locationcoordinates = await getLocationFromAddress(userloc);
+                LatLng locationcoordinates =
+                    await getLocationFromAddress(userloc);
 
                 double userlocationlat = locationcoordinates.latitude;
 
                 double userlocationlong = locationcoordinates.longitude;
 
-                await FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).update({
+                await FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(userglobalData!.uid)
+                    .update({
                   "isfilled": true,
                   "location_name": userloc,
                   "image_url": avatarurl,
@@ -713,7 +861,8 @@ class _SetupAccountState extends State<SetupAccount> {
                       color: Colors.transparent,
                       height: 18.h,
                       width: 18.w,
-                      child: const CircularProgressIndicator(color: Colors.white),
+                      child:
+                          const CircularProgressIndicator(color: Colors.white),
                     ),
                   )
                 : Row(
@@ -722,9 +871,14 @@ class _SetupAccountState extends State<SetupAccount> {
                       const SizedBox(),
                       Text(
                         "Add books to your shelf",
-                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontFamily: globalfontfamily,
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600),
                       ),
-                      const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20)
+                      const Icon(Icons.arrow_forward_rounded,
+                          color: Colors.white, size: 20)
                     ],
                   ),
           ),

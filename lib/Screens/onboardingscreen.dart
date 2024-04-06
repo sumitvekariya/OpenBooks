@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:openbook/Models/user_data_models.dart';
 import 'package:openbook/Screens/homepage.dart';
-import 'package:openbook/Screens/setupaccount.dart';
+import 'package:openbook/Screens/setupprofile_page.dart';
 import 'package:openbook/TwitterAuth/provider/internet_provider.dart';
 import 'package:openbook/TwitterAuth/provider/sign_in_provider.dart';
 import 'package:openbook/Widgets/widgets.dart';
@@ -32,6 +32,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
+        print(userglobalData.toString());
         print('uid : ${userglobalData!.uid}');
         print('username: ${userglobalData!.username}');
         print('name: ${userglobalData!.name}');

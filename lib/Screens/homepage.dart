@@ -12,7 +12,7 @@ import 'package:openbook/Models/book_model.dart';
 import 'package:openbook/Models/rquest_book_model.dart';
 import 'package:openbook/Models/user_model.dart';
 import 'package:openbook/ScreenWidgets/requestscreenwidget.dart';
-import 'package:openbook/Screens/bookaroundyou.dart.dart';
+import 'package:openbook/Screens/bookaroundyou.dart';
 import 'package:openbook/Screens/peoplearoundyou.dart';
 import 'package:openbook/Screens/youraccountscreen.dart';
 import 'package:openbook/Screens/yourrequestscreen.dart';
