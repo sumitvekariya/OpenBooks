@@ -20,6 +20,7 @@ import 'package:openbook/Screens/onboardingscreen.dart';
 import 'package:openbook/Screens/recievedbookscreen.dart';
 import 'package:openbook/TwitterAuth/provider/sign_in_provider.dart';
 import 'package:openbook/Widgets/widgets.dart' as SnackBar;
+import 'package:openbook/constants.dart';
 import 'package:openbook/utils/global_data.dart';
 import 'package:openbook/utils/globalvar.dart';
 import 'package:openbook/utils/next_screen.dart';
@@ -28,6 +29,7 @@ import 'package:random_string/random_string.dart';
 import 'package:simple_barcode_scanner/enum.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class YourAccountScreen extends StatefulWidget {
   const YourAccountScreen({super.key});
@@ -622,20 +624,24 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              launchUrl(Uri.parse(twitterURL));
+                            },
                             icon: Image.asset("assets/images/twitter.png",
                                 height: 30.h, width: 30.w),
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              launchUrl(Uri.parse(telegramURL));
+                            },
                             icon: Image.asset("assets/images/telegram.png",
                                 height: 30.h, width: 30.w),
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Image.asset("assets/images/web.png",
-                                height: 30.h, width: 30.w),
-                          ),
+                          // IconButton(
+                          //   onPressed: () {},
+                          //   icon: Image.asset("assets/images/web.png",
+                          //       height: 30.h, width: 30.w),
+                          // ),
                         ],
                       ),
                       SizedBox(height: 20.h)

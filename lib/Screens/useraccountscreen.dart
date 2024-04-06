@@ -14,8 +14,10 @@ import 'package:openbook/ScreenWidgets/accountbookwidget.dart';
 import 'package:openbook/ScreenWidgets/recievedbookwidget.dart';
 import 'package:openbook/ScreenWidgets/rentedbookwidget.dart';
 import 'package:openbook/TwitterAuth/provider/sign_in_provider.dart';
+import 'package:openbook/constants.dart';
 import 'package:openbook/utils/globalvar.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Models/user_model.dart';
 
@@ -301,18 +303,17 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      launchUrl(Uri.parse(twitterURL));
+                    },
                     icon: Image.asset("assets/images/twitter.png",
                         height: 30.h, width: 30.w),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      launchUrl(Uri.parse(telegramURL));
+                    },
                     icon: Image.asset("assets/images/telegram.png",
-                        height: 30.h, width: 30.w),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Image.asset("assets/images/web.png",
                         height: 30.h, width: 30.w),
                   ),
                 ],
@@ -385,7 +386,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Center(
         child: Text(
-          msg ?? "No books available",
+          msg ?? "-",
           style: TextStyle(
               // fontWeight: FontWeight.bold,
               fontFamily: globalfontfamily,
