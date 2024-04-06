@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,9 +27,7 @@ import 'package:provider/provider.dart';
 import 'package:random_string/random_string.dart';
 import 'package:simple_barcode_scanner/enum.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class YourAccountScreen extends StatefulWidget {
   const YourAccountScreen({super.key});
@@ -53,11 +52,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
     required double userlong,
     required String bookdesc,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance
-        .collection("users")
-        .doc(userglobalData!.uid)
-        .collection("Books")
-        .doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(userglobalData!.uid).collection("Books").doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -74,8 +69,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference br =
-        FirebaseFirestore.instance.collection("Books").doc(bookid);
+    final DocumentReference br = FirebaseFirestore.instance.collection("Books").doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -105,7 +99,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
       }
       throw Exception("Location not found for the given address");
     } catch (e) {
-      print("Error: $e");
+      log("Error: $e");
       return const LatLng(0, 0);
     }
   }
@@ -120,10 +114,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
   bool kisloading = true;
 
   Future<Map<String, dynamic>> getBookDetails(String isbn) async {
-    const apiKey =
-        'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
-    final apiUrl =
-        'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
+    const apiKey = 'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
+    final apiUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
 
     //https://www.googleapis.com/books/v1/volumes?q=isbn:4577714843828&key=AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M
 
@@ -150,10 +142,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
   }
 
   Future<Position> getcurrentlocation() async {
-    await Geolocator.requestPermission()
-        .then((value) {})
-        .onError((error, stackTrace) {
-      print("error" + error.toString());
+    await Geolocator.requestPermission().then((value) {}).onError((error, stackTrace) {
+      log("error" + error.toString());
     });
 
     return Geolocator.getCurrentPosition();
@@ -161,13 +151,11 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
   Future<String> getLocationName(double latitude, double longitude) async {
     try {
-      List<geo.Placemark> placemarks =
-          await geo.placemarkFromCoordinates(latitude, longitude);
+      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(latitude, longitude);
 
       if (placemarks != null && placemarks.isNotEmpty) {
         geo.Placemark place = placemarks[0];
-        String locationName =
-            "${place.subLocality}, ${place.locality}, ${place.country}";
+        String locationName = "${place.subLocality}, ${place.locality}, ${place.country}";
 
         setState(() {
           isloading = false;
@@ -177,7 +165,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
         return "Location not found";
       }
     } catch (e) {
-      print("An error occurred: $e");
+      log("An error occurred: $e");
       return "Error retrieving location";
     }
   }
@@ -187,7 +175,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
     double longitude = userlong!;
 
     userlocationname = await getLocationName(latitude, longitude);
-    print("location details are : ${userlocationname}");
+    log("location details are : ${userlocationname}");
 
     locationcontroller.text = userlocationname!;
   }
@@ -196,25 +184,24 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot =
-          await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
-        print('uid : ${userglobalData!.uid}');
-        print('username: ${userglobalData!.username}');
-        print('name: ${userglobalData!.name}');
-        print('imageurl: ${userglobalData!.imageurl}');
-        print('provider: ${userglobalData!.provider}');
-        print('locationname: ${userglobalData!.locationname}');
+        log('uid : ${userglobalData!.uid}');
+        log('username: ${userglobalData!.username}');
+        log('name: ${userglobalData!.name}');
+        log('imageurl: ${userglobalData!.imageurl}');
+        log('provider: ${userglobalData!.provider}');
+        log('locationname: ${userglobalData!.locationname}');
 
         return userglobalData!;
       } else {
-        print('User document does not exist');
+        log('User document does not exist');
         return UserData("", "", "", "", false, "", "", 0.0, 0.0);
       }
     } catch (e) {
-      print('Error retrieving user data: $e');
+      log('Error retrieving user data: $e');
       return UserData("", "", "", "", false, "", "", 0.0, 0.0);
     }
   }
@@ -226,8 +213,8 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
 
     Future.delayed(const Duration(seconds: 1), () async {
       await getcurrentlocation().then((value) async {
-        print("my current location");
-        print("${value.latitude} ${value.longitude}");
+        log("my current location");
+        log("${value.latitude} ${value.longitude}");
 
         userlat = value.latitude;
         userlong = value.longitude;
@@ -247,780 +234,423 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
   Widget build(BuildContext context) {
     final sp = context.watch<SignInProvider>();
     return Scaffold(
-      body: kisloading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              child: SizedBox(
-                // color: Colors.red,
-                width: screenWidth,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 48.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 24.0.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        body: kisloading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 60.h),
+                      Row(
                         children: [
                           Text(
                             "Your account",
-                            style: TextStyle(
-                                fontFamily: globalfontfamily,
-                                color: Colors.black,
-                                fontSize: 28.sp,
-                                fontWeight: FontWeight.w600),
+                            style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 28.sp, fontWeight: FontWeight.w600),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios_rounded),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Center(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
-                        height: 102.h,
-                        width: 102.w,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            backgroundImage: Image.network(
-                              userglobalData!.imageurl,
-                              fit: BoxFit.cover,
-                            ).image,
-                            radius: 50,
-                            // child: Image.file(
-                            //   selectedImage!,
-                            //   fit: BoxFit.cover,
-                            // ),
+                      SizedBox(height: 20.h),
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage: Image.network(
+                                userglobalData!.imageurl,
+                                fit: BoxFit.cover,
+                              ).image,
+                              radius: 50,
+                              // child: Image.file(
+                              //   selectedImage!,
+                              //   fit: BoxFit.cover,
+                              // ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 24.0.w),
-                      child: SizedBox(
-                        // color: Colors.red,
-                        height: 98.h,
-                        width: 342.w,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 20.0.w, top: 16.h),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Name",
-                                    style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 50.w,
-                                  ),
-                                  Text(
-                                    userglobalData!.name,
-                                    style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
+                      SizedBox(height: 20.h),
+                      Container(
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Name",
+                              style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp),
+                            ),
+                            SizedBox(width: 60.w),
+                            Expanded(
+                              child: Text(
+                                userglobalData!.name,
+                                overflow: TextOverflow.fade,
+                                softWrap: false,
+                                style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp),
                               ),
-                              SizedBox(
-                                height: 12.h,
-                              ),
-                              Container(
-                                height: 1,
-                                color: const Color.fromRGBO(198, 198, 200, 1),
-                              ),
-                              SizedBox(
-                                height: 12.h,
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "username",
-                                    style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 22.w,
-                                  ),
-                                  Text(
-                                    userglobalData!.username,
-                                    style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Colors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 24.0.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Your top 3 books",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            "This helps us better match make",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Colors.black,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 12.h,
-                          ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        "Your top 3 books",
+                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        "This helps us better match make",
+                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 12.sp, fontWeight: FontWeight.w300),
+                      ),
+                      SizedBox(height: 12.h),
+                      StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('Books').snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
 
-                          StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userglobalData!.uid)
-                                  .collection('Books')
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                }
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                              return Book.fromMap(data, doc.id);
+                            }).toList();
+                            if (books.isEmpty) {
+                              return buildNoBooks();
+                            } else {
+                              return buildBooks(books);
+                            }
+                          }),
+                      SizedBox(height: 30.h),
+                      TapBounceContainer(
+                        child: GestureDetector(
+                          onTap: () async {
+                            var res = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SimpleBarcodeScannerPage(scanType: ScanType.barcode),
+                                ));
 
-                                print(!snapshot.hasData);
+                            if (res != '-1') {
+                              setState(() {
+                                bookloading = true;
+                              });
+                              await getBookDetails(res).then((details) {
+                                setState(() {
+                                  bookDetails = details;
+                                });
+                              }).catchError((e) {
+                                setState(() {
+                                  bookloading = false;
+                                });
 
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                }
-                                List<Book> books = snapshot.data!.docs
-                                    .map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data =
-                                      doc.data() as Map<String, dynamic>;
-                                  return Book.fromMap(data, doc.id);
-                                }).toList();
-                                if (books.isEmpty) {
-                                  return Container(
-                                      width: 342.h,
-                                      padding: EdgeInsets.only(
-                                        left: 20.0.w,
-                                        right: 20.0.w,
-                                        top: 5.h,
-                                      ),
-                                      // color: const Color.fromRGBO(249, 249, 249, 1),
-                                      child: const Center(
-                                        child: Text(
-                                          "No books are available",
-                                          style: TextStyle(
-                                            // fontWeight: FontWeight.bold,
-                                            fontFamily: globalfontfamily,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ));
-                                } else {
-                                  return Container(
-                                    height: 290.h,
-                                    width: 342.w,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                    padding: EdgeInsets.only(
-                                      left: 20.0.w,
-                                      right: 20.0.w,
-                                    ),
-                                    child: ListView.builder(
-                                        itemCount: books.length,
-                                        itemBuilder: (context, index) {
-                                          return AccountBookwidget(
-                                            book: books[index],
-                                          );
-                                        }),
-                                  );
-                                }
-                              }),
+                                SnackBar.showSnackbar(context, Colors.red, 'Book not Found');
 
-                          SizedBox(
-                            height: 24.h,
-                          ),
+                                // showTopSnackBar(
+                                //   Overlay.of(context),
+                                //   const CustomSnackBar.error(
+                                //     message: 'Book not Found',
+                                //   ),
+                                // );
+                              });
+                              try {
+                                log('Barcode Result: $res');
+                                log('Title: ${bookDetails['title'] ?? "no tittle"}');
+                                log('Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
+                                log('Description: ${bookDetails['description'] ?? "no description"}');
+                                log('Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
 
-                          TapBounceContainer(
-                            child: GestureDetector(
-                              onTap: () async {
-                                var res = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SimpleBarcodeScannerPage(
-                                        scanType: ScanType.barcode,
-                                      ),
-                                    ));
+                                String book1id = randomAlphaNumeric(9);
+                                String book1name = bookDetails['title'] ?? "no tittle";
+                                String book1authorname = bookDetails['authors'][0] ?? "no author name";
 
-                                if (res != '-1') {
-                                  setState(() {
-                                    bookloading = true;
-                                  });
-                                  await getBookDetails(res).then((details) {
-                                    setState(() {
-                                      bookDetails = details;
-                                    });
-                                  }).catchError((e) {
-                                    setState(() {
-                                      bookloading = false;
-                                    });
+                                String imgcover = bookDetails['imageLinks']['thumbnail'] ??
+                                    "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
 
-                                    SnackBar.showSnackbar(
-                                        context, Colors.red, 'Book not Found');
+                                String bookdesc = bookDetails['description'] ?? "no descriptions";
 
-                                    // showTopSnackBar(
-                                    //   Overlay.of(context),
-                                    //   const CustomSnackBar.error(
-                                    //     message: 'Book not Found',
-                                    //   ),
-                                    // );
-                                  });
-                                  try {
-                                    print('Barcode Result: $res');
-                                    print(
-                                        'Title: ${bookDetails['title'] ?? "no tittle"}');
-                                    print(
-                                        'Author(s): ${bookDetails['authors'][0] ?? "no author name"}');
-                                    print(
-                                        'Description: ${bookDetails['description'] ?? "no description"}');
-                                    print(
-                                        'Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no imgcovr"}');
+                                String userloc = locationcontroller.text;
 
-                                    String book1id = randomAlphaNumeric(9);
-                                    String book1name =
-                                        bookDetails['title'] ?? "no tittle";
-                                    String book1authorname =
-                                        bookDetails['authors'][0] ??
-                                            "no author name";
+                                LatLng locationcoordinates = await getLocationFromAddress(userloc);
 
-                                    String imgcover = bookDetails['imageLinks']
-                                            ['thumbnail'] ??
-                                        "https://firebasestorage.googleapis.com/v0/b/openbook-68460.appspot.com/o/cover.png?alt=media&token=63132f9d-b178-4a10-a38d-c59f98b55a09";
+                                double userlocationlat = locationcoordinates.latitude;
 
-                                    String bookdesc =
-                                        bookDetails['description'] ??
-                                            "no descriptions";
+                                double userlocationlong = locationcoordinates.longitude;
 
-                                    String userloc = locationcontroller.text;
+                                await saveDataToFirestorefromscanner(
+                                  bookid: book1id,
+                                  bookname: book1name,
+                                  authorname: book1authorname,
+                                  imgcover: imgcover,
+                                  username: userglobalData!.username,
+                                  userimage: userglobalData!.imageurl,
+                                  useruid: userglobalData!.uid,
+                                  userlocation: userloc,
+                                  userlat: userlocationlat,
+                                  userlong: userlocationlong,
+                                  bookdesc: bookdesc,
+                                );
 
-                                    LatLng locationcoordinates =
-                                        await getLocationFromAddress(userloc);
+                                setState(() {
+                                  bookloading = false;
+                                });
 
-                                    double userlocationlat =
-                                        locationcoordinates.latitude;
+                                SnackBar.showSnackbar(context, Colors.blue, '$book1name added Successfully !');
 
-                                    double userlocationlong =
-                                        locationcoordinates.longitude;
+                                // showTopSnackBar(
+                                //   Overlay.of(context),
+                                //   CustomSnackBar.success(
+                                //     message:
+                                //         '$book1name added Successfully !',
+                                //   ),
+                                // );
 
-                                    await saveDataToFirestorefromscanner(
-                                      bookid: book1id,
-                                      bookname: book1name,
-                                      authorname: book1authorname,
-                                      imgcover: imgcover,
-                                      username: userglobalData!.username,
-                                      userimage: userglobalData!.imageurl,
-                                      useruid: userglobalData!.uid,
-                                      userlocation: userloc,
-                                      userlat: userlocationlat,
-                                      userlong: userlocationlong,
-                                      bookdesc: bookdesc,
-                                    );
+                                ///
+                              } catch (e) {
+                                setState(() {
+                                  bookloading = false;
+                                });
 
-                                    setState(() {
-                                      bookloading = false;
-                                    });
+                                SnackBar.showSnackbar(context, Colors.red, 'An error occurred while processing the book details');
 
-                                    SnackBar.showSnackbar(
-                                        context, Colors.blue, '$book1name added Successfully !');
-
-                                    // showTopSnackBar(
-                                    //   Overlay.of(context),
-                                    //   CustomSnackBar.success(
-                                    //     message:
-                                    //         '$book1name added Successfully !',
-                                    //   ),
-                                    // );
-
-                                    ///
-                                  } catch (e) {
-                                    setState(() {
-                                      bookloading = false;
-                                    });
-
-                                    SnackBar.showSnackbar(
-                                        context, Colors.red, 'An error occurred while processing the book details');
-
-                                    // showTopSnackBar(
-                                    //   Overlay.of(context),
-                                    //   const CustomSnackBar.error(
-                                    //     message:
-                                    //         'An error occurred while processing the book details',
-                                    //   ),
-                                    // );
-                                  }
-                                }
-                              },
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: 25.0.w),
-                                  child: SizedBox(
-                                    // color: Colors.red,
+                                // showTopSnackBar(
+                                //   Overlay.of(context),
+                                //   const CustomSnackBar.error(
+                                //     message:
+                                //         'An error occurred while processing the book details',
+                                //   ),
+                                // );
+                              }
+                            }
+                          },
+                          child: Center(
+                            child: bookloading
+                                ? const CircularProgressIndicator()
+                                : Image.asset(
+                                    "assets/images/barcode-scanner.png",
+                                    fit: BoxFit.cover,
                                     height: 30,
                                     width: 30,
-                                    child: bookloading
-                                        ? const CircularProgressIndicator()
-                                        : Image.asset(
-                                            "assets/images/barcode-scanner.png",
-                                            fit: BoxFit.cover,
-                                            height: 30,
-                                            width: 30,
-                                          ),
                                   ),
-                                ),
-                              ),
-                            ),
                           ),
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        "Received Books",
+                        style: TextStyle(
+                          fontFamily: globalfontfamily,
+                          color: Colors.black,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('RecievedBooks').snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
 
-                          SizedBox(
-                            height: 10.h,
-                          ),
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            List<RecievedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                              return RecievedBook.fromMap(data, doc.id);
+                            }).toList();
 
-                          Text(
-                            "Received Books",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          // Text(
-                          //   "This helps us better match make",
-                          //   style: TextStyle(
-                          //     fontFamily: globalfontfamily,
-                          //     color: Colors.black,
-                          //     fontSize: 12.sp,
-                          //     fontWeight: FontWeight.w300,
-                          //   ),
-                          // ),
-                          SizedBox(
-                            height: 12.h,
-                          ),
-
-                          StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userglobalData!.uid)
-                                  .collection('RecievedBooks')
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                }
-
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                }
-                                List<RecievedBook> books = snapshot.data!.docs
-                                    .map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data =
-                                      doc.data() as Map<String, dynamic>;
-                                  return RecievedBook.fromMap(data, doc.id);
-                                }).toList();
-
-                                if (books.isEmpty) {
-                                  return Container(
-                                      width: 342.h,
-                                      padding: EdgeInsets.only(
-                                        left: 20.0.w,
-                                        right: 20.0.w,
-                                        top: 5.h,
-                                      ),
-                                      //color: const Color.fromRGBO(249, 249, 249, 1),
-                                      child: const Center(
-                                        child: Text(
-                                          "No books are available",
-                                          style: TextStyle(
-                                            // fontWeight: FontWeight.bold,
-                                            fontFamily: globalfontfamily,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ));
-                                } else {
-                                  return Column(
-                                    children: [
-                                      Container(
-                                        height: 180.h,
-                                        width: 342.w,
-                                        color: const Color.fromRGBO(
-                                            249, 249, 249, 1),
-                                        padding: EdgeInsets.only(
-                                          left: 20.0.w,
-                                          right: 20.0.w,
-                                          // top: 16.h,
-                                        ),
-                                        child: ListView.builder(
-                                            itemCount: books.length,
-                                            itemBuilder: (context, index) {
-                                              return RecievedBookwidget(
-                                                book: books[index],
-                                              );
-                                            }),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          nextScreen(context,
-                                              const RecievedBookScreen());
-                                        },
-                                        child: Container(
-                                          width: 342.w,
-                                          color: const Color.fromRGBO(
-                                              249, 249, 249, 1),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsets.only(bottom: 14.0.h),
-                                            child: Center(
-                                              child: Text(
-                                                "view all",
-                                                style: TextStyle(
-                                                  fontFamily: globalfontfamily,
-                                                  color: const Color.fromRGBO(
-                                                      67, 128, 199, 1),
-                                                  fontSize: 12.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }
-                              }),
-
-                          SizedBox(
-                            height: 10.h,
-                          ),
-
-                          Text(
-                            "Rented Books",
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-
-                          SizedBox(
-                            height: 12.h,
-                          ),
-
-                          StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userglobalData!.uid)
-                                  .collection('RentedBooks')
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                }
-
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                }
-                                List<RentedBook> books = snapshot.data!.docs
-                                    .map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data =
-                                      doc.data() as Map<String, dynamic>;
-                                  return RentedBook.fromMap(data, doc.id);
-                                }).toList();
-                                if (books.isEmpty) {
-                                  return Container(
-                                      width: 342.h,
-                                      padding: EdgeInsets.only(
-                                        left: 20.0.w,
-                                        right: 20.0.w,
-                                        top: 5.h,
-                                      ),
-                                      //color: const Color.fromRGBO(249, 249, 249, 1),
-                                      child: const Center(
-                                        child: Text(
-                                          "No books are available",
-                                          style: TextStyle(
-                                            //fontWeight: FontWeight.bold,
-                                            fontFamily: globalfontfamily,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ));
-                                } else {
-                                  return Container(
-                                    height: 180.h,
-                                    width: 342.w,
-                                    color:
-                                        const Color.fromRGBO(249, 249, 249, 1),
-                                    padding: EdgeInsets.only(
-                                      left: 20.0.w,
-                                      right: 20.0.w,
-                                      // top: 16.h,
-                                    ),
-                                    child: ListView.builder(
-                                        itemCount: books.length,
-                                        itemBuilder: (context, index) {
-                                          return RentedBookWidget(
-                                            book: books[index],
-                                          );
-                                        }),
-                                  );
-                                }
-                              }),
-
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Invite readers",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: const Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                "This helps us better match make",
-                                style: TextStyle(
-                                  fontFamily: globalfontfamily,
-                                  color: const Color.fromRGBO(0, 0, 0, 1),
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(
-                            height: 12.h,
-                          ),
-                          Container(
-                            // height: 143.h,
-                            width: 342.w,
-                            color: const Color.fromRGBO(249, 249, 249, 1),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: 20.0.w,
-                                right: 20.0.w,
-                                top: 16.h,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            if (books.isEmpty) {
+                              return buildNoBooks();
+                            } else {
+                              return Column(
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                              "assets/images/whatsapp.png"),
-                                          SizedBox(
-                                            width: 12.h,
+                                  buildBooksReceived(books),
+                                  GestureDetector(
+                                    onTap: () {
+                                      nextScreen(context, const RecievedBookScreen());
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(bottom: 14.0.h),
+                                      child: Center(
+                                        child: Text(
+                                          "view all",
+                                          style: TextStyle(
+                                            fontFamily: globalfontfamily,
+                                            color: Colors.blueAccent,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w600,
                                           ),
-                                          Text(
-                                            "Whatsapp",
-                                            style: TextStyle(
-                                              fontFamily: globalfontfamily,
-                                              color: const Color.fromRGBO(
-                                                  75, 200, 118, 1),
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                      Image.asset(
-                                        "assets/images/frd.png",
-                                        color: const Color.fromRGBO(
-                                            75, 200, 118, 1),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    color:
-                                        const Color.fromRGBO(198, 198, 200, 1),
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset("assets/images/x.png"),
-                                          SizedBox(
-                                            width: 12.h,
-                                          ),
-                                          Text(
-                                            "Twitter",
-                                            style: TextStyle(
-                                              fontFamily: globalfontfamily,
-                                              color: const Color.fromRGBO(
-                                                  0, 0, 0, 1),
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Image.asset(
-                                        "assets/images/frd.png",
-                                        color: const Color.fromRGBO(0, 0, 0, 1),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    color:
-                                        const Color.fromRGBO(198, 198, 200, 1),
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset("assets/images/inst.png"),
-                                          SizedBox(
-                                            width: 12.h,
-                                          ),
-                                          Text(
-                                            "Instagram",
-                                            style: TextStyle(
-                                              fontFamily: globalfontfamily,
-                                              color: const Color.fromRGBO(
-                                                  242, 68, 65, 1),
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Image.asset(
-                                        "assets/images/frd.png",
-                                        color: const Color.fromRGBO(
-                                            242, 68, 65, 1),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Container(
-                                    height: 1,
-                                    color:
-                                        const Color.fromRGBO(198, 198, 200, 1),
-                                  ),
-                                  SizedBox(
-                                    height: 16.h,
+                                    ),
                                   ),
                                 ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
+                              );
+                            }
+                          }),
+                      SizedBox(height: 20.h),
+                      Text(
+                        "Rented Books",
+                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 10.h),
+                      StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('RentedBooks').snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
 
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 12.0.w),
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    sp.userSignOut();
-                                    nextScreenReplace(
-                                        context, const OnBoardingScreen());
-                                  },
-                                  child: const Text("SIGN OUT",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ))),
-                            ),
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            List<RentedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                              return RentedBook.fromMap(data, doc.id);
+                            }).toList();
+                            if (books.isEmpty) {
+                              return buildNoBooks();
+                            } else {
+                              return buildBooksRented(books);
+                            }
+                          }),
+                      SizedBox(height: 20.h),
+                      Text(
+                        "Invite readers",
+                        style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: Image.asset("assets/images/twitter.png", height: 30.h, width: 30.w),
                           ),
-
-                          SizedBox(
-                            height: 15.h,
+                          IconButton(
+                            onPressed: () {},
+                            icon: Image.asset("assets/images/telegram.png", height: 30.h, width: 30.w),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: Image.asset("assets/images/web.png", height: 30.h, width: 30.w),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 20.h)
+                    ],
+                  ),
                 ),
               ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.fromLTRB(24.w, 0.h, 24.h, 25.h),
+          child: ElevatedButton(
+            onPressed: () {
+              sp.userSignOut();
+              nextScreenReplace(context, const OnBoardingScreen());
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              surfaceTintColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
             ),
+            child: Text(
+              "SIGN OUT",
+              style: TextStyle(fontFamily: globalfontfamily, color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ));
+  }
+
+  Container buildBooks(List<Book> books) {
+    return Container(
+      height: 200.h,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: ListView.separated(
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        itemCount: books.length,
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+        itemBuilder: (BuildContext context, int index) {
+          return AccountBookwidget(
+            book: books[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Container buildBooksReceived(List<RecievedBook> books) {
+    return Container(
+      height: 200.h,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: ListView.separated(
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        itemCount: books.length,
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+        itemBuilder: (BuildContext context, int index) {
+          return RecievedBookwidget(
+            book: books[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Container buildBooksRented(List<RentedBook> books) {
+    return Container(
+      height: 200.h,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: ListView.separated(
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        itemCount: books.length,
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+        itemBuilder: (BuildContext context, int index) {
+          return RentedBookWidget(
+            book: books[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Container buildNoBooks() {
+    return Container(
+      height: 50.h,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Center(
+        child: Text(
+          "No books available",
+          style: TextStyle(
+              // fontWeight: FontWeight.bold,
+              fontFamily: globalfontfamily,
+              fontSize: 13.sp),
+        ),
+      ),
     );
   }
 }

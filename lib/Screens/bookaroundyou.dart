@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:openbook/Models/book_model.dart';
@@ -85,108 +83,65 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
           },
         ),
       ),
-      body: Container(
-        height: screenHeight,
-        width: screenWidth,
-        color: const Color.fromRGBO(249, 249, 249, 1),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Container(
-              height: screenHeight! * 0.9,
-              width: 390.w,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(32.r),
-                    topRight: Radius.circular(32.r)),
-              ),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 24.0,
-                    right: 24,
-                    top: 24,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Text(
-                        "Books around you",
-                        style: TextStyle(
-                          fontFamily: globalfontfamily,
-                          color: Color.fromRGBO(0, 0, 0, 1),
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Container(
-                        height: 650.h,
-                        width: 342.w,
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(249, 249, 249, 1),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32.r),
-                            topRight: Radius.circular(32.r),
-                            bottomLeft: Radius.circular(32.r),
-                            bottomRight: Radius.circular(32.r),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left: 20.0.w,
-                            right: 20.0.w,
-                            top: 20.h,
-                            bottom: 20.h,
-                          ),
-                          child: StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('Books')
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                }
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Container(
+            height: ScreenUtil().screenHeight! * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(32.r), topRight: Radius.circular(32.r)),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 24.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20.h),
+                    Text(
+                      "Books around you",
+                      style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(height: 20.h),
+                    Container(
+                      height: 650.h,
+                      width: 342.w,
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                      child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection('Books').snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
 
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                }
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
 
-                                List<Book> books = snapshot.data!.docs
-                                    .map((DocumentSnapshot doc) {
-                                  Map<String, dynamic> data =
-                                      doc.data() as Map<String, dynamic>;
-                                  return Book.fromMap(data, doc.id);
-                                }).toList();
+                            List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                              return Book.fromMap(data, doc.id);
+                            }).toList();
 
-                                return ListView.builder(
-                                    itemCount: books.length,
-                                    itemBuilder: (context, index) {
-                                      return Bookwidget(
-                                        book: books[index],
-                                      );
-                                    });
-                              }),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                    ],
-                  ),
+                            return ListView.separated(
+                              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
+                              itemCount: books.length,
+                              itemBuilder: (context, index) {
+                                return Bookwidget(
+                                  book: books[index],
+                                );
+                              },
+                              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                            );
+                          }),
+                    ),
+                  ],
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -207,187 +162,133 @@ class _BookwidgetState extends State<Bookwidget> {
   bool isloading = false;
   @override
   Widget build(BuildContext context) {
-    String userNameLoc = "${widget.book.username}, ${widget.book.userLocation}";
-    userNameLoc = userNameLoc.length <= 44
-        ? userNameLoc
-        : "${userNameLoc.substring(0, 41)}...";
-    return widget.book.isrented
-        ? const SizedBox()
-        : widget.book.userUid == userglobalData!.uid
-            ? const SizedBox()
-            : GestureDetector(
-                onTap: () {
-                  nextScreen(context, BookDetails(book: widget.book));
-                },
-                child: Column(
+    return GestureDetector(
+      onTap: () {
+        nextScreen(context, BookDetails(book: widget.book));
+      },
+      child: Row(
+        children: [
+          Image.network(widget.book.imageCover, fit: BoxFit.fill, height: 60.h, width: 40.w),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 12, bottom: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                  height: 50.h,
-                                  width: 50.w,
-                                  child: Image.network(widget.book.imageCover)),
-                              Padding(
-                                padding: EdgeInsets.only(left: 12.0.w),
-                                child: SizedBox(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 180.w,
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "By: ",
-                                              style: TextStyle(
-                                                fontFamily: globalfontfamily,
-                                                color:
-                                                    const Color.fromRGBO(0, 0, 0, 1),
-                                                fontSize: 8.sp,
-                                                fontWeight: FontWeight.w200,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 8.h,
-                                              width: 8.w,
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  backgroundImage: Image.network(
-                                                    widget.book.userimage,
-                                                    fit: BoxFit.cover,
-                                                  ).image,
-                                                  radius: 4,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 2.w,
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                userNameLoc.replaceAll(
-                                                    "", "\u{200B}"),
-                                                softWrap: true,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontFamily: globalfontfamily,
-                                                  color:
-                                                      const Color.fromRGBO(0, 0, 0, 1),
-                                                  fontSize: 8.sp,
-                                                  fontWeight: FontWeight.w200,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 180.w,
-                                        child: Text(
-                                          widget.book.bookName,
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                            fontFamily: globalfontfamily,
-                                            color: const Color.fromRGBO(0, 0, 0, 1),
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        "Author: ${widget.book.authorName}",
-                                        style: TextStyle(
-                                          fontFamily: globalfontfamily,
-                                          color: const Color.fromRGBO(0, 0, 0, 1),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w200,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 8),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: TapBounceContainer(
-                                child: GestureDetector(
-                                  onTap: () async 
-                                  {
-                                    setState(() {
-                                      isloading = true;
-                                    });
-                                
-                                    await saveDataToFirestore(
-                                      bookid: widget.book.bookId,
-                                      bookname: widget.book.bookName,
-                                      authorname: widget.book.authorName,
-                                      imgcover: widget.book.imageCover,
-                                      username: widget.book.username,
-                                      userimage: widget.book.userimage,
-                                      useruid: widget.book.userUid,
-                                      userlocation: widget.book.userLocation,
-                                      userlat: widget.book.userLat,
-                                      userlong: widget.book.userLong,
-                                      requestusername: userglobalData!.username,
-                                      requestuserimage: userglobalData!.imageurl,
-                                      requestuseruid: userglobalData!.uid,
-                                      requestuserlocation:
-                                          userglobalData!.locationname,
-                                      requestuserlat: userglobalData!.userlat,
-                                      requestuserlong: userglobalData!.userlong,
-                                      bookdesc: widget.book.bookdesc,
-                                    );
-                                
-                                    setState(() {
-                                      isloading = false;
-                                    });
-                                
-                                  },
-                                  child: isloading
-                                      ? SizedBox(
-                                          height: 19.h,
-                                          width: 19.w,
-                                          child: const CircularProgressIndicator(),
-                                        )
-                                      : const Text(
-                                          "Chat",
-                                          style: TextStyle(
-                                            fontFamily: globalfontfamily,
-                                            color: Colors.blue,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
+                    Text(
+                      "By: ",
+                      style: TextStyle(
+                        fontFamily: globalfontfamily,
+                        fontSize: 8.sp,
+                        fontWeight: FontWeight.w200,
+                        color: Colors.grey.shade600,
                       ),
                     ),
-                    Container(
-                      height: 1,
-                      color: const Color.fromRGBO(198, 198, 200, 1),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6.r),
+                      child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: Image.network(
+                            widget.book.userimage,
+                            fit: BoxFit.cover,
+                          ).image,
+                          radius: 4.r),
+                    ),
+                    Expanded(
+                      child: Text(
+                        " ${widget.book.username}, ${widget.book.userLocation}",
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontFamily: globalfontfamily,
+                          fontSize: 8.sp,
+                          fontWeight: FontWeight.w200,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              );
+                Text(
+                  widget.book.bookName,
+                  style: TextStyle(fontFamily: globalfontfamily, fontSize: 12.sp, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  "Author: ${widget.book.authorName}",
+                  style: TextStyle(
+                    fontFamily: globalfontfamily,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w200,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 10.w),
+          userglobalData?.uid != widget.book.userUid
+              ? Container()
+              : TapBounceContainer(
+                  child: GestureDetector(
+                    onTap: () async {
+                      snackbar.showSnackbar(
+                        context,
+                        Colors.blue,
+                        'Good job, The ${widget.book.bookName} request send to @${widget.book.username}',
+                      );
+
+                      setState(() {
+                        isloading = true;
+                      });
+
+                      await saveDataToFirestore(
+                        bookid: widget.book.bookId,
+                        bookname: widget.book.bookName,
+                        authorname: widget.book.authorName,
+                        imgcover: widget.book.imageCover,
+                        username: widget.book.username,
+                        userimage: widget.book.userimage,
+                        useruid: widget.book.userUid,
+                        userlocation: widget.book.userLocation,
+                        userlat: widget.book.userLat,
+                        userlong: widget.book.userLong,
+                        requestusername: userglobalData!.username,
+                        requestuserimage: userglobalData!.imageurl,
+                        requestuseruid: userglobalData!.uid,
+                        requestuserlocation: userglobalData!.locationname,
+                        requestuserlat: userglobalData!.userlat,
+                        requestuserlong: userglobalData!.userlong,
+                        bookdesc: widget.book.bookdesc,
+                      );
+
+                      setState(() {
+                        isloading = false;
+                      });
+
+                      // warningNoTask(context);
+                    },
+                    child: isloading
+                        ? SizedBox(
+                            height: 19.h,
+                            width: 19.w,
+                            child: const CircularProgressIndicator(),
+                          )
+                        : Text(
+                            "Chat",
+                            style: TextStyle(
+                              fontFamily: globalfontfamily,
+                              color: Colors.blueAccent,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                  ),
+                ),
+          SizedBox(width: 10.w)
+        ],
+      ),
+    );
   }
 
   Future warningNoTask(BuildContext context) async {
@@ -423,12 +324,7 @@ class _BookwidgetState extends State<Bookwidget> {
       required double requestuserlong,
       required String bookdesc,
       re}) async {
-    final DocumentSnapshot pr = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(useruid)
-        .collection("RequestedBooks")
-        .doc(bookid)
-        .get();
+    final DocumentSnapshot pr = await FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid).get();
 
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -444,11 +340,7 @@ class _BookwidgetState extends State<Bookwidget> {
       warningNoTask(context);
       print("already  requested");
     } else {
-      final DocumentReference r = FirebaseFirestore.instance
-          .collection("users")
-          .doc(useruid)
-          .collection("RequestedBooks")
-          .doc(bookid);
+      final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid);
 
       await r.set({
         "book_id": bookid,
@@ -469,12 +361,6 @@ class _BookwidgetState extends State<Bookwidget> {
         "requestuserlong": requestuserlong,
         "bookdesc": bookdesc,
       });
-
-      snackbar.showSnackbar(
-        context,
-        Colors.blue,
-        'Good job, The ${widget.book.bookName} request send to @${widget.book.username}',
-      );
     }
   }
 }

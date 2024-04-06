@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openbook/Models/book_model.dart';
+import 'package:openbook/utils/global_data.dart';
 import 'package:openbook/utils/globalvar.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../Screens/bookdetails.dart';
 import '../Widgets/widgets.dart';
@@ -29,180 +26,103 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
 
   @override
   Widget build(BuildContext context) {
-    String userNameLoc = "${widget.book.username}, ${widget.book.userLocation}";
-    userNameLoc = userNameLoc.length <= 44
-        ? userNameLoc
-        : "${userNameLoc.substring(0, 41)}...";
-
     return GestureDetector(
       onTap: () {
         nextScreen(context, BookDetails(book: widget.book));
       },
-      child: Column(
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                      height: 50.h,
-                      width: 50.w,
-                      child: Image.network(widget.book.imageCover)),
-                  Padding(
-                    padding: EdgeInsets.only(left: 12.0.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "By: ",
-                              style: TextStyle(
-                                fontFamily: globalfontfamily,
-                                color: const Color.fromRGBO(0, 0, 0, 1),
-                                fontSize: 8.sp,
-                                fontWeight: FontWeight.w200,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 8.h,
-                              width: 8.w,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  backgroundImage: Image.network(
-                                    widget.book.userimage,
-                                    fit: BoxFit.cover,
-                                  ).image,
-                                  radius: 4,
-                                  // child: Image.file(
-                                  //   selectedImage!,
-                                  //   fit: BoxFit.cover,
-                                  // ),
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(
-                              width: 2.w,
-                            ),
-                            // Image.asset("assets/images/playr1.png"),
-                            Text(
-                              userNameLoc,
-                              // "${widget.book.username}, ${widget.book.userLocation}",
-                              style: TextStyle(
-                                fontFamily: globalfontfamily,
-                                color: const Color.fromRGBO(0, 0, 0, 1),
-                                fontSize: 8.sp,
-                                fontWeight: FontWeight.w200,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: 180.w,
-                          child: Text(
-                            widget.book.bookName,
-                            style: TextStyle(
-                              fontFamily: globalfontfamily,
-                              color: const Color.fromRGBO(0, 0, 0, 1),
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          "Author: ${widget.book.authorName}",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: globalfontfamily,
-                            color: const Color.fromRGBO(0, 0, 0, 1),
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w200,
-                          ),
-                        ),
-                        // SizedBox(
-                        //   height: 12.h,
-                        // ),
-                      ],
+          Image.network(widget.book.imageCover, fit: BoxFit.cover, height: 60.h, width: 40.w),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "By: ",
+                      style: TextStyle(
+                        fontFamily: globalfontfamily,
+                        fontSize: 8.sp,
+                        fontWeight: FontWeight.w200,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                height: 1,
-                color: const Color.fromRGBO(198, 198, 200, 1),
-              ),
-              SizedBox(
-                height: 12.h,
-              ),
-              TapBounceContainer(
-                child: GestureDetector(
-                  onTap: () async {
-                    showSnackbar(context, Colors.blue,
-                        '${widget.book.bookName} deleted Successfully !');
-                    // showTopSnackBar(
-                    //   Overlay.of(context),
-                    //   CustomSnackBar.error(
-                    //     message: '${widget.book.bookName} deleted Successfully !',
-                    //   ),
-                    // );
-                    setState(() {
-                      isloading = true;
-                    });
-
-                    final DocumentReference dl = FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(widget.book.userUid)
-                        .collection("Books")
-                        .doc(widget.book.bookId);
-
-                    await dl.delete();
-
-                    final DocumentReference del = FirebaseFirestore.instance
-                        .collection("Books")
-                        .doc(widget.book.bookId);
-
-                    await del.delete();
-
-                    setState(() {
-                      isloading = false;
-                    });
-                    // warningNoTask(context);
-                  },
-                  child: isloading
-                      ? SizedBox(
-                          height: 19.h,
-                          width: 19.w,
-                          child: const CircularProgressIndicator(),
-                        )
-                      : SizedBox(
-                          height: 24.h,
-                          width: 24.w,
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6.r),
+                      child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: Image.network(
+                            widget.book.userimage,
+                            fit: BoxFit.cover,
+                          ).image,
+                          radius: 4.r),
+                    ),
+                    Expanded(
+                      child: Text(
+                        " ${widget.book.username}, ${widget.book.userLocation}",
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontFamily: globalfontfamily,
+                          fontSize: 8.sp,
+                          fontWeight: FontWeight.w200,
+                          color: Colors.grey.shade600,
                         ),
+                      ),
+                    ),
+                  ],
                 ),
-              )
-            ],
+                Text(
+                  widget.book.bookName,
+                  style: TextStyle(fontFamily: globalfontfamily, fontSize: 12.sp, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  "Author: ${widget.book.authorName}",
+                  style: TextStyle(
+                    fontFamily: globalfontfamily,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w200,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
           ),
-          SizedBox(
-            height: 12.h,
-          ),
-          Container(
-            height: 1,
-            color: const Color.fromRGBO(198, 198, 200, 1),
-          ),
-          SizedBox(
-            height: 12.h,
-          ),
+          SizedBox(width: 10.w),
+          userglobalData?.uid != widget.book.userUid
+              ? Container()
+              : TapBounceContainer(
+                  child: GestureDetector(
+                    onTap: () async {
+                      showSnackbar(context, Colors.blue, '${widget.book.bookName} deleted Successfully !');
+                      setState(() {
+                        isloading = true;
+                      });
+
+                      final DocumentReference dl = FirebaseFirestore.instance.collection("users").doc(widget.book.userUid).collection("Books").doc(widget.book.bookId);
+
+                      await dl.delete();
+
+                      final DocumentReference del = FirebaseFirestore.instance.collection("Books").doc(widget.book.bookId);
+
+                      await del.delete();
+
+                      setState(() {
+                        isloading = false;
+                      });
+                    },
+                    child: isloading
+                        ? SizedBox(height: 19.h, width: 19.w, child: const CircularProgressIndicator())
+                        : SizedBox(
+                            height: 20.h,
+                            width: 20.w,
+                            child: const Icon(Icons.delete, color: Colors.red),
+                          ),
+                  ),
+                ),
+          SizedBox(width: 10.w)
         ],
       ),
     );
@@ -213,8 +133,7 @@ class _AccountBookwidgetState extends State<AccountBookwidget> {
       noImage: true,
       context,
       title: "Normal",
-      message:
-          "There is no Task For Delete!\n Try adding some and then try to delete it!",
+      message: "There is no Task For Delete!\n Try adding some and then try to delete it!",
       buttonText: "Okay",
       onTapDismiss: () async {
         Navigator.pop(context);
