@@ -835,21 +835,14 @@ class _SetupAccountState extends State<SetupAccount> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
             ),
-            child: kisloading
-                ? Center(
-                    child: Container(
-                      color: Colors.transparent,
-                      height: 18.h,
-                      width: 18.w,
-                      child:
-                          const CircularProgressIndicator(color: Colors.white),
-                    ),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const SizedBox(),
-                      Text(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(),
+                kisloading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(
                         "Add books to your shelf",
                         style: TextStyle(
                             fontFamily: globalfontfamily,
@@ -857,10 +850,10 @@ class _SetupAccountState extends State<SetupAccount> {
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600),
                       ),
-                      const Icon(Icons.arrow_forward_rounded,
-                          color: Colors.white, size: 20)
-                    ],
-                  ),
+                const Icon(Icons.arrow_forward_rounded,
+                    color: Colors.white, size: 20)
+              ],
+            ),
           ),
         ));
   }

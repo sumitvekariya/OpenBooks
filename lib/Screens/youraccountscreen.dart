@@ -379,7 +379,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
                                 }
                               },
                               child: Image.asset("assets/images/solana.png",
-                                  height: 27.h, width: 27.w),
+                                  height: 25.h, width: 25.w),
                             ),
                         ],
                       ),
