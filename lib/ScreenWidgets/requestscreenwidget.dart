@@ -33,7 +33,8 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       },
       child: Row(
         children: [
-          Image.network(widget.book.imageCover, fit: BoxFit.cover, height: 60.h, width: 40.w),
+          Image.network(widget.book.imageCover,
+              fit: BoxFit.cover, height: 60.h, width: 40.w),
           SizedBox(width: 10.w),
           Expanded(
             child: Column(
@@ -77,7 +78,10 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
                 ),
                 Text(
                   widget.book.bookName,
-                  style: TextStyle(fontFamily: globalfontfamily, fontSize: 12.sp, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontFamily: globalfontfamily,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500),
                 ),
                 Text(
                   "Author: ${widget.book.authorName}",
@@ -97,7 +101,8 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
               : TapBounceContainer(
                   child: GestureDetector(
                     onTap: () async {
-                      showSnackbar(context, Colors.blue, 'Great! ${widget.book.bookName} successfully rented to ${widget.book.requestusername}');
+                      showSnackbar(context, Colors.blue,
+                          'Great! ${widget.book.bookName} successfully rented to ${widget.book.requestusername}');
 
                       setState(() {
                         isloading = true;
@@ -136,7 +141,8 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
                             width: 19.w,
                             child: const CircularProgressIndicator(),
                           )
-                        : const Icon(CupertinoIcons.chat_bubble_2, color: Colors.blueAccent),
+                        : const Icon(CupertinoIcons.check_mark_circled,
+                            color: Colors.blueAccent),
                   ),
                 ),
           SizedBox(width: 10.w)
@@ -150,7 +156,8 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       noImage: true,
       context,
       title: "Normal",
-      message: "There is no Task For Delete!\n Try adding some and then try to delete it!",
+      message:
+          "There is no Task For Delete!\n Try adding some and then try to delete it!",
       buttonText: "Okay",
       onTapDismiss: () async {
         Navigator.pop(context);
@@ -178,7 +185,11 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
     required double renteduserlong,
     required String bookdesc,
   }) async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RentedBooks").doc(bookid);
+    final DocumentReference r = FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("RentedBooks")
+        .doc(bookid);
 
     await r.set({
       "book_id": bookid,
@@ -200,7 +211,11 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference br = FirebaseFirestore.instance.collection("users").doc(renteduseruid).collection("RecievedBooks").doc(bookid);
+    final DocumentReference br = FirebaseFirestore.instance
+        .collection("users")
+        .doc(renteduseruid)
+        .collection("RecievedBooks")
+        .doc(bookid);
 
     await br.set({
       "book_id": bookid,
@@ -222,13 +237,21 @@ class _RequestBookwidgetState extends State<RequestBookwidget> {
       "bookdesc": bookdesc,
     });
 
-    final DocumentReference dl = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid);
+    final DocumentReference dl = FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("RequestedBooks")
+        .doc(bookid);
 
     await dl.delete();
 
     print("THis 1 runs");
 
-    final DocumentReference del = FirebaseFirestore.instance.collection("users").doc(useruid).collection("Books").doc(bookid);
+    final DocumentReference del = FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("Books")
+        .doc(bookid);
 
     await del.delete();
 

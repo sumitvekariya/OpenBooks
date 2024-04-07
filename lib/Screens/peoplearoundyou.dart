@@ -46,7 +46,7 @@ class _PeopleAroundYouScreenState extends State<PeopleAroundYouScreen> {
       body: Container(
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
           margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r), color: Colors.grey[100]),
+          // decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r), color: Colors.grey[100]),
           child: const UsersPage()),
     );
   }

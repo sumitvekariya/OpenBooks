@@ -91,7 +91,9 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
             height: ScreenUtil().screenHeight! * 0.9,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(32.r), topRight: Radius.circular(32.r)),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32.r),
+                  topRight: Radius.circular(32.r)),
             ),
             child: SingleChildScrollView(
               child: Padding(
@@ -102,38 +104,52 @@ class _BookAroundYouScreenState extends State<BookAroundYouScreen> {
                     SizedBox(height: 20.h),
                     Text(
                       "Books around you",
-                      style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          fontFamily: globalfontfamily,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500),
                     ),
                     SizedBox(height: 20.h),
                     Container(
                       height: 650.h,
                       width: 342.w,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey[100]),
                       child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance.collection('Books').snapshots(),
+                          stream: FirebaseFirestore.instance
+                              .collection('Books')
+                              .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
                             }
 
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             }
 
-                            List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                              Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                            List<Book> books =
+                                snapshot.data!.docs.map((DocumentSnapshot doc) {
+                              Map<String, dynamic> data =
+                                  doc.data() as Map<String, dynamic>;
                               return Book.fromMap(data, doc.id);
                             }).toList();
 
                             return ListView.separated(
-                              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 20.h, horizontal: 20.w),
                               itemCount: books.length,
                               itemBuilder: (context, index) {
                                 return Bookwidget(
                                   book: books[index],
                                 );
                               },
-                              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(),
                             );
                           }),
                     ),
@@ -169,7 +185,8 @@ class _BookwidgetState extends State<Bookwidget> {
       },
       child: Row(
         children: [
-          Image.network(widget.book.imageCover, fit: BoxFit.fill, height: 60.h, width: 40.w),
+          Image.network(widget.book.imageCover,
+              fit: BoxFit.fill, height: 60.h, width: 40.w),
           SizedBox(width: 10.w),
           Expanded(
             child: Column(
@@ -213,7 +230,10 @@ class _BookwidgetState extends State<Bookwidget> {
                 ),
                 Text(
                   widget.book.bookName,
-                  style: TextStyle(fontFamily: globalfontfamily, fontSize: 12.sp, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      fontFamily: globalfontfamily,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500),
                 ),
                 Text(
                   "Author: ${widget.book.authorName}",
@@ -228,22 +248,16 @@ class _BookwidgetState extends State<Bookwidget> {
             ),
           ),
           SizedBox(width: 10.w),
-          userglobalData?.uid != widget.book.userUid
+          userglobalData?.uid == widget.book.userUid
               ? Container()
               : TapBounceContainer(
                   child: GestureDetector(
                     onTap: () async {
-                      snackbar.showSnackbar(
-                        context,
-                        Colors.blue,
-                        'Good job, The ${widget.book.bookName} request send to @${widget.book.username}',
-                      );
-
                       setState(() {
                         isloading = true;
                       });
 
-                      await saveDataToFirestore(
+                      final r = await saveDataToFirestore(
                         bookid: widget.book.bookId,
                         bookname: widget.book.bookName,
                         authorname: widget.book.authorName,
@@ -261,7 +275,16 @@ class _BookwidgetState extends State<Bookwidget> {
                         requestuserlat: userglobalData!.userlat,
                         requestuserlong: userglobalData!.userlong,
                         bookdesc: widget.book.bookdesc,
-                      );
+                      ).then((value) => {
+                            if (value != null)
+                              {
+                                snackbar.showSnackbar(
+                                  context,
+                                  Colors.blue,
+                                  'Good job, The ${widget.book.bookName} request send to @${widget.book.username}',
+                                )
+                              }
+                          });
 
                       setState(() {
                         isloading = false;
@@ -275,7 +298,8 @@ class _BookwidgetState extends State<Bookwidget> {
                             width: 19.w,
                             child: const CircularProgressIndicator(),
                           )
-                        : const Icon(CupertinoIcons.chat_bubble_2, color: Colors.blueAccent),
+                        : const Icon(CupertinoIcons.book,
+                            color: Colors.blueAccent),
                   ),
                 ),
           SizedBox(width: 10.w)
@@ -317,7 +341,12 @@ class _BookwidgetState extends State<Bookwidget> {
       required double requestuserlong,
       required String bookdesc,
       re}) async {
-    final DocumentSnapshot pr = await FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid).get();
+    final DocumentSnapshot pr = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(useruid)
+        .collection("RequestedBooks")
+        .doc(bookid)
+        .get();
 
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -330,10 +359,14 @@ class _BookwidgetState extends State<Bookwidget> {
     print("pr.exists: ${pr.exists}");
 
     if (pr.exists) {
-      warningNoTask(context);
       print("already  requested");
+      return null;
     } else {
-      final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(useruid).collection("RequestedBooks").doc(bookid);
+      final DocumentReference r = FirebaseFirestore.instance
+          .collection("users")
+          .doc(useruid)
+          .collection("RequestedBooks")
+          .doc(bookid);
 
       await r.set({
         "book_id": bookid,
@@ -354,6 +387,7 @@ class _BookwidgetState extends State<Bookwidget> {
         "requestuserlong": requestuserlong,
         "bookdesc": bookdesc,
       });
+      return true;
     }
   }
 }

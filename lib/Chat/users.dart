@@ -11,7 +11,8 @@ class UsersPage extends StatelessWidget {
   const UsersPage({super.key});
 
   Future<UserPeopleModel> getUserData(types.User user) async {
-    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('users').doc(user.id).get();
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(user.id).get();
     if (snapshot.exists) {
       return UserPeopleModel.fromMap(snapshot.data()!, snapshot.id);
     } else {
@@ -39,13 +40,17 @@ class UsersPage extends StatelessWidget {
                 future: getUserData(user),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const AspectRatio(aspectRatio: 1, child: Center(child: CircularProgressIndicator()));
+                    return const AspectRatio(
+                        aspectRatio: 1,
+                        child: Center(child: CircularProgressIndicator()));
                   }
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   }
                   final userData = snapshot.data!;
-                  return GestureDetector(onTap: () {}, child: UserTile(typeUser: user, userModel: userData));
+                  return GestureDetector(
+                      onTap: () {},
+                      child: UserTile(typeUser: user, userModel: userData));
                 },
               );
             },

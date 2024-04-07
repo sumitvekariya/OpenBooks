@@ -42,7 +42,9 @@ class _HomePageState extends State<HomePage> {
   bool isloading = true;
 
   Future<Position> getcurrentlocation() async {
-    await Geolocator.requestPermission().then((value) {}).onError((error, stackTrace) {
+    await Geolocator.requestPermission()
+        .then((value) {})
+        .onError((error, stackTrace) {
       log("error$error");
     });
 
@@ -51,11 +53,13 @@ class _HomePageState extends State<HomePage> {
 
   Future<String> getLocationName(double latitude, double longitude) async {
     try {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(latitude, longitude);
+      List<geo.Placemark> placemarks =
+          await geo.placemarkFromCoordinates(latitude, longitude);
 
       if (placemarks != null && placemarks.isNotEmpty) {
         geo.Placemark place = placemarks[0];
-        String locationName = "${place.subLocality}, ${place.locality}, ${place.country}";
+        String locationName =
+            "${place.subLocality}, ${place.locality}, ${place.country}";
 
         setState(() {
           isloading = false;
@@ -81,7 +85,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future addCustomIcon() async {
-    final Uint8List customMarker = await getBytesFromAsset(path: "assets/images/prsn.png", width: 50);
+    final Uint8List customMarker =
+        await getBytesFromAsset(path: "assets/images/prsn.png", width: 50);
 
     setState(() {
       markericon = BitmapDescriptor.fromBytes(customMarker);
@@ -90,9 +95,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<Uint8List> getBytesFromAsset({String? path, int? width}) async {
     ByteData data = await rootBundle.load(path!);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
 
   @override
@@ -104,7 +112,10 @@ class _HomePageState extends State<HomePage> {
       Future.delayed(const Duration(microseconds: 1), () async {
         await addCustomIcon();
 
-        await FirebaseFirestore.instance.collection('users').snapshots().listen((snapshot) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .snapshots()
+            .listen((snapshot) {
           // markers.clear();
           for (var doc in snapshot.docs) {
             UserPeopleModel user = UserPeopleModel.fromMap(doc.data(), doc.id);
@@ -116,7 +127,8 @@ class _HomePageState extends State<HomePage> {
               icon: markericon,
               markerId: MarkerId(user.uid),
               position: LatLng(user.userlat, user.userlong),
-              infoWindow: InfoWindow(title: user.username, snippet: user.locationname),
+              infoWindow:
+                  InfoWindow(title: user.username, snippet: user.locationname),
             );
 
             markers.add(marker);
@@ -131,7 +143,11 @@ class _HomePageState extends State<HomePage> {
           userlong = value.longitude;
           await getLocation();
           markers.add(
-            Marker(icon: markericon, markerId: const MarkerId("2"), position: LatLng(value.latitude, value.longitude), infoWindow: const InfoWindow(title: "my current loaction")),
+            Marker(
+                icon: markericon,
+                markerId: const MarkerId("2"),
+                position: LatLng(value.latitude, value.longitude),
+                infoWindow: const InfoWindow(title: "my current loaction")),
           );
 
           CameraPosition cameraPosition = CameraPosition(
@@ -141,7 +157,9 @@ class _HomePageState extends State<HomePage> {
 
           final GoogleMapController cotrllr = await controller.future;
 
-          cotrllr.animateCamera(CameraUpdate.newCameraPosition(cameraPosition)).then((value) => setState(() {}));
+          cotrllr
+              .animateCamera(CameraUpdate.newCameraPosition(cameraPosition))
+              .then((value) => setState(() {}));
         });
       });
     } catch (e) {
@@ -194,21 +212,29 @@ class _HomePageState extends State<HomePage> {
                         height: 600.h,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(32.r), topRight: Radius.circular(32.r)),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(32.r),
+                              topRight: Radius.circular(32.r)),
                         ),
                         child: SingleChildScrollView(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 24.w),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 24.h, horizontal: 24.w),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    nextScreen(context, const YourAccountScreen());
+                                    nextScreen(
+                                        context, const YourAccountScreen());
                                   },
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.h),
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15.h, horizontal: 15.h),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        color: Colors.grey[100]),
                                     child: Row(
                                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
@@ -217,17 +243,27 @@ class _HomePageState extends State<HomePage> {
                                           radius: 14.w,
                                           child: ClipOval(
                                             child: CachedNetworkImage(
-                                              imageUrl: userglobalData!.imageurl.isNotEmpty
+                                              imageUrl: userglobalData!
+                                                      .imageurl.isNotEmpty
                                                   ? userglobalData!.imageurl
                                                   : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-                                              width: ScreenUtil().screenWidth * 0.2,
-                                              height: ScreenUtil().screenWidth * 0.2,
+                                              width: ScreenUtil().screenWidth *
+                                                  0.2,
+                                              height: ScreenUtil().screenWidth *
+                                                  0.2,
                                               fit: BoxFit.cover,
-                                              placeholder: (context, url) => const CircularProgressIndicator(),
-                                              errorWidget: (context, url, error) => Image.network(
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Image.network(
                                                 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // Placeholder image
-                                                width: ScreenUtil().screenWidth * 0.2,
-                                                height: ScreenUtil().screenWidth * 0.2,
+                                                width:
+                                                    ScreenUtil().screenWidth *
+                                                        0.2,
+                                                height:
+                                                    ScreenUtil().screenWidth *
+                                                        0.2,
                                                 fit: BoxFit.cover,
                                               ),
                                             ),
@@ -236,10 +272,14 @@ class _HomePageState extends State<HomePage> {
                                         SizedBox(width: 10.w),
                                         Text(
                                           "@${userglobalData?.username}",
-                                          style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, color: Colors.blueAccent),
+                                          style: TextStyle(
+                                              fontFamily: globalfontfamily,
+                                              fontSize: 16.sp,
+                                              color: Colors.blueAccent),
                                         ),
                                         const Spacer(),
-                                        const Icon(Icons.arrow_right, color: Colors.blueAccent)
+                                        const Icon(Icons.arrow_right,
+                                            color: Colors.blueAccent)
                                       ],
                                     ),
                                   ),
@@ -247,19 +287,29 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 5.h),
                                 GestureDetector(
                                   onTap: () {
-                                    nextScreen(context, const PeopleAroundYouScreen());
+                                    nextScreen(
+                                        context, const PeopleAroundYouScreen());
                                   },
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.h),
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15.h, horizontal: 15.h),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        color: Colors.grey[100]),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "Browse people around you",
-                                          style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, color: Colors.blueAccent),
+                                          style: TextStyle(
+                                              fontFamily: globalfontfamily,
+                                              fontSize: 16.sp,
+                                              color: Colors.blueAccent),
                                         ),
-                                        const Icon(Icons.arrow_right, color: Colors.blueAccent)
+                                        const Icon(Icons.arrow_right,
+                                            color: Colors.blueAccent)
                                       ],
                                     ),
                                   ),
@@ -267,41 +317,59 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 20.h),
                                 Text(
                                   "Books around you",
-                                  style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                      fontFamily: globalfontfamily,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 SizedBox(height: 15.h),
                                 StreamBuilder<QuerySnapshot>(
-                                    stream: FirebaseFirestore.instance.collection('Books').snapshots(),
+                                    stream: FirebaseFirestore.instance
+                                        .collection('Books')
+                                        .snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasError) {
                                         return Text('Error: ${snapshot.error}');
                                       }
 
-                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return const Center(child: CircularProgressIndicator());
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                            child: CircularProgressIndicator());
                                       }
                                       List<Book> books = snapshot.data!.docs
                                           .map((DocumentSnapshot doc) {
-                                            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                                            Map<String, dynamic> data = doc
+                                                .data() as Map<String, dynamic>;
                                             return Book.fromMap(data, doc.id);
                                           })
-                                          .where((book) => !book.isrented && book.userUid != userglobalData!.uid)
+                                          .where((book) =>
+                                              !book.isrented &&
+                                              book.userUid !=
+                                                  userglobalData!.uid)
                                           .toList();
                                       // books = [];
                                       if (books.isEmpty) {
-                                        return buildNoBooks();
+                                        return buildNoBooks('');
                                       } else {
                                         return Column(
                                           children: [
                                             buildBooks(books),
                                             GestureDetector(
                                               onTap: () {
-                                                nextScreen(context, const BookAroundYouScreen());
+                                                nextScreen(context,
+                                                    const BookAroundYouScreen());
                                               },
                                               child: Center(
                                                 child: Text(
                                                   "view all",
-                                                  style: TextStyle(fontFamily: globalfontfamily, color: Colors.blueAccent, fontSize: 12.sp, fontWeight: FontWeight.w600),
+                                                  style: TextStyle(
+                                                      fontFamily:
+                                                          globalfontfamily,
+                                                      color: Colors.blueAccent,
+                                                      fontSize: 12.sp,
+                                                      fontWeight:
+                                                          FontWeight.w600),
                                                 ),
                                               ),
                                             ),
@@ -311,7 +379,7 @@ class _HomePageState extends State<HomePage> {
                                     }),
                                 SizedBox(height: 20.h),
                                 Text(
-                                  "DM requests",
+                                  "Book requests",
                                   style: TextStyle(
                                     fontFamily: globalfontfamily,
                                     fontSize: 16.sp,
@@ -320,35 +388,55 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 SizedBox(height: 15.h),
                                 StreamBuilder<QuerySnapshot>(
-                                    stream: FirebaseFirestore.instance.collection('users').doc(userglobalData!.uid).collection('RequestedBooks').snapshots(),
+                                    stream: FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(userglobalData!.uid)
+                                        .collection('RequestedBooks')
+                                        .snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasError) {
                                         return Text('Error: ${snapshot.error}');
                                       }
 
-                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return const Center(child: CircularProgressIndicator());
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                            child: CircularProgressIndicator());
                                       }
-                                      List<RequestedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
-                                        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                                        return RequestedBook.fromMap(data, doc.id);
+                                      List<RequestedBook> books = snapshot
+                                          .data!.docs
+                                          .map((DocumentSnapshot doc) {
+                                        Map<String, dynamic> data =
+                                            doc.data() as Map<String, dynamic>;
+                                        return RequestedBook.fromMap(
+                                            data, doc.id);
                                       }).toList();
                                       if (books.isEmpty) {
-                                        return buildNoBooks();
+                                        return buildNoBooks(
+                                            'No requests found');
                                       } else {
                                         return Column(
                                           children: [
                                             buildBooksRequest(books),
                                             GestureDetector(
                                               onTap: () {
-                                                nextScreen(context, const YourRequestScreen());
+                                                nextScreen(context,
+                                                    const YourRequestScreen());
                                               },
                                               child: Padding(
-                                                padding: EdgeInsets.only(bottom: 10.0.h),
+                                                padding: EdgeInsets.only(
+                                                    bottom: 10.0.h),
                                                 child: Center(
                                                   child: Text(
                                                     "view all",
-                                                    style: TextStyle(fontFamily: globalfontfamily, color: Colors.blueAccent, fontSize: 12.sp, fontWeight: FontWeight.w600),
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            globalfontfamily,
+                                                        color:
+                                                            Colors.blueAccent,
+                                                        fontSize: 12.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600),
                                                   ),
                                                 ),
                                               ),
@@ -376,7 +464,8 @@ class _HomePageState extends State<HomePage> {
   Container buildBooks(List<Book> books) {
     return Container(
       height: 200.h,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 25.w),
       child: ListView.separated(
         padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -394,7 +483,8 @@ class _HomePageState extends State<HomePage> {
   Container buildBooksRequest(List<RequestedBook> books) {
     return Container(
       height: 200.h,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 25.w),
       child: ListView.separated(
         padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -409,14 +499,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container buildNoBooks() {
+  Container buildNoBooks(String? msg) {
     return Container(
       height: 50.h,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Center(
         child: Text(
-          "No books available",
+          msg ?? "-",
           style: TextStyle(
               // fontWeight: FontWeight.bold,
               fontFamily: globalfontfamily,
@@ -430,7 +521,8 @@ class _HomePageState extends State<HomePage> {
     return PanaraInfoDialog.showAnimatedGrow(
       context,
       title: "Normal",
-      message: "There is no Task For Delete!\n Try adding some and then try to delete it!",
+      message:
+          "There is no Task For Delete!\n Try adding some and then try to delete it!",
       buttonText: "Okay",
       onTapDismiss: () {
         Navigator.pop(context);
