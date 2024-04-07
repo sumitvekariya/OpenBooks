@@ -16,7 +16,8 @@ class UserTile extends StatelessWidget {
   final types.User typeUser;
   const UserTile({super.key, required this.userModel, required this.typeUser});
 
-  void _handlePressed(types.User otherUser, BuildContext context, UserPeopleModel userData) async {
+  void _handlePressed(types.User otherUser, BuildContext context,
+      UserPeopleModel userData) async {
     final navigator = Navigator.of(context);
     final room = await FirebaseChatCore.instance.createRoom(otherUser);
 
@@ -36,7 +37,7 @@ class UserTile extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
-        margin: EdgeInsets.symmetric(vertical: 1.h),
+        margin: EdgeInsets.symmetric(vertical: 5.h),
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(12.r),
@@ -48,11 +49,13 @@ class UserTile extends StatelessWidget {
               radius: 22.w,
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: userModel.imageurl.isNotEmpty ? userModel.imageurl : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                  imageUrl: userModel.imageurl.isNotEmpty
+                      ? userModel.imageurl
+                      : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                   width: ScreenUtil().screenWidth * 0.2,
                   height: ScreenUtil().screenWidth * 0.2,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => const CircularProgressIndicator(),
+                  // placeholder: (context, url) => const CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Image.network(
                     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // Placeholder image
                     width: ScreenUtil().screenWidth * 0.2,
@@ -72,20 +75,27 @@ class UserTile extends StatelessWidget {
                     userModel.name,
                     overflow: TextOverflow.fade,
                     softWrap: false,
-                    style: TextStyle(fontFamily: globalfontfamily, fontSize: 13.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontFamily: globalfontfamily,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.bold),
                   ),
                   Text(
                     userModel.locationname,
                     overflow: TextOverflow.fade,
                     softWrap: false,
-                    style: TextStyle(fontFamily: globalfontfamily, color: Colors.grey, fontSize: 12.sp),
+                    style: TextStyle(
+                        fontFamily: globalfontfamily,
+                        color: Colors.grey,
+                        fontSize: 12.sp),
                   ),
                 ],
               ),
             ),
             GestureDetector(
               onTap: () => _handlePressed(typeUser, context, userModel),
-              child: const Icon(CupertinoIcons.chat_bubble_2, color: Colors.blueAccent),
+              child: const Icon(CupertinoIcons.chat_bubble_2,
+                  color: Colors.blueAccent),
             ),
           ],
         ),
