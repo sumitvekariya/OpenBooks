@@ -126,7 +126,7 @@ class _BookDetailsState extends State<BookDetails> {
                       Row(
                         children: [
                           Text(
-                            "Owners:",
+                            "Owned by:",
                             style: TextStyle(
                               fontFamily: globalfontfamily,
                               fontSize: 15.sp,
