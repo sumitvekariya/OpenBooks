@@ -60,10 +60,8 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
   bool kisloading = true;
 
   Future<Map<String, dynamic>> getBookDetails(String isbn) async {
-    const apiKey =
-        'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
-    final apiUrl =
-        'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
+    const apiKey = 'AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M'; // Replace with your Google Books API key
+    final apiUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=$apiKey';
 
     //https://www.googleapis.com/books/v1/volumes?q=isbn:4577714843828&key=AIzaSyDGiEMiI9r7CMcBS1RAJgvSp6kKxKeBt2M
 
@@ -108,24 +106,19 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               SizedBox(height: 60.h),
               Row(
                 children: [
-                  Text(
-                    "User account",
-                    style: TextStyle(
-                        fontFamily: globalfontfamily,
-                        color: Colors.black,
-                        fontSize: 28.sp,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  const Spacer(),
                   IconButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.arrow_forward_ios_rounded),
+                    icon: const Icon(Icons.arrow_back_ios),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    style: const ButtonStyle(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                    style: const ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                  ),
+                  SizedBox(width: 80.w),
+                  Text(
+                    "User account",
+                    style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 24.sp, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -152,18 +145,13 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               ),
               SizedBox(height: 20.h),
               Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.grey[100]),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                 child: Row(
                   children: [
                     Text(
                       "Name",
-                      style: TextStyle(
-                          fontFamily: globalfontfamily,
-                          color: Colors.black,
-                          fontSize: 16.sp),
+                      style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp),
                     ),
                     SizedBox(width: 60.w),
                     Expanded(
@@ -171,10 +159,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                         widget.userModel!.name,
                         overflow: TextOverflow.fade,
                         softWrap: false,
-                        style: TextStyle(
-                            fontFamily: globalfontfamily,
-                            color: Colors.black,
-                            fontSize: 16.sp),
+                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp),
                       ),
                     ),
                   ],
@@ -183,19 +168,11 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               SizedBox(height: 20.h),
               Text(
                 "Books user read :",
-                style: TextStyle(
-                    fontFamily: globalfontfamily,
-                    color: Colors.black,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600),
+                style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 10.h),
               StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(widget.userModel!.uid)
-                      .collection('Books')
-                      .snapshots(),
+                  stream: FirebaseFirestore.instance.collection('users').doc(widget.userModel!.uid).collection('Books').snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
@@ -204,10 +181,8 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    List<Book> books =
-                        snapshot.data!.docs.map((DocumentSnapshot doc) {
-                      Map<String, dynamic> data =
-                          doc.data() as Map<String, dynamic>;
+                    List<Book> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                       return Book.fromMap(data, doc.id);
                     }).toList();
                     if (books.isEmpty) {
@@ -228,11 +203,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               ),
               SizedBox(height: 10.h),
               StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(widget.userModel!.uid)
-                      .collection('RecievedBooks')
-                      .snapshots(),
+                  stream: FirebaseFirestore.instance.collection('users').doc(widget.userModel!.uid).collection('RecievedBooks').snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
@@ -241,10 +212,8 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    List<RecievedBook> books =
-                        snapshot.data!.docs.map((DocumentSnapshot doc) {
-                      Map<String, dynamic> data =
-                          doc.data() as Map<String, dynamic>;
+                    List<RecievedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                       return RecievedBook.fromMap(data, doc.id);
                     }).toList();
 
@@ -257,19 +226,11 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               SizedBox(height: 20.h),
               Text(
                 "Rented Books",
-                style: TextStyle(
-                    fontFamily: globalfontfamily,
-                    color: Colors.black,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600),
+                style: TextStyle(fontFamily: globalfontfamily, color: Colors.black, fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 10.h),
               StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(widget.userModel!.uid)
-                      .collection('RentedBooks')
-                      .snapshots(),
+                  stream: FirebaseFirestore.instance.collection('users').doc(widget.userModel!.uid).collection('RentedBooks').snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
@@ -278,10 +239,8 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    List<RentedBook> books =
-                        snapshot.data!.docs.map((DocumentSnapshot doc) {
-                      Map<String, dynamic> data =
-                          doc.data() as Map<String, dynamic>;
+                    List<RentedBook> books = snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                       return RentedBook.fromMap(data, doc.id);
                     }).toList();
                     if (books.isEmpty) {
@@ -293,10 +252,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
               SizedBox(height: 20.h),
               Text(
                 "Invite readers",
-                style: TextStyle(
-                    fontFamily: globalfontfamily,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600),
+                style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 10.h),
               Row(
@@ -306,15 +262,13 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
                     onPressed: () {
                       launchUrl(Uri.parse(twitterURL));
                     },
-                    icon: Image.asset("assets/images/twitter.png",
-                        height: 30.h, width: 30.w),
+                    icon: Image.asset("assets/images/twitter.png", height: 30.h, width: 30.w),
                   ),
                   IconButton(
                     onPressed: () {
                       launchUrl(Uri.parse(telegramURL));
                     },
-                    icon: Image.asset("assets/images/telegram.png",
-                        height: 30.h, width: 30.w),
+                    icon: Image.asset("assets/images/telegram.png", height: 30.h, width: 30.w),
                   ),
                 ],
               ),
@@ -329,8 +283,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
   Container buildBooks(List<Book> books) {
     return Container(
       height: 200.h,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: ListView.separated(
         padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -348,8 +301,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
   Container buildBooksReceived(List<RecievedBook> books) {
     return Container(
       height: 200.h,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: ListView.separated(
         padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -367,8 +319,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
   Container buildBooksRented(List<RentedBook> books) {
     return Container(
       height: 200.h,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: ListView.builder(
           itemCount: books.length,
@@ -381,8 +332,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
   Container buildNoBooks(String? msg) {
     return Container(
       height: 50.h,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Center(
         child: Text(

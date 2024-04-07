@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,13 +154,13 @@ class _HomePageState extends State<HomePage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        floatingActionButton: IconButton(
-          iconSize: 50.h,
-          onPressed: () {
-            nextScreen(context, const YourAccountScreen());
-          },
-          icon: const Icon(Icons.account_circle, color: Colors.red),
-        ),
+        // floatingActionButton: IconButton(
+        //   iconSize: 50.h,
+        //   onPressed: () {
+        //     nextScreen(context, const YourAccountScreen());
+        //   },
+        //   icon: const Icon(Icons.account_circle, color: Colors.red),
+        // ),
         body: isloading
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -201,6 +202,49 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    nextScreen(context, const YourAccountScreen());
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.h),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+                                    child: Row(
+                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: Colors.transparent,
+                                          radius: 14.w,
+                                          child: ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl: userglobalData!.imageurl.isNotEmpty
+                                                  ? userglobalData!.imageurl
+                                                  : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                                              width: ScreenUtil().screenWidth * 0.2,
+                                              height: ScreenUtil().screenWidth * 0.2,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) => const CircularProgressIndicator(),
+                                              errorWidget: (context, url, error) => Image.network(
+                                                'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // Placeholder image
+                                                width: ScreenUtil().screenWidth * 0.2,
+                                                height: ScreenUtil().screenWidth * 0.2,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10.w),
+                                        Text(
+                                          "@${userglobalData?.username}",
+                                          style: TextStyle(fontFamily: globalfontfamily, fontSize: 16.sp, color: Colors.blueAccent),
+                                        ),
+                                        const Spacer(),
+                                        const Icon(Icons.arrow_right, color: Colors.blueAccent)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 5.h),
                                 GestureDetector(
                                   onTap: () {
                                     nextScreen(context, const PeopleAroundYouScreen());

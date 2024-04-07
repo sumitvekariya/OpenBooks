@@ -27,8 +27,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot =
-          await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
@@ -61,10 +60,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               SizedBox(
                 height: 160.h,
               ),
-              SizedBox(
-                  height: 265.h,
-                  width: 258.w,
-                  child: SvgPicture.asset("assets/images/grp1.svg")),
+              SizedBox(height: 265.h, width: 258.w, child: SvgPicture.asset("assets/images/grp1.svg")),
               SizedBox(
                 height: 194.h,
               ),
@@ -116,11 +112,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                 ),
                                 Text(
                                   "Login with X",
-                                  style: TextStyle(
-                                      fontFamily: globalfontfamily,
-                                      color: Colors.white,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontFamily: globalfontfamily, color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),
                                 ),
                               ],
                             )),
@@ -152,18 +144,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           sp.checkUserExists().then((value) async {
             if (value == true) {
               // user exists
-              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp
-                  .saveDataToSharedPreferences()
-                  .then((value) async => sp.setSignIn().then((value) async {
-                        await handleAfterSignIn();
-                      })));
+              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
+                    await handleAfterSignIn();
+                  })));
             } else {
               // user does not exist
-              sp.saveDataToFirestore().then((value) async => sp
-                  .saveDataToSharedPreferences()
-                  .then((value) async => sp.setSignIn().then((value) async {
-                        await handleAfterSignIn();
-                      })));
+              sp.saveDataToFirestore().then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
+                    await handleAfterSignIn();
+                  })));
             }
           });
         }

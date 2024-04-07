@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,16 @@ import 'package:openbook/Screens/homepage.dart';
 import 'package:openbook/Widgets/widgets.dart';
 import 'package:openbook/utils/global_data.dart';
 import 'package:openbook/utils/globalvar.dart';
+import 'package:provider/provider.dart';
 import 'package:random_string/random_string.dart';
 import 'package:simple_barcode_scanner/enum.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
+import '../TwitterAuth/provider/sign_in_provider.dart';
+import '../utils/api_client.dart';
 
 class SetupAccount extends StatefulWidget {
   const SetupAccount({super.key});
@@ -43,6 +48,7 @@ class _SetupAccountState extends State<SetupAccount> {
   int bookCount = 0;
 
   String? avatarurl = "https://firebasestorage.googleapis.com/v0/b/easyed-prod.appspot.com/o/account.png?alt=media&token=85b40cb4-c4d2-4946-9317-e6aed240948d";
+  List bookList = [];
 
   void showSnackBar({required BuildContext context, required String content}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -520,7 +526,17 @@ class _SetupAccountState extends State<SetupAccount> {
                               Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
                               return Book.fromMap(data, doc.id);
                             }).toList();
-
+                            bookList.clear();
+                            for (var b in books) {
+                              Map<String, dynamic> buk = {
+                                'isbn': b.bookId.toString(),
+                                'title': b.bookName,
+                                'author': b.authorName,
+                                'description': b.bookdesc,
+                                'imageUrl': b.imageCover,
+                              };
+                              bookList.add(buk);
+                            }
                             usersbooklength = books.length;
 
                             if (books.isEmpty) {
@@ -564,8 +580,8 @@ class _SetupAccountState extends State<SetupAccount> {
                                 log('Description: ${bookDetails['description'] ?? "no description"}');
                                 log('Image: ${bookDetails['imageLinks']['thumbnail'] ?? "no image cover"}');
 
-                                String book1id = randomAlphaNumeric(9);
-                                String book1name = bookDetails['title'] ?? "no tittle";
+                                String bookid = res;
+                                String bookname = bookDetails['title'] ?? "no tittle";
                                 String book1authorname = bookDetails['authors'][0] ?? "no author name";
 
                                 String imgcover = bookDetails['imageLinks']['thumbnail'] ??
@@ -582,8 +598,8 @@ class _SetupAccountState extends State<SetupAccount> {
                                 double userlocationlong = locationcoordinates.longitude;
 
                                 await saveDataToFirestorefromscanner(
-                                  bookid: book1id,
-                                  bookname: book1name,
+                                  bookid: bookid,
+                                  bookname: bookname,
                                   authorname: book1authorname,
                                   imgcover: imgcover,
                                   username: userglobalData!.username,
@@ -601,7 +617,7 @@ class _SetupAccountState extends State<SetupAccount> {
 
                                 showTopSnackBar(
                                   Overlay.of(context),
-                                  CustomSnackBar.success(message: '$book1name added Successfully !'),
+                                  CustomSnackBar.success(message: '$bookname added Successfully !'),
                                 );
                               } catch (e) {
                                 setState(() {
@@ -669,10 +685,37 @@ class _SetupAccountState extends State<SetupAccount> {
                   log(userUid!);
                   await getUserData(userUid!);
                 }
-
+                final sp = context.read<SignInProvider>();
+                final token = sp.token;
+                Map<String, dynamic> mintBooksData = {
+                  'name': sp.name,
+                  'email': sp.email,
+                  'longitude': userlocationlong.toString(),
+                  'latitude': userlocationlat.toString(),
+                  'profilePicture': sp.imageUrl,
+                  'books': bookList
+                };
+                log("sssssssssssssssssssssss $token");
+                log("sssssssssssssssssssssss $mintBooksData");
+                try {
+                  Response response = await ApiClient().mintBooks(mintBooksData, token);
+                  final data = response.data;
+                  if (data.containsKey('data')) {
+                    setState(() {
+                      bookList.clear();
+                    });
+                    Map<String, dynamic> loginData = data['data'];
+                    log("Logged in user's data: $loginData");
+                  }
+                } catch (e) {
+                  setState(() {
+                    bookList.clear();
+                  });
+                }
                 setState(() {
                   kisloading = false;
                 });
+
                 nextScreenpushandremove(context, const HomePage());
               }
             },
@@ -711,14 +754,15 @@ class _SetupAccountState extends State<SetupAccount> {
 
   Container buildBooks(List<Book> books) {
     return Container(
-      height: 200.h,
+      height: 300.h,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: ListView.builder(
+      child: ListView.separated(
           itemCount: books.length,
           itemBuilder: (context, index) {
             return AccountBookwidget(book: books[index]);
-          }),
+          },
+          separatorBuilder: (BuildContext context, int index) => const Divider()),
     );
   }
 

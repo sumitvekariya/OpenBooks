@@ -1,11 +1,19 @@
+import 'dart:developer';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:openbook/utils/api_client.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../Models/book_model.dart';
+import '../TwitterAuth/provider/sign_in_provider.dart';
 import '../utils/globalvar.dart';
 
 class BookDetails extends StatefulWidget {
   final Book book;
+
   const BookDetails({super.key, required this.book});
 
   @override
@@ -15,6 +23,10 @@ class BookDetails extends StatefulWidget {
 class _BookDetailsState extends State<BookDetails> {
   @override
   Widget build(BuildContext context) {
+    final sp = context.read<SignInProvider>();
+    sp.getDataFromSharedPreferences();
+    final token = sp.token;
+    log("ssssssssssssssssssssssssssssssssssss$token!${sp.wallet_address}....${sp.username}");
     return Scaffold(
       backgroundColor: const Color.fromRGBO(249, 249, 249, 1),
       body: SafeArea(
@@ -58,7 +70,8 @@ class _BookDetailsState extends State<BookDetails> {
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-                height: MediaQuery.of(context).size.height - 350.h, //- kToolbarHeight,
+                height: MediaQuery.of(context).size.height - 350.h,
+                //- kToolbarHeight,
                 width: 370.w,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -90,6 +103,38 @@ class _BookDetailsState extends State<BookDetails> {
                           color: Colors.grey,
                         ),
                       ),
+                      SizedBox(height: 15.h),
+                      Row(
+                        children: [
+                          Text(
+                            "Owners:",
+                            style: TextStyle(
+                              fontFamily: globalfontfamily,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      FutureBuilder(
+                        future: ApiClient().getBookDetails(token!, widget.book.bookId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const AspectRatio(aspectRatio: 1, child: Center(child: CircularProgressIndicator()));
+                          }
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+                          log(snapshot.data.toString());
+                          final data = snapshot.data;
+                          final userData = data?.data;
+                          if (userData.containsKey('data')) {
+                            Map<String, dynamic> loginData = userData['data'];
+                            log("Logged in user's data: $loginData");
+                          }
+                          return buildUsers(userData['data']['users']);
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -97,6 +142,92 @@ class _BookDetailsState extends State<BookDetails> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Container buildUsers(users) {
+    return Container(
+      height: 200.h,
+      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.grey[100]),
+      // padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: ListView.builder(
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        itemCount: users.length,
+        // separatorBuilder: (BuildContext context, int index) => const Divider(),
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
+            margin: EdgeInsets.symmetric(vertical: 1.h),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 16.w,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: users[index]['userData']['profilePicture'].isNotEmpty
+                          ? users[index]['userData']['profilePicture']
+                          : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                      width: ScreenUtil().screenWidth * 0.2,
+                      height: ScreenUtil().screenWidth * 0.2,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Image.network(
+                        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png', // Placeholder image
+                        width: ScreenUtil().screenWidth * 0.2,
+                        height: ScreenUtil().screenWidth * 0.2,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 20.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        users[index]['userData']['name'],
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                        style: TextStyle(fontFamily: globalfontfamily, fontSize: 13.sp, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        users[index]['userData']['username'],
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                        style: TextStyle(fontFamily: globalfontfamily, color: Colors.grey, fontSize: 12.sp),
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton.icon(
+                    onPressed: () async {
+                      try {
+                        if (!await launchUrl(Uri.parse("https://translator.shyft.to/address/${users[index]['mintAddress']}?cluster=devnet&compressed=true" ?? ""))) {
+                          throw Exception('Could not launch ${users[index]['mintAddress']} this NFT');
+                        }
+                      } catch (e) {
+                        // Handle any exception
+                        print('Error: $e');
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, elevation: 1),
+                    icon: Image.asset("assets/images/solana.png", height: 20.h, width: 20.w),
+                    label: const Text(
+                      "NFT",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
