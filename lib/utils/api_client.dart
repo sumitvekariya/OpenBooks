@@ -81,4 +81,16 @@ class ApiClient {
       rethrow;
     }
   }
+
+  Future<Response> getPrivateKey(String token) async {
+    try {
+      final response = await _dio.get(
+        '/users/export-private-key',
+        options: Options(headers: {'Authorization': token}),
+      );
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

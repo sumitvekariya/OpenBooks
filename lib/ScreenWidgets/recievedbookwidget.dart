@@ -44,14 +44,14 @@ class _RecievedBookwidgetState extends State<RecievedBookwidget> {
                       child: CircleAvatar(
                           backgroundColor: Colors.white,
                           backgroundImage: Image.network(
-                            widget.book.userimage,
+                            widget.book.recieveduserimage,
                             fit: BoxFit.cover,
                           ).image,
                           radius: 4.r),
                     ),
                     Expanded(
                       child: Text(
-                        " ${widget.book.username}, ${widget.book.userLocation}",
+                        " ${widget.book.recievedusername}, ${widget.book.recieveduserlocation}",
                         overflow: TextOverflow.fade,
                         softWrap: false,
                         style: TextStyle(fontFamily: globalfontfamily, fontSize: 8.sp, fontWeight: FontWeight.w200),

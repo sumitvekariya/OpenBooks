@@ -55,14 +55,14 @@ class _RentedBookWidgetState extends State<RentedBookWidget> {
                       child: CircleAvatar(
                           backgroundColor: Colors.white,
                           backgroundImage: Image.network(
-                            widget.book.userimage,
+                            widget.book.renteduserimage,
                             fit: BoxFit.cover,
                           ).image,
                           radius: 4.r),
                     ),
                     Expanded(
                       child: Text(
-                        " ${widget.book.username}, ${widget.book.userLocation}",
+                        " ${widget.book.rentedusername}, ${widget.book.renteduserlocation}",
                         overflow: TextOverflow.fade,
                         softWrap: false,
                         style: TextStyle(
