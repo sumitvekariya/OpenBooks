@@ -13,3 +13,6 @@ https://talented-debt-219.notion.site/OpenBooks-f2e2c36980064bdfb1c3e1ed07654336
 **Lending/Borrowing:** Facilitating peer-to-peer lending and borrowing, OpenBooks promotes a sharing economy, making books more accessible to everyone.
 
 **Making Friends:** By connecting users with similar interests and values, OpenBooks fosters friendships and intellectual discourse among readers.
+
+
+## Backend: [https://t.me/+m5kYre9QPGsyMTdl](https://github.com/sumitvekariya/OpenBooks-BE)
