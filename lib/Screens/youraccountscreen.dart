@@ -722,6 +722,7 @@ class _YourAccountScreenState extends State<YourAccountScreen> {
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
               child: Text(privateKey,
                   style: TextStyle(
+                    color: Colors.grey,
                     fontFamily: globalfontfamily,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.bold,
