@@ -51,7 +51,7 @@ class _RecievedBookwidgetState extends State<RecievedBookwidget> {
                     ),
                     Expanded(
                       child: Text(
-                        " ${widget.book.recievedusername}, ${widget.book.recieveduserlocation}",
+                        " ${widget.book.username}, ${widget.book.userLocation}",
                         overflow: TextOverflow.fade,
                         softWrap: false,
                         style: TextStyle(fontFamily: globalfontfamily, fontSize: 8.sp, fontWeight: FontWeight.w200),
