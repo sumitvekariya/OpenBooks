@@ -717,8 +717,9 @@ class _SetupAccountState extends State<SetupAccount> {
                                 showTopSnackBar(
                                   Overlay.of(context),
                                   CustomSnackBar.success(
-                                      message:
-                                          '$bookname added Successfully !'),
+                                    message: '$bookname added Successfully !',
+                                    backgroundColor: Colors.blue,
+                                  ),
                                 );
                               } catch (e) {
                                 setState(() {
