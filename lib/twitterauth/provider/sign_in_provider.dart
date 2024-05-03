@@ -12,45 +12,59 @@ class SignInProvider extends ChangeNotifier {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   bool _isSignedIn = false;
+
   bool get isSignedIn => _isSignedIn;
 
   bool _hasError = false;
+
   bool get hasError => _hasError;
 
   String? _errorCode;
+
   String? get errorCode => _errorCode;
 
   String? _provider;
+
   String? get provider => _provider;
 
   String? _uid;
+
   String? get uid => _uid;
 
   String? _name;
+
   String? get name => _name;
 
   String? _username;
+
   String? get username => _username;
 
   String? _email;
+
   String? get email => _email;
 
   String? _imageUrl;
+
   String? get imageUrl => _imageUrl;
 
   String? _partnercode;
+
   String? get partnecode => _partnercode;
 
   bool? _isFilled;
+
   bool? get isFilled => _isFilled;
 
   String? _locationname;
+
   String? get locationname => _locationname;
 
   String? _wallet_address;
+
   String? get wallet_address => _wallet_address;
 
   String? _token;
+
   String? get token => _token;
 
   SignInProvider() {
@@ -80,13 +94,46 @@ class SignInProvider extends ChangeNotifier {
   //   }
   // }
 
+  firebaseDemoSignInWithEmail(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: email, password: password);
+
+      final userDetails = userCredential.user;
+      // Extract the necessary information
+      _username = userCredential.additionalUserInfo!.username ??
+          userDetails?.displayName;
+      _name = userDetails?.displayName;
+      _email = userDetails?.email;
+      _imageUrl = userDetails?.photoURL;
+      _uid = userDetails?.uid;
+      _provider = "Email";
+      _isFilled = false;
+      _locationname = "location";
+      _hasError = false;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        _errorCode = "No user found for that email.";
+      } else if (e.code == 'wrong-password') {
+        _errorCode = "Wrong password provided for that user.";
+      } else {
+        _errorCode = e.toString();
+      }
+      _hasError = true;
+      notifyListeners();
+    }
+  }
+
   Future<void> firebasesignInWithTwitter() async {
     try {
       // Trigger Twitter OAuth flow using Firebase
       final twitterAuthProvider = TwitterAuthProvider();
       // twitterAuthProvider.setCustomParameters({'force_login': 'true'});
 
-      final authResult = await FirebaseAuth.instance.signInWithProvider(twitterAuthProvider);
+      final authResult =
+          await FirebaseAuth.instance.signInWithProvider(twitterAuthProvider);
 
       // Get user details from the authentication result
       final userDetails = authResult.user;
@@ -94,11 +141,14 @@ class SignInProvider extends ChangeNotifier {
       // Print or use the user details as needed
       print("authResult.user: $userDetails");
       print("userDetails!.name: ${userDetails!.displayName}");
-      print("userDetails!.username: ${authResult.additionalUserInfo!.username}");
-      print("firebaseAuth.currentUser!.email: ${firebaseAuth.currentUser!.email}");
+      print(
+          "userDetails!.username: ${authResult.additionalUserInfo!.username}");
+      print(
+          "firebaseAuth.currentUser!.email: ${firebaseAuth.currentUser!.email}");
 
       // Extract the necessary information
-      _username = authResult.additionalUserInfo!.username ?? userDetails.displayName;
+      _username =
+          authResult.additionalUserInfo!.username ?? userDetails.displayName;
       _name = userDetails.displayName;
       _email = firebaseAuth.currentUser!.email ?? "twitter";
       _imageUrl = userDetails.photoURL;
@@ -111,7 +161,8 @@ class SignInProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "account-exists-with-different-credential":
-          _errorCode = "You already have an account with us. Use correct provider";
+          _errorCode =
+              "You already have an account with us. Use correct provider";
           _hasError = true;
           notifyListeners();
           break;
@@ -135,23 +186,30 @@ class SignInProvider extends ChangeNotifier {
   }
 
   Future getUserDataFromFirestore(uid) async {
-    await FirebaseFirestore.instance.collection("users").doc(uid).get().then((DocumentSnapshot snapshot) => {
-          _uid = snapshot['uid'],
-          _username = snapshot['username'],
-          _name = snapshot['name'],
-          _imageUrl = snapshot['image_url'],
-          _isFilled = snapshot['isfilled'],
-          _provider = snapshot['provider'],
-          _locationname = snapshot['location_name'],
-          // _wallet_address = snapshot['wallet_address'] ?? ""
-        });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .get()
+        .then((DocumentSnapshot snapshot) => {
+              _uid = snapshot['uid'],
+              _username = snapshot['username'],
+              _name = snapshot['name'],
+              _imageUrl = snapshot['image_url'],
+              _isFilled = snapshot['isfilled'],
+              _provider = snapshot['provider'],
+              _locationname = snapshot['location_name'],
+              // _wallet_address = snapshot['wallet_address'] ?? ""
+            });
     Response response = await ApiClient().login(_username!, _name!, _imageUrl!);
     final data = response.data;
     if (data.containsKey('data')) {
       Map<String, dynamic> loginData = data['data'];
       _wallet_address = loginData['publicKey'];
       _token = loginData['token'];
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({"wallet_address": _wallet_address}, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set({"wallet_address": _wallet_address}, SetOptions(merge: true));
 
       log("Logged in user's wallet: $wallet_address");
       log("Logged in user's token: $token");
@@ -159,7 +217,8 @@ class SignInProvider extends ChangeNotifier {
   }
 
   Future saveDataToFirestore() async {
-    final DocumentReference r = FirebaseFirestore.instance.collection("users").doc(uid);
+    final DocumentReference r =
+        FirebaseFirestore.instance.collection("users").doc(uid);
     await r.set({
       "uid": _uid,
       "username": _username,
@@ -178,7 +237,10 @@ class SignInProvider extends ChangeNotifier {
       Map<String, dynamic> loginData = data['data'];
       _wallet_address = loginData['publicKey'];
       _token = loginData['token'];
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({"wallet_address": _wallet_address}, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set({"wallet_address": _wallet_address}, SetOptions(merge: true));
 
       log("Logged in user's wallet: $wallet_address");
       log("Logged in user's token: $token");
@@ -219,7 +281,8 @@ class SignInProvider extends ChangeNotifier {
 
   // checkUser exists or not in cloudfirestore
   Future<bool> checkUserExists() async {
-    DocumentSnapshot snap = await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+    DocumentSnapshot snap =
+        await FirebaseFirestore.instance.collection('users').doc(_uid).get();
     if (snap.exists) {
       print("EXISTING USER");
       return true;

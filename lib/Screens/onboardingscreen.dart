@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:openbook/Models/user_data_models.dart';
+import 'package:openbook/Screens/demologinscreen.dart';
 import 'package:openbook/Screens/homepage.dart';
 import 'package:openbook/Screens/setupaccount.dart';
 import 'package:openbook/TwitterAuth/provider/internet_provider.dart';
@@ -22,12 +23,15 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
-  bool isloading = false;
+  bool isTwitterLoading = false;
+  bool showDemoLoginButton = false;
+
   Future<UserData> getUserData(String uid) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userSnapshot =
+          await firestore.collection('users').doc(uid).get();
 
       if (userSnapshot.exists) {
         userglobalData = UserData.fromSnapshot(userSnapshot);
@@ -50,6 +54,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   @override
+  void initState() {
+    checkDemoButton();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -60,14 +70,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               SizedBox(
                 height: 160.h,
               ),
-              SizedBox(height: 265.h, width: 258.w, child: SvgPicture.asset("assets/images/grp1.svg")),
+              SizedBox(
+                  height: 265.h,
+                  width: 258.w,
+                  child: SvgPicture.asset("assets/images/grp1.svg")),
               SizedBox(
                 height: 194.h,
               ),
               GestureDetector(
                 onTap: () async {
                   setState(() {
-                    isloading = true;
+                    isTwitterLoading = true;
                   });
                   await handleTwitterAuth();
                 },
@@ -87,7 +100,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     ],
                   ),
                   child: Center(
-                      child: isloading
+                      child: isTwitterLoading
                           ? Center(
                               child: SizedBox(
                                 height: 18.h,
@@ -112,12 +125,57 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                 ),
                                 Text(
                                   "Login with X",
-                                  style: TextStyle(fontFamily: globalfontfamily, color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w600),
+                                  style: TextStyle(
+                                      fontFamily: globalfontfamily,
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ],
                             )),
                 ),
               ),
+              showDemoLoginButton
+                  ? Padding(
+                      padding: EdgeInsets.only(top: 20.h),
+                      child: InkWell(
+                        onTap: () async {
+                          nextScreen(
+                            context,
+                            DemoLoginScreen(
+                                handleAfterSignIn: handleAfterSignIn),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(22.r),
+                        child: Container(
+                          height: 43.h,
+                          width: 339.w,
+                          decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.circular(22.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.4),
+                                spreadRadius: 0,
+                                blurRadius: 4,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Sign in as Demo user",
+                              style: TextStyle(
+                                  fontFamily: globalfontfamily,
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
         ),
@@ -136,7 +194,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       await sp.firebasesignInWithTwitter().then((value) {
         if (sp.hasError == true) {
           setState(() {
-            isloading = false;
+            isTwitterLoading = false;
           });
           openSnackbar(context, sp.errorCode.toString(), Colors.red);
         } else {
@@ -144,14 +202,18 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           sp.checkUserExists().then((value) async {
             if (value == true) {
               // user exists
-              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
-                    await handleAfterSignIn();
-                  })));
+              await sp.getUserDataFromFirestore(sp.uid).then((value) async => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) async => sp.setSignIn().then((value) async {
+                        await handleAfterSignIn();
+                      })));
             } else {
               // user does not exist
-              sp.saveDataToFirestore().then((value) async => sp.saveDataToSharedPreferences().then((value) async => sp.setSignIn().then((value) async {
-                    await handleAfterSignIn();
-                  })));
+              sp.saveDataToFirestore().then((value) async => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) async => sp.setSignIn().then((value) async {
+                        await handleAfterSignIn();
+                      })));
             }
           });
         }
@@ -161,7 +223,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   Future handleAfterSignIn() async {
     print("Handle runs");
-    String? currentUserUID = await FirebaseAuth.instance.currentUser?.uid;
+    String? currentUserUID = FirebaseAuth.instance.currentUser?.uid;
     await getUserData(currentUserUID!);
 
     Future.delayed(const Duration(milliseconds: 1000)).then((value) {
@@ -172,5 +234,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         nextScreenReplace(context, const SetupAccount());
       }
     });
+  }
+
+  checkDemoButton() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    DocumentSnapshot snapshot =
+        await firestore.collection('config').doc('showDemoButton').get();
+
+    if (snapshot.exists) {
+      showDemoLoginButton = snapshot['showDemoButton'];
+      setState(() {});
+    }
   }
 }
